@@ -1,0 +1,102 @@
+/* Estilos Gerais */
+body, html {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4; /* Cor de fundo clara */
+}
+
+/* Cabeçalho/Fundo Superior */
+.top-background {
+    background-color: rgb(2, 72, 36); /* Cor verde escura */
+    height: 35%; /* Altura ajustada para melhor proporção */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Container de Login */
+.login-container {
+    width: 400px; /* Largura para telas maiores */
+    padding: 32px; /* Espaçamento interno */
+    background-color: rgba(0, 166, 81, 100%); /* Cor verde */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%); /* Centraliza o container */
+    border-radius: 20px; /* Cantos arredondados */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra mais forte */
+}
+
+.login-container h2 {
+    text-align: center;
+    color: rgb(2, 72, 36); /* Cor do texto do título */
+    margin-bottom: 20px;
+}
+
+/* Logo */
+.login-container img {
+    display: block;
+    margin: 0 auto 20px; /* Centraliza a logo */
+    max-width: 150px; /* Largura máxima da logo */
+    height: auto; /* Mantém a proporção da imagem */
+}
+
+/* Inputs de Email e Senha */
+.login-container input[type=email],
+.login-container input[type=password] {
+    width: calc(100% - 32px); /* Largura ajustada para o padding */
+    padding: 15px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #000000; /* Borda sutil */
+    box-sizing: border-box;
+    border-radius: 5px; /* Cantos levemente arredondados */
+}
+
+/* Botões */
+.login-container button {
+    background-color: rgb(2, 72, 36); /* Cor verde escura */
+    color: white;
+    padding: 14px 20px;
+    margin: 16px auto; /* Centraliza os botões */
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%; /* Largura total */
+    font-weight: bold;
+}
+
+.recuperar-senha button {
+    background-color: rgb(2, 72, 36); /* Cor verde escura */
+    color: white;
+    padding: 14px 20px;
+    margin: 16px auto; /* Centraliza os botões */
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%; /* Largura total */
+    font-weight: bold;
+}
+
+.login-container button:hover {
+    opacity: 0.9; /* Efeito de hover */
+}
+
+/* Estilos para telas menores (responsividade) */
+@media (max-width: 600px) {
+    .login-container {
+        width: 80%; /* Ocupa 90% da largura da tela em dispositivos menores */
+        padding: 15px; /* Reduz o espaçamento interno em telas menores */
+    }
+}
+
+.login-container input[type=text] {
+    width: calc(100% - 32px); /* Largura ajustada para o padding */
+    padding: 15px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #000000; /* Borda sutil */
+    box-sizing: border-box;
+    border-radius: 5px; /* Cantos levemente arredondados */
+}
+

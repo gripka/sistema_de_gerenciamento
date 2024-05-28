@@ -1,0 +1,26 @@
+body {
+    background-color: white;
+}
+
+h1 {
+    color: white;
+}
+
+body {
+    background-color: white;
+}
+
+h1 {
+    background-color: rgb(255, 255, 255);
+    outline: none;
+    color: rgb(0, 0, 0);
+
+    outline-color: white; /* Muda a cor do outline para branco */
+    outline-style: dotted; /* Muda o estilo para pontilhado */
+    outline-width: 1px; /* Define a largura para 1 pixel */
+
+    margin: 0;   /* Remove a margem */
+    padding: 0;  /* Remove o padding */
+
+    box-shadow: none; /* Remove a sombra */
+}

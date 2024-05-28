@@ -1,0 +1,127 @@
+/* Estilos Gerais (copiados do login.css) */
+body, html {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    
+}
+
+.top-background {
+    background-color: rgb(2, 72, 36);
+    height: 35%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container de Recuperação de Senha */
+.recuperar-senha-container {
+    width: 400px; /* Largura para telas maiores */
+    padding: 32px;
+    background-color: rgba(0, 166, 81, 100%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.recuperar-senha-container h2 {
+    text-align: center;
+
+    margin-bottom: 20px;
+
+    color: white;
+    font-size: 48px;
+
+    font-weight: 400;
+    word-wrap: break-word
+}
+
+/* Logo (opcional, se você quiser manter a logo na página de recuperação) */
+.recuperar-senha-container img {
+    display: block;
+    margin: 0 auto 20px;
+    max-width: 150px;
+    height: auto;
+}
+
+/* Input de Email */
+.recuperar-senha-container input[type=email] {
+    width: calc(100% - 32px);
+    padding: 15px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+/* Botão */
+.recuperar-senha-container button {
+    background-color: rgb(2, 72, 36);
+    color: white;
+    padding: 14px 20px;
+    margin: 16px auto;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.recuperar-senha-container button:hover {
+    opacity: 0.9;
+}
+
+/* Estilos para telas menores (responsividade) */
+@media (max-width: 600px) {
+    .recuperar-senha-container {
+        width: 90%;
+        padding: 20px;
+    }
+}
+
+.recuperar-senha-container .info-text {
+    color: white;
+    font-size: 20px;
+    font-weight: 400;
+    word-wrap: break-word;
+    text-align: center; /* Centraliza o texto */
+}
+
+
+
+
+.recuperar-senha-container .back-button {
+    display: block; /* Garante que o link ocupe toda a largura disponível */
+    text-align: center;
+    color: white; /* Cor do texto branca */
+    text-decoration: none; /* Remove o sublinhado do link */
+    margin-top: 20px; /* Adiciona um espaçamento superior */
+    font-size: 18px; /* Ajuste o tamanho da fonte, se necessário */
+}
+
+.recuperar-senha-container .back-button:hover {
+    text-decoration: underline; /* Adiciona sublinhado ao passar o mouse */
+}
+
+
+/* Media Queries para Responsividade */
+@media (max-width: 768px) {
+    .recuperar-senha-container {
+        width: 90%;
+    }
+}
+
+@media (max-width: 480px) {
+    .recuperar-senha-container {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .recuperar-senha-container h2 {
+        font-size: 20px;
+    }
+}

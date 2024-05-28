@@ -1,0 +1,39 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="{% static 'styles/login.css' %}">
+</head>
+<body>
+
+<div class="top-background"></div>
+
+<div class="login-container">
+    <img src="{% static 'assets/logo/logoqq.png' %}" alt="Logo QueroQuero">
+
+    <form id="login-form" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Entrar</button>
+    </form>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <form method="POST" action="{% url 'usuarios:recuperar_senha' %}">
+        {% csrf_token %}
+        <button type="submit" >Recuperar Senha</button>
+    </form>
+
+</div>
+
+</body>
+</html>

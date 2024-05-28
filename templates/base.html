@@ -1,0 +1,38 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Meu Site Django{% endblock %}</title>
+    <link rel="stylesheet" href="{% static '/styles/base.css' %}">
+</head>
+<body>
+    <div class="container">  
+<div class="sidebar">
+    <div class="menu-lateral"></div>
+
+    <div class="image">
+        <img src="{% static 'assets/logo/logoqq.png' %}" alt="Imagem de Perfil" class="imagem-perfil">
+    </div>
+
+    <div class="sistema-de-gerenciamento">SISTEMA DE GERENCIAMENTO</div>
+
+    <div class="sidebar-links">
+        <a href="{% url 'galeria:meu_perfil' %}" class="meu-perfil">Meu perfil</a>
+        <a href="{% url 'galeria:gerenciar_usuarios' %}" class="gerenciar-usuarios">Gerenciar usuários</a>
+        <a href="{% url 'galeria:gestao_de_perfis' %}" class="gestao-de-perfis">Gestão de perfis</a>
+        <a href="{% url 'galeria:modulos' %}" class="modulos">Módulos</a>
+        <a href="{% url 'galeria:transacoes' %}" class="transacoes">Transações</a>
+    </div>
+
+    <div class="menu-bottom"> 
+        <a href="{% url 'usuarios:logout' %}" class="desconectar">Desconectar</a>
+    </div>
+</div>
+
+        <div class="content">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div> 
+</body>
+</html>
