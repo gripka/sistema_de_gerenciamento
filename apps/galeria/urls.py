@@ -11,5 +11,6 @@ urlpatterns = [
     path('modulos/', views.modulos, name='modulos'),
     path('transacoes/', views.transacoes, name='transacoes'),
     path('gestao-de-perfis/', views.gestao_de_perfis, name='gestao_de_perfis'),
-    
+    path('cadastro/', views.cadastro, name='cadastro'),
+    path('editar-usuario/', views.editar_usuario, name='editar_usuario'),
 ]

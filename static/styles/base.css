@@ -70,7 +70,7 @@
 .content {
     flex: 1;
     padding: 20px;
-    background-color: #f4f4f4;
+    /*background-color: #f4f4f4;*/
     margin-left: 350px; /* Adiciona um espaçamento à esquerda para evitar sobreposição com o menu */
 }
 

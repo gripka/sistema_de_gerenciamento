@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'styles/cadastro.css' %}">
+
+<div class="container-geral">
+
+    <div class="botoes-container">
+        <a href="{% url 'galeria:cadastro' %}" class="botao botao-cadastrar">Cadastrar Usuário</a>
+        <a href="{% url 'galeria:editar_usuario' %}" class="botao botao-editar">Editar Usuário</a>
+    </div>
+    
+    <div class="cadastro-container">
+        <form method="post" action="{% url 'galeria:cadastro' %}">
+            {% csrf_token %}
+            <h2>Cadastrar novo usuário</h2>
+
+            <div class="form-group">
+
+                <input type="text" name="nome_cadastro" id="id_nome_cadastro" class="RectangleEmail" placeholder="Nome">
+                {% if form.nome_cadastro.errors %}
+                    <div class="error-message">{{ form.nome_cadastro.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+
+                <input type="email" name="email" id="id_email" class="RectangleEmail" placeholder="E-mail">
+                {% if form.email.errors %}
+                    <div class="error-message">{{ form.email.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <input type="password" name="senha" id="id_senha" class="RectangleEmail" placeholder="Senha">
+                {% if form.senha.errors %}
+                    <div class="error-message">{{ form.senha.errors }}</div>
+                {% endif %}
+            </div>
+            
+            <div class="form-group">
+                <select id="id_perfil" name="perfil" class="RectangleEmail">
+                    <option value="">Selecione um perfil</option>
+                    {% for perfil in perfis %}
+                        <option value="{{ perfil.id }}">{{ perfil.nome }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <button type="submit">Cadastrar</button>
+        </form>
+    </div>
+
+</div>
+
+{% endblock %}
+
