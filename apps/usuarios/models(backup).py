@@ -24,4 +24,19 @@ class Funcao(models.Model):
     descricao = models.TextField(blank=True)
 
 #Modelos de Relacionamento
+class UsuarioPerfil(models.Model):
+    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
+    data_associacao = models.DateTimeField(auto_now_add=True)  # Adiciona automaticamente a data/hora
 
+class PerfilTransacao(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
+    transacao = models.ForeignKey(Transacao, on_delete=models.CASCADE)
+
+class PerfilModulo(models.Model):
+    perfil = models.ForeignKey(Perfil, on_delete=models.CASCADE)
+    modulo = models.ForeignKey(Modulo, on_delete=models.CASCADE)
+
+class ModuloFuncao(models.Model):
+    modulo = models.ForeignKey(Modulo, on_delete=models.CASCADE)
+    funcao = models.ForeignKey(Funcao, on_delete=models.CASCADE)

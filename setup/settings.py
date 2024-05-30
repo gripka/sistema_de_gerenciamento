@@ -77,6 +77,9 @@ DATABASES = {
         'PASSWORD': 'admin',         # Senha do PostgreSQL
         'HOST': 'localhost',             # Host do PostgreSQL (geralmente 'localhost')
         'PORT': '5432',                  # Porta do PostgreSQL (geralmente 5432)
+        'OPTIONS': {
+            'options': '-c search_path=beaba_schema', 
+        },
     }
 }
 
