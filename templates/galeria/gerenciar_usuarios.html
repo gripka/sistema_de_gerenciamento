@@ -1,16 +1,53 @@
 {% extends 'base.html' %}
 {% load static %}
 {% block content %}
-<h1>Gerenciar usuarios</h1>
 
-
+<link rel="stylesheet" type="text/css" href="{% static 'styles/gerenciar_usuarios.css' %}">
 
 <div class="container-geral">
-
     <div class="botoes-container">
         <a href="{% url 'galeria:cadastro' %}" class="botao botao-cadastrar">Cadastrar Usuário</a>
         <a href="{% url 'galeria:editar_usuario' %}" class="botao botao-editar">Editar Usuário</a>
     </div>
 
+    <div class="usuarios-cadastrados-container">
+        <h2>Usuários Cadastrados</h2>
 
+        <div class="tabela-usuarios">
+            <div class="cabecalho-tabela">
+                <div class="coluna">Nome</div>
+                <div class="coluna">Perfil</div>
+                <div class="coluna">E-mail</div>
+                <div class="coluna">Ações</div>
+            </div>
+
+            {% for usuario in usuarios %}
+                <div class="linha-tabela">
+                    <div class="coluna">{{ usuario.nome }}</div>
+                    <div class="coluna">{{ usuario.perfil }}</div>
+                    <div class="coluna">{{ usuario.email }}</div>
+                    <div class="coluna acoes">
+                        <a href="{% url 'galeria:editar_usuario' usuario.id %}" class="botao-editar-usuario">Editar</a>
+                        <a href="{% url 'galeria:excluir_usuario' usuario.id %}" class="botao-excluir-usuario">Excluir</a>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <div class="paginacao">
+            <span class="pagina-atual">página 1 - 78</span>
+        </div>
+    </div>
+
+    <div class="busca-container">
+        <form method="get">
+            <input type="text" name="q" placeholder="Pesquisar" class="campo-pesquisa">
+            <button type="submit" class="botao-buscar">Buscar</button>
+        </form>
+    </div>
+
+    <div class="salvar-container">
+        <button class="botao-salvar">Salvar</button>
+    </div>
+</div>
 {% endblock %}

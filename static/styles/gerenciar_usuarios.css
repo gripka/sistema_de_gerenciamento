@@ -1,0 +1,137 @@
+/* Estilos Gerais da Página */
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: white;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 50vh;
+    overflow-y: auto; /* Permite rolagem vertical */
+}
+
+/* Estilos dos Botões do Topo */
+.botoes-container {
+    display: flex;
+    justify-content: space-around; /* ou space-between */
+    align-items: center;          /* Alinha os botões verticalmente ao centro */
+    margin-bottom: 20px;
+    width: 450px;
+    gap: 40px; /* Aumenta a distância entre os botões */
+}
+
+.botao {
+    display: inline-block;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    width: 45%; /* Largura dos botões superiores */
+    text-align: center;
+}
+
+.botao-cadastrar {
+    background-color: #097600;
+    color: white;
+}
+
+.botao-editar {
+    background-color: #D9D9D9;
+    color: black;
+}
+
+/* Estilos do Título "Usuários Cadastrados" */
+h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-bottom: 20px;
+}
+
+/* Estilos da Tabela de Usuários */
+.tabela-usuarios {
+    display: table; /* Ou use display: grid para um layout mais flexível */
+    width: 100%;
+    border-collapse: collapse; /* Remove espaçamento entre as células */
+}
+
+.cabecalho-tabela, .linha-tabela {
+    display: table-row;
+}
+
+.coluna {
+    display: table-cell;
+    padding: 10px;
+    border: 1px solid black;
+    width: 25%; /* Distribuição igual de largura para as 4 colunas */
+    min-width: 150px; /* Largura mínima para cada coluna */
+    text-align: center;      /* Centraliza o texto horizontalmente */
+    vertical-align: middle;  /* Centraliza o texto verticalmente */
+}
+
+/* Estilos da Coluna de Ações */
+.acoes {
+    text-align: center;
+}
+
+.botao-editar-usuario, .botao-excluir-usuario {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.botao-editar-usuario {
+    background-color: #007bff; /* Azul */
+    color: white;
+}
+
+.botao-excluir-usuario {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+}
+
+/* Estilos da Paginação */
+.paginacao {
+    text-align: center;
+    margin-top: 20px;
+}
+
+/* Estilos do Container da Busca */
+.busca-container {
+    display: flex;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.campo-pesquisa {
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.botao-buscar {
+    /* Estilos semelhantes aos outros botões */
+}
+
+/* Estilos do Botão Salvar */
+.salvar-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.botao-salvar {
+    /* Estilos semelhantes aos outros botões */
+}
