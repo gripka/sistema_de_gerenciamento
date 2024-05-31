@@ -1,11 +1,16 @@
 # apps/galeria/views.py
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 
 from django.views.generic.edit import CreateView  # Importar do módulo correto
 from .forms import CadastroForm  # Certifique-se de importar o formulário correto
 from django.contrib.messages import success
+from django.db.models import Q
+
+from django.contrib.auth.forms import UserChangeForm
+from django.contrib.auth.models import User, Group
+
 
 
 
@@ -21,10 +26,22 @@ def meu_perfil(request):
     return render(request, 'galeria/meu_perfil.html')
 
 #Gerenciar usuarios ///
+@login_required 
 def gerenciar_usuarios(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')
-    return render(request, 'galeria/gerenciar_usuarios.html')
+    busca = request.GET.get('q', '')
+
+    usuarios = User.objects.all().prefetch_related('groups')
+    if busca:
+        usuarios = usuarios.filter(
+            Q(username__icontains=busca) | 
+            Q(first_name__icontains=busca) | 
+            Q(last_name__icontains=busca) |
+            Q(email__icontains=busca)
+        )
+    
+    # Passar o valor da busca para o template
+    grupos = Group.objects.all()  
+    return render(request, 'galeria/gerenciar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos, 'busca': busca})
 
 
 
@@ -40,11 +57,19 @@ class UserCreateView(CreateView):
     def form_invalid(self, form):
         return render(self.request, self.template_name, {'form': form})  # Renderiza o formulário com os erros
 
-def editar_usuario(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')
-    return render(request, 'galeria/editar_usuario.html')
-#Gerenciar usuarios \\\
+@login_required
+def editar_usuario(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('galeria:gerenciar_usuarios')  # Redireciona para a página de gerenciar usuários após a edição
+    else:
+        form = UserChangeForm(instance=usuario)
+
+    return render(request, 'galeria/editar_usuario.html', {'form': form, 'usuario': usuario})
 
 def modulos(request):
     if not request.user.is_authenticated:  
@@ -61,3 +86,10 @@ def gestao_de_perfis(request):
         return redirect('usuarios:login')
     return render(request, 'galeria/gestao_de_perfis.html')
 
+@login_required
+def excluir_usuario(request, pk):
+    usuario = get_object_or_404(User, pk=pk)
+
+    if request.method == 'POST':
+        usuario.delete()
+        return redirect('galeria:gerenciar_usuarios')

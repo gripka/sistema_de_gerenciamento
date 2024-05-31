@@ -1,16 +1,11 @@
 {% extends 'base.html' %}
-{% load static %}
+
 {% block content %}
+<h2>Editar Usuário: {{ usuario.username }}</h2>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Editar usuario</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'styles/index.css' %}"> 
-</head>
-<body>
-    <h1>Editar usuario</h1>
-</body>
-</html>
-
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+</form>
 {% endblock %}

@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+
 {% block content %}
 
 <link rel="stylesheet" type="text/css" href="{% static 'styles/gerenciar_usuarios.css' %}">
@@ -16,20 +17,49 @@
         <div class="tabela-usuarios">
             <div class="cabecalho-tabela">
                 <div class="coluna">Nome</div>
-                <div class="coluna">Perfil</div>
                 <div class="coluna">E-mail</div>
+                <div class="coluna">Perfil</div>
                 <div class="coluna">Ações</div>
             </div>
 
             {% for usuario in usuarios %}
                 <div class="linha-tabela">
-                    <div class="coluna">{{ usuario.nome }}</div>
-                    <div class="coluna">{{ usuario.perfil }}</div>
+                    <div class="coluna">{{ usuario.get_full_name }}</div>
                     <div class="coluna">{{ usuario.email }}</div>
-                    <div class="coluna acoes">
-                        <a href="{% url 'galeria:editar_usuario' usuario.id %}" class="botao-editar-usuario">Editar</a>
-                        <a href="{% url 'galeria:excluir_usuario' usuario.id %}" class="botao-excluir-usuario">Excluir</a>
+                    <div class="coluna">
+                        {% for grupo in usuario.groups.all %}
+                            {{ grupo.name }}
+                        {% endfor %}
                     </div>
+                    <div class="coluna acoes">
+                        <a href="{% url 'galeria:editar_usuario_id' usuario.id %}" class="botao-editar-usuario">Editar</a>
+
+                        <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ usuario.id }}">
+                            Excluir
+                        </button>
+
+                        <div class="modal fade" id="excluirModal{{ usuario.id }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ usuario.id }}" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="excluirModalLabel{{ usuario.id }}">Confirmar Exclusão</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja excluir o usuário {{ usuario.username }}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <form method="post" action="{% url 'galeria:gerenciar_usuarios' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                                            <button type="submit" class="btn btn-danger">Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div> 
                 </div>
             {% endfor %}
         </div>
@@ -50,4 +80,5 @@
         <button class="botao-salvar">Salvar</button>
     </div>
 </div>
+
 {% endblock %}
