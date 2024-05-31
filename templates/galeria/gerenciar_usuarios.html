@@ -1,4 +1,16 @@
-<h1>Oi</h1>
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<h1>Gerenciar usuarios</h1>
 
-<a href="{% url 'galeria:cadastro' %}">Cadastro</a> <br>
-<a href="{% url 'usuarios:logout' %}">Desconectar</a>
+
+
+<div class="container-geral">
+
+    <div class="botoes-container">
+        <a href="{% url 'galeria:cadastro' %}" class="botao botao-cadastrar">Cadastrar Usuário</a>
+        <a href="{% url 'galeria:editar_usuario' %}" class="botao botao-editar">Editar Usuário</a>
+    </div>
+
+
+{% endblock %}

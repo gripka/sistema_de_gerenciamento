@@ -1,9 +1,8 @@
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from .forms import LoginForm, CadastroForm
+from ..galeria.forms import LoginForm
 from django.urls import reverse
-
 
 
 def login_view(request): 
@@ -31,4 +30,5 @@ def logout_view(request):
 
 def recuperar_senha(request):
     return render(request, 'usuarios/recuperar_senha.html')
+
 

@@ -34,6 +34,16 @@
     margin-top: 20px; /* Adiciona espaço acima do título */
 }
 
+.usuario-logado { /* Ou .sidebar-top .usuario-logado se estiver dentro de sidebar-top */
+    font-family: 'K2D', sans-serif !important;
+    font-size: 15px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+    color: #FFFFFF !important;
+    margin-top: 10px !important;
+}
+
+
 /* Estilos dos Links do Menu */
 .sidebar-links { /* Novo container para os links */
     display: flex;

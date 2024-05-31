@@ -2,7 +2,6 @@
 .container {
     display: flex;
     background-color: #ffffff; /* ou alguma outra cor cinza claro */
-
 }
 
 /* Estilos do Menu Lateral */
@@ -33,6 +32,16 @@
     color: #FFFFFF;
     margin-top: 20px; /* Adiciona espaço acima do título */
 }
+
+.usuario-logado { /* Ou .sidebar-top .usuario-logado se estiver dentro de sidebar-top */
+    font-family: 'K2D', sans-serif !important;
+    font-size: 15px !important;
+    line-height: 24px !important;
+    text-align: center !important;
+    color: #FFFFFF !important;
+    margin-top: 10px !important;
+}
+
 
 /* Estilos dos Links do Menu */
 .sidebar-links { /* Novo container para os links */
@@ -70,7 +79,7 @@
 .content {
     flex: 1;
     padding: 20px;
-    /*background-color: #f4f4f4;*/
+    background-color: #f4f4f4;
     margin-left: 350px; /* Adiciona um espaçamento à esquerda para evitar sobreposição com o menu */
 }
 

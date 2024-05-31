@@ -16,43 +16,43 @@
             {% csrf_token %}
             <h2>Cadastrar novo usuário</h2>
 
-            <div class="form-group">
-
-                <input type="text" name="nome_cadastro" id="id_nome_cadastro" class="RectangleEmail" placeholder="Nome">
-                {% if form.nome_cadastro.errors %}
-                    <div class="error-message">{{ form.nome_cadastro.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-
-                <input type="email" name="email" id="id_email" class="RectangleEmail" placeholder="E-mail">
-                {% if form.email.errors %}
-                    <div class="error-message">{{ form.email.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <input type="password" name="senha" id="id_senha" class="RectangleEmail" placeholder="Senha">
-                {% if form.senha.errors %}
-                    <div class="error-message">{{ form.senha.errors }}</div>
-                {% endif %}
-            </div>
-            
-            <div class="form-group">
-                <select id="id_perfil" name="perfil" class="RectangleEmail">
-                    <option value="">Selecione um perfil</option>
-                    {% for perfil in perfis %}
-                        <option value="{{ perfil.id }}">{{ perfil.nome }}</option>
+            {% if form.errors %}
+                <div class="error-message">
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
                     {% endfor %}
-                </select>
-            </div>
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+                <div class="form-group {% if field.errors %}error{% endif %}">
+                    {{ field.label_tag }}
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="RectangleEmail" placeholder="{{ field.label }}">
+                    {% if field.errors %}
+                        <ul class="errorlist">
+                            {% for error in field.errors %}
+                                <li>{{ error }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+            {% block messages %}
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            {% endblock messages %}
 
             <button type="submit">Cadastrar</button>
         </form>
     </div>
 
 </div>
-
 {% endblock %}
-
