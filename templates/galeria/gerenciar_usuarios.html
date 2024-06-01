@@ -23,33 +23,41 @@
             </div>
 
             {% for usuario in usuarios %}
-                <div class="linha-tabela">
-                    <div class="coluna">{{ usuario.get_full_name }}</div>
-                    <div class="coluna">{{ usuario.email }}</div>
-                    <div class="coluna">
-                        {% for grupo in usuario.groups.all %}
-                            {{ grupo.name }}
-                        {% endfor %}
+            <div class="linha-tabela">
+                <div class="coluna">
+                    {% if usuario.get_full_name %}
+                        {{ usuario.get_full_name }}
+                    {% else %}
+                        {{ usuario.username }} 
+                    {% endif %}
+                </div>
+                <div class="coluna">{{ usuario.email }}</div>
+                <div class="coluna">
+                    {% for grupo in usuario.groups.all %}
+                        {{ grupo.name }} <! -- Exibe o nome do grupo -->
+                        {% if not forloop.last %}, {% endif %} <! -- Adiciona uma vírgula se não for o último grupo -->
+                    {% endfor %}
                     </div>
                     <div class="coluna acoes">
+                        <div class="btn-group" role="group" aria-label="Ações do Usuário"></div>
                         <a href="{% url 'galeria:editar_usuario_id' usuario.id %}" class="botao-editar-usuario">Editar</a>
-
-                        <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ usuario.id }}">
-                            Excluir
-                        </button>
-
+                        
+                        <button type="button" class="botao-excluir-usuario btn btn-danger" data-bs-toggle="modal" data-bs-target="#excluirModal{{ usuario.id }}"> Excluir </button>
+                        <!-- Modal -->
                         <div class="modal fade" id="excluirModal{{ usuario.id }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ usuario.id }}" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content"> 
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="excluirModalLabel{{ usuario.id }}">Confirmar Exclusão</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
                                     </div>
                                     <div class="modal-body">
                                         Tem certeza que deseja excluir o usuário {{ usuario.username }}?
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                         <form method="post" action="{% url 'galeria:gerenciar_usuarios' %}">
                                             {% csrf_token %}
                                             <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
@@ -59,7 +67,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div> 
+                    </div>
                 </div>
             {% endfor %}
         </div>
@@ -76,9 +84,6 @@
         </form>
     </div>
 
-    <div class="salvar-container">
-        <button class="botao-salvar">Salvar</button>
-    </div>
 </div>
 
 {% endblock %}

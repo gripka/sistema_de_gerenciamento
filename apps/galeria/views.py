@@ -11,6 +11,9 @@ from django.db.models import Q
 from django.contrib.auth.forms import UserChangeForm
 from django.contrib.auth.models import User, Group
 
+from django.contrib import messages
+
+from django.core.paginator import Paginator
 
 
 
@@ -26,7 +29,7 @@ def meu_perfil(request):
     return render(request, 'galeria/meu_perfil.html')
 
 #Gerenciar usuarios ///
-@login_required 
+@login_required
 def gerenciar_usuarios(request):
     busca = request.GET.get('q', '')
 
@@ -38,8 +41,20 @@ def gerenciar_usuarios(request):
             Q(last_name__icontains=busca) |
             Q(email__icontains=busca)
         )
-    
-    # Passar o valor da busca para o template
+
+    grupos = Group.objects.all()
+
+    if request.method == 'POST':
+        usuario_id = request.POST.get('usuario_id')
+        try:
+            usuario = User.objects.get(id=usuario_id)
+            usuario.delete()
+            messages.success(request, 'Usuário excluído com sucesso!')
+        except User.DoesNotExist:
+            messages.error(request, 'Usuário não encontrado.')
+        
+        return redirect('galeria:gerenciar_usuarios')  # Redireciona para evitar reenvio do formulário
+
     grupos = Group.objects.all()  
     return render(request, 'galeria/gerenciar_usuarios.html', {'usuarios': usuarios, 'grupos': grupos, 'busca': busca})
 

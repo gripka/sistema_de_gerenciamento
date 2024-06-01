@@ -37,7 +37,6 @@ body {
     width: 45%; /* Largura dos botões superiores */
     text-align: center;
     color: inherit;
-    text-decoration: none; /* Remove o sublinhado */
 }
 
 .botao-cadastrar {
@@ -92,18 +91,11 @@ h2 {
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
-    margin-right: 5px; 
-}
-
-.coluna.acoes {
-    white-space: nowrap;   /* Impede que os botões quebrem a linha */
-    text-align: center;    /* Centraliza os botões horizontalmente na célula */
 }
 
 .botao-editar-usuario {
     background-color: #007bff; /* Azul */
     color: white;
-    text-decoration: none; /* Remove o sublinhado no hover */
 }
 
 .botao-excluir-usuario {
@@ -153,10 +145,4 @@ h2 {
 .botao:hover {
     color: inherit; /* Mantém a cor original do texto no hover */
     text-decoration: none; /* Remove o sublinhado no hover */
-}
-
-.botoes-wrapper {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
 }

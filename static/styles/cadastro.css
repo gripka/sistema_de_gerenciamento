@@ -107,6 +107,8 @@ button[type="submit"] {
     text-align: center; /* Centraliza o texto horizontalmente */
     flex-basis: 0;
     flex-grow: 1;
+    color: inherit; /* Mantém a cor original do texto */
+    text-decoration: none; /* Remove o sublinhado */
 }
 
 /* Estilos Específicos dos Botões */
@@ -148,4 +150,9 @@ button[type="submit"] {
     display: flex;
     flex-direction: column; /* Organiza os elementos em coluna */
     align-items: center; /* Centraliza horizontalmente os elementos dentro do form */
+}
+
+.botao:hover {
+    color: inherit; /* Mantém a cor original do texto no hover */
+    text-decoration: none; /* Remove o sublinhado no hover */
 }

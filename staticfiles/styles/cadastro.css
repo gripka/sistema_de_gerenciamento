@@ -1,9 +1,10 @@
 /* Estilos Gerais */
 body {
     font-family: 'K2D', sans-serif;
-    background-color: white; 
+    background-color: #ffffff; /* Cor de fundo branca para o body */
     margin: 0;
 }
+
 
 /* Estilos do Container Geral */
 .container-geral {
@@ -11,16 +12,18 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    min-height: 90vh;
     overflow-y: auto; /* Permite rolagem vertical */
+
 }
+
 
 /* Estilos do Container do Formulário */
 .cadastro-container {
     display: flex;
     flex-direction: column;
-    align-items: center; 
-    width: 450px; 
+    align-items: center;
+    width: 450px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
@@ -30,8 +33,8 @@ body {
 h2 {
     text-align: center;
     font-size: 30px;
-    margin-top: 20px; 
-    margin-bottom: 20px; 
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
 
 /* Estilos dos Inputs (com placeholder) */
@@ -39,7 +42,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"] {
     width: 100%; /* Ocupa toda a largura do container */
-    padding: 10px; 
+    padding: 10px;
     margin-bottom: 15px;
     border: 1px solid black;
     border-radius: 5px;
@@ -63,7 +66,9 @@ button[type="submit"] {
     border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
-    align-self: center; 
+    text-align: center; /* Centraliza o texto horizontalmente */
+    margin: -10px auto;  /* Centraliza o botão horizontalmente e adiciona margem superior */
+    /* width: auto; */   /* Opcional: ajusta a largura do botão */
 }
 
 /* Estilos da Mensagem de Erro */
@@ -76,76 +81,78 @@ button[type="submit"] {
 /* Estilos para cada grupo de input e label */
 .form-group {
     display: flex;
-    flex-direction: column; 
-    margin: 0 auto 20px;
-    width: 100%; 
+    flex-direction: column;
+    margin: 0 auto 10px;
+    width: 100%;
 }
 
 /* Estilos do Container dos Botões */
 .botoes-container {
-    display: flex;             /* Ativa o Flexbox */
-    justify-content: center;   /* Centraliza os itens horizontalmente */
-    align-items: center;      /* Centraliza os itens verticalmente (opcional) */
+    display: flex;
+    justify-content: space-around; /* ou space-between */
+    align-items: center;          /* Alinha os botões verticalmente ao centro */
     margin-bottom: 20px;
     width: 450px;
-    gap: 20px;
+    gap: 40px; /* Aumenta a distância entre os botões */
 }
 
 /* Estilos Gerais dos Botões */
 .botao {
-    padding: 10px 20px;
+    padding: 10px 30px; /* Aumenta o padding para aumentar a distância entre os botões */
     border: none;
     border-radius: 5px;
     cursor: pointer;
     text-decoration: none;
     font-size: 16px;
-    flex: 1;
+    text-align: center; /* Centraliza o texto horizontalmente */
+    flex-basis: 0;
+    flex-grow: 1;
+    color: inherit; /* Mantém a cor original do texto */
+    text-decoration: none; /* Remove o sublinhado */
 }
 
 /* Estilos Específicos dos Botões */
 .botao-cadastrar {
     background-color: #097600;
     color: white;
-    margin-right: 20px; 
-    margin-bottom: 50px;
-    display: block;           /* Garante que o botão ocupe toda a largura */
-    margin: 0 auto;           /* Centraliza o botão horizontalmente */
 }
 
 .botao-editar {
     background-color: #D9D9D9;
     color: black;
-    margin-right: 20px; 
-    margin-bottom: 50px;
 }
-
-.botao-container {
-    display: flex;
-    justify-content: center; 
-}
-
-
-
 
 .error label::after {
-    content: "*";  /* Adiciona um asterisco após o rótulo */
-    color: red;    /* Define a cor do asterisco para vermelho */
-    margin-left: 5px; /* Adiciona um pequeno espaçamento entre o rótulo e o asterisco */
+    content: "*";
+    color: red;
+    margin-left: 5px;
 }
 
 .error input, .error textarea {
-    border-color: red; /* Muda a cor da borda do campo para vermelho */
+    border-color: red;
 }
 
 .errorlist {
     color: red;
     font-size: 12px;
     margin-top: 5px;
-    list-style: none; /* Remove os marcadores da lista */
+    list-style: none;
     padding: 0;
 }
 
-/* cadastro.css */
+/* Estilos para a mensagem de sucesso */
 .cadastro-container .messages {
-    margin-top: 20px; /* Adiciona uma margem superior à mensagem */
+    margin-top: 20px;
+}
+
+/* cadastro.css */
+.cadastro-container form {
+    display: flex;
+    flex-direction: column; /* Organiza os elementos em coluna */
+    align-items: center; /* Centraliza horizontalmente os elementos dentro do form */
+}
+
+.botao:hover {
+    color: inherit; /* Mantém a cor original do texto no hover */
+    text-decoration: none; /* Remove o sublinhado no hover */
 }
