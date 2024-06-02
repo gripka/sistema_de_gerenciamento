@@ -1,13 +1,14 @@
 /* Estilos Gerais do Container */
 .container {
-    display: flex;
-    background-color: #ffffff; /* ou alguma outra cor cinza claro */
+    display: flex; 
+    padding-left: 15%; /* Desconta o tamanho do menu */
+    max-width: 1440px;
 
 }
 
 /* Estilos do Menu Lateral */
 .sidebar {
-    width: 300px;
+    width: 300px; /* Largura fixa do menu lateral */
     height: 100vh; /* Ocupa toda a altura da janela de visualização */
     background-color: #1B5B3A;
     padding: 20px;
@@ -15,104 +16,172 @@
     top: 0; /* Posiciona o menu no topo */
     left: 0; /* Posiciona o menu na esquerda */
     overflow-y: auto; /* Permite rolagem vertical se o conteúdo for maior que o menu */
-    display: flex; /* Ativa o Flexbox no menu lateral */
-    flex-direction: column; /* Organiza os elementos em coluna */
+    z-index: 1; /* Certifique-se de que o z-index do menu seja menor que o do conteúdo */
 }
 
 .sidebar-top { /* Novo container para foto e nome */
-    margin-bottom: 40px; /* Adiciona espaço abaixo do container superior */
-    text-align: center; /* Centraliza o texto horizontalmente */
+margin-bottom: 40px; /* Adiciona espaço abaixo do container superior */
+text-align: center; /* Centraliza o texto horizontalmente */
 }
 
 /* Estilos do Cabeçalho do Menu */
 .sistema-de-gerenciamento {
-    font-family: 'K2D', sans-serif;
-    font-size: 24px;
-    line-height: 32px;
-    text-align: center;
-    color: #FFFFFF;
-    margin-top: 20px; /* Adiciona espaço acima do título */
+font-family: 'K2D', sans-serif;
+font-size: 24px;
+line-height: 32px;
+text-align: center;
+color: #FFFFFF;
+margin-top: 20px; /* Adiciona espaço acima do título */
 }
+
+.usuario-logado { /* Ou .sidebar-top .usuario-logado se estiver dentro de sidebar-top */
+font-family: 'K2D', sans-serif !important;
+font-size: 15px !important;
+line-height: 24px !important;
+text-align: center !important;
+color: #FFFFFF !important;
+margin-top: 10px !important;
+}
+
 
 /* Estilos dos Links do Menu */
 .sidebar-links { /* Novo container para os links */
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centraliza os links horizontalmente */
-    margin-top: 40px; /* Ajuste o valor para o espaçamento desejado */
+display: flex;
+flex-direction: column;
+align-items: center; /* Centraliza os links horizontalmente */
+margin-top: 40px; /* Ajuste o valor para o espaçamento desejado */
 }
 
 .sidebar a {
-    display: flex;
-    flex-direction: column;
-    padding: 15px;
-    text-decoration: none;
-    color: #FFFFFF;
-    font-family: 'K2D', sans-serif;
-    font-size: 18px;
-    transition: background-color 0.3s;
+display: flex;
+flex-direction: column;
+padding: 15px;
+text-decoration: none;
+color: #FFFFFF;
+font-family: 'K2D', sans-serif;
+font-size: 18px;
+transition: background-color 0.3s;
 }
 
 .sidebar a:hover {
-    background-color: #00A651;
+background-color: #00A651;
 }
 
 /* Estilos da Imagem de Perfil */
 .imagem-perfil {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    display: block;
-    margin: 0 auto 20px; /* Centraliza a imagem e adiciona espaço abaixo */
+width: 120px;
+height: 120px;
+border-radius: 50%;
+display: block;
+margin: 0 auto 20px; /* Centraliza a imagem e adiciona espaço abaixo */
 }
 
 /* Estilos do Conteúdo Principal */
+/* Estilos do Conteúdo Principal */
 .content {
-    flex: 1;
+    flex: 1; /* Ocupa o espaço restante */
     padding: 20px;
     background-color: #f4f4f4;
-    margin-left: 350px; /* Adiciona um espaçamento à esquerda para evitar sobreposição com o menu */
 }
 
+
 .body {
-    display: flex;
-    margin: 0; /* Remove as margens do body */
+display: flex;
+margin: 0; /* Remove as margens do body */
 }
 
 .sidebar-links {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Centraliza os links horizontalmente */
-    margin-top: 40px;
-    width: 100%;
-    text-align: center; /* Centraliza o texto dos links */
+display: flex;
+flex-direction: column;
+align-items: center; /* Centraliza os links horizontalmente */
+margin-top: 40px;
+width: 100%;
+text-align: center; /* Centraliza o texto dos links */
 }
 
 .sidebar-links a {
-    display: block;
-    padding: 15px;
-    text-decoration: none;
-    color: #FFFFFF;
-    font-family: 'K2D', sans-serif;
-    font-size: 18px;
-    transition: background-color 0.3s;
-    width: 100%; /* Garante que os links ocupem toda a largura do container */
+display: block;
+padding: 15px;
+text-decoration: none;
+color: #FFFFFF;
+font-family: 'K2D', sans-serif;
+font-size: 18px;
+transition: background-color 0.3s;
+width: 100%; /* Garante que os links ocupem toda a largura do container */
 }
 
 .sidebar-links a:hover {
-    background-color: #00A651;
+background-color: #00A651;
 }
 
 .menu-bottom {
-    width: 100%;
-    text-align: center;
-    margin-top: auto; /* Empurra o botão para o final */
+width: 100%;
+text-align: center;
+margin-top: auto; /* Empurra o botão para o final */
 
-    position: absolute;
-    bottom: 40px; /* Ajuste a distância da parte inferior conforme necessário */
-    left: 50%;   /* Posiciona o centro do botão no meio do menu */
-    transform: translateX(-50%); /* Ajusta a posição horizontal para centralizar */
-    width: 100%;
-
+position: absolute;
+bottom: 40px; /* Ajuste a distância da parte inferior conforme necessário */
+left: 50%; /* Posiciona o centro do botão no meio do menu */
+transform: translateX(-50%); /* Ajusta a posição horizontal para centralizar */
+width: 100%;
 }
 
+
+/* Media Query para Telas Menores */
+@media (max-width: 768px) { /* Ajuste o valor conforme necessário */
+    .sidebar {
+        /* Oculta o menu lateral */
+        position: fixed; /* Fixa o menu para que ele possa sobrepor o conteúdo */
+        top: 0;
+        left: -300px; /* Esconde o menu fora da tela */
+        z-index: 1000; /* Garante que o menu fique acima do conteúdo */
+        transition: left 0.3s ease; /* Adiciona uma transição suave */
+    }
+
+    .sidebar.open { /* Estilos para quando o menu estiver aberto */
+        left: 0;
+    }
+
+    /* Botão para abrir/fechar o menu */
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001; /* Garante que o botão fique acima do menu */
+        background-color: #1B5B3A;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+}
+
+
+
+
+
+/* base.css ou outro arquivo CSS */
+.messages {
+    list-style: none;
+    padding: 0;
+    margin: 10px 0;
+}
+
+.messages li {
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+.success {
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde escuro */
+    border: 1px solid #c3e6cb; /* Verde mais claro */
+}
+
+.error {
+    background-color: #f8d7da; /* Vermelho claro */
+    color: #721c24; /* Vermelho escuro */
+    border: 1px solid #f5c6cb; /* Vermelho mais claro */
+}
