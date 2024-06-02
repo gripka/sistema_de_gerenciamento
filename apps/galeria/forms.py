@@ -1,7 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User
-
+from django.contrib.auth.models import Group
+from django_select2.forms import ModelSelect2MultipleWidget
+from dal import autocomplete
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -40,7 +42,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    nome = forms.CharField(
+    first_name = forms.CharField(  # Altere 'nome' para 'first_name'
         label="Nome",
         required=True,
         max_length=100,
@@ -51,7 +53,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    sobrenome = forms.CharField(
+    last_name = forms.CharField(   # Altere 'sobrenome' para 'last_name'
         label="Sobrenome",
         required=True,
         max_length=100,
@@ -66,7 +68,7 @@ class CadastroForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'nome', 'sobrenome')  # Adicionando os novos campos
+        fields = ('username', 'email', 'first_name', 'last_name')  # Use os nomes corretos
 
     def clean_username(self):
         nome = self.cleaned_data.get("username")
@@ -84,3 +86,14 @@ class CadastroForm(UserCreationForm):
         if User.objects.filter(email=email).exists():
             raise forms.ValidationError("Este e-mail já está cadastrado.")
         return email
+
+class EditarUsuarioForm(UserChangeForm):
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label='Perfis'
+    )
+
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email', 'groups')

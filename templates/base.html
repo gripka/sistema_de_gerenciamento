@@ -23,6 +23,7 @@
 
             <div class="sidebar-links">
                 <a href="{% url 'galeria:meu_perfil' %}" class="meu-perfil">Meu perfil</a>
+                <a href="{% url 'galeria:cadastro' %}" class="cadastro">Cadastrar Usuário</a>
                 <a href="{% url 'galeria:gerenciar_usuarios' %}" class="gerenciar-usuarios">Gerenciar usuários</a>
                 <a href="{% url 'galeria:gestao_de_perfis' %}" class="gestao-de-perfis">Gestão de perfis</a>
                 <a href="{% url 'galeria:modulos' %}" class="modulos">Módulos</a>
@@ -35,15 +36,7 @@
         </div>
 
         <div class="content" style="background-color: rgb(255, 255, 255);">
-            {% block messages %}
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endblock messages %}
+
 
             {% block content %}
             {% endblock %}

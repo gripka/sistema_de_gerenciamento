@@ -27,6 +27,7 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    
 }
 
 /* Estilos do Título */
@@ -67,7 +68,7 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 16px;
     text-align: center; /* Centraliza o texto horizontalmente */
-    margin: -10px auto;  /* Centraliza o botão horizontalmente e adiciona margem superior */
+    /*margin: -10px auto;  /* Centraliza o botão horizontalmente e adiciona margem superior */
     /* width: auto; */   /* Opcional: ajusta a largura do botão */
 }
 
