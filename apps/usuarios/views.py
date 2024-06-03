@@ -17,7 +17,7 @@ def login_view(request):
             if usuario is not None:
                 login(request, usuario) 
                 messages.success(request, f"{nome} logado com sucesso!")
-                return redirect(reverse('galeria:index'))
+                return redirect(reverse('galeria:gerenciar_usuarios'))
             else:
                 messages.error(request, "Nome de usuário ou senha incorretos.")
     return render(request, 'usuarios/login.html', {'form': form})

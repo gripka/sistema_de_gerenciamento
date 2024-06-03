@@ -251,3 +251,24 @@ h2 {
     background-color: #097600; /* Cor de fundo (azul primário) */
     border-color: #097600; /* Cor da borda (azul primário) */
 }
+
+
+.filtro-container {
+    /* Estilos para o container do filtro */
+    margin-bottom: 10px; /* Adicione um espaço entre a busca e o dropdown */
+}
+
+/* ... outros estilos ... */
+
+.grupos-container {
+    max-height: 100px; /* Altura máxima da caixa */
+    overflow-y: auto; /* Habilita a barra de rolagem vertical quando necessário */
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+
+.grupos-container select {
+    /* Estilos para o dropdown */
+    width: 100%;
+}

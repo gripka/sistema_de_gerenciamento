@@ -21,6 +21,9 @@ from django.db.models.functions import Lower, Substr
 from django.db.models.functions import Concat, Lower, Substr, Coalesce
 
 from dal import autocomplete
+from .filters import GroupFilter  # Se o filtro estiver em um arquivo filters.py
+
+
 
 def index(request):
     if not request.user.is_authenticated:  # Verifica se o usuário está autenticado
@@ -124,19 +127,31 @@ class UserCreateView(CreateView):
 @login_required
 def editar_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
+    group_filter = GroupFilter(request.GET, queryset=Group.objects.all())
 
     if request.method == 'POST':
-        form = EditarUsuarioForm(request.POST, instance=usuario)  # Use o formulário personalizado
+        form = EditarUsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
-            form.save()
+            usuario = form.save(commit=False)
+            usuario.groups.clear()
+            for group_id in form.cleaned_data['groups']:
+                group = Group.objects.get(pk=group_id)
+                usuario.groups.add(group)
+            usuario.save()
             messages.success(request, 'Usuário editado com sucesso!')
-            form = UserChangeForm(instance=usuario)  # Cria um novo formulário com os dados atualizados
         else:
             messages.error(request, 'Erro ao editar usuário. Verifique os dados.')
 
     else:
         form = EditarUsuarioForm(instance=usuario)
-    return render(request, 'galeria/editar_usuario.html', {'form': form, 'usuario': usuario})
+
+    return render(request, 'galeria/editar_usuario.html', {
+        'form': form,
+        'usuario': usuario,
+        'filter': group_filter,
+    })
+
+
 
 
 def modulos(request):
@@ -162,4 +177,12 @@ def excluir_usuario(request, pk):
         usuario.delete()
         return redirect('galeria:gerenciar_usuarios')
     
+from django.http import JsonResponse
+from django.contrib.auth.models import Group
+from django.db.models import Q
 
+def buscar_grupos(request):
+    query = request.GET.get('q', '')
+    grupos = Group.objects.filter(Q(name__icontains=query))
+    data = [{'id': grupo.id, 'name': grupo.name} for grupo in grupos]
+    return JsonResponse(data, safe=False)

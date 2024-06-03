@@ -2,49 +2,87 @@
 {% load static %}
 
 {% block content %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'styles/cadastro.css' %}"> 
+<link rel="stylesheet" type="text/css" href="{% static 'styles/editar_usuario.css' %}">
 
 <div class="container-geral">
     <div class="cadastro-container">
-        <form method="post">
-            {% csrf_token %}
-            <h2>{% if usuario %}Editar Usuário: {{ usuario.username }}{% else %}Criar Novo Usuário{% endif %}</h2>
-            {% if usuario %}
-            <div class="form-group">
-                {{ form.first_name.label_tag }}
-                {{ form.first_name }}
-            </div>
 
-            <div class="form-group">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
-            </div>
+        <h2>{% if usuario %}Editar Usuário: {{ usuario.username }}{% else %}Criar Novo Usuário{% endif %}</h2>
 
-            <div class="form-group">
-                {{ form.email.label_tag }}
-                {{ form.email }}
+        <div class="formulario-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
+
+        <div class="filtro-container">
+            <input type="text" id="group-search" placeholder="Selecione os Perfis">
+            <div id="group-results" style="display: none;"> 
+                {% for group in filter.qs %}
+                    <div>
+                        <input type="checkbox" name="groups" id="id_group_{{ group.id }}" value="{{ group.id }}" {% if group in usuario.groups.all %}checked{% endif %}>
+                        <label for="id_group_{{ group.id }}">{{ group.name }}</label>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="form-group">
-                {{ form.groups.label_tag }}
-                {{ form.groups }}
-            </div>
-            {% else %}
-                {{ form.as_p }}
+        </div>
+
+
+        <button type="submit">Salvar</button>
+    </form>
+</div>
+
+
+        {% block messages %}
+            {% if messages %}
+                <ul class="messages">
+                    {% for message in messages %}
+                        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                    {% endfor %}
+                </ul>
             {% endif %}
-            <button type="submit">Salvar</button>
-            
-            {% block messages %}
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                        {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endblock messages %}
-        </form>
+        {% endblock messages %}
+
+
     </div>
 </div>
-{{ form.media }}
+
+<script>
+const groupSearch = document.getElementById('group-search');
+const groupResults = document.getElementById('group-results');
+const allGroups = Array.from(groupResults.querySelectorAll('input[type="checkbox"]')).map(checkbox => ({
+    id: checkbox.value,
+    name: checkbox.nextElementSibling.textContent,
+    element: checkbox
+}));
+
+groupSearch.addEventListener('focus', function() { // Mostrar ao focar
+    groupResults.style.display = 'block';
+});
+
+groupSearch.addEventListener('blur', function() { // Ocultar ao perder o foco
+    setTimeout(() => {
+        groupResults.style.display = 'none';
+    }, 200); // Pequeno atraso para permitir cliques nos checkboxes
+});
+
+groupSearch.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    allGroups.forEach(group => {
+        const shouldShow = group.name.toLowerCase().includes(searchTerm);
+        group.element.parentElement.style.display = shouldShow ? 'block' : 'none';
+    });
+});
+</script>
+
 {% endblock %}

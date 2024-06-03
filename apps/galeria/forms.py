@@ -1,9 +1,11 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import User, Group
+from django.db import models
 from django_select2.forms import ModelSelect2MultipleWidget
-from dal import autocomplete
+
+import django_filters
+from django.contrib.auth.models import Group
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -87,9 +89,9 @@ class CadastroForm(UserCreationForm):
             raise forms.ValidationError("Este e-mail já está cadastrado.")
         return email
 
-class EditarUsuarioForm(UserChangeForm):
-    groups = forms.ModelMultipleChoiceField(
-        queryset=Group.objects.all(),
+class EditarUsuarioForm(forms.ModelForm):
+    groups = forms.MultipleChoiceField(
+        choices=[(group.id, group.name) for group in Group.objects.all()],
         widget=forms.CheckboxSelectMultiple,
         label='Perfis'
     )
@@ -97,3 +99,10 @@ class EditarUsuarioForm(UserChangeForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'groups')
+
+class GroupFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains', label='Buscar por nome')
+
+    class Meta:
+        model = Group
+        fields = ['name']
