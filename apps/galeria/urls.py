@@ -1,14 +1,12 @@
-from django.urls import path, include
+from django.urls import path
 from . import views
 
 app_name = 'galeria'
 
 urlpatterns = [
     path('', views.index, name='index'), 
-    
     path('meu-perfil/', views.meu_perfil, name='meu_perfil'),
     path('gerenciar-usuarios/', views.gerenciar_usuarios, name='gerenciar_usuarios'),
-    path('modulos/', views.modulos, name='modulos'),
     path('transacoes/', views.transacoes, name='transacoes'),
     path('gestao-de-perfis/', views.gestao_de_perfis, name='gestao_de_perfis'),
     path('cadastro/', views.UserCreateView.as_view(), name='cadastro'),
@@ -19,6 +17,10 @@ urlpatterns = [
     path('gestao-de-perfis/criar/', views.criar_grupo, name='criar_grupo'),
     path('gestao-de-perfis/editar/<int:pk>/', views.editar_grupo, name='editar_grupo'),
     path('gestao-de-perfis/excluir/<int:pk>/', views.excluir_grupo, name='excluir_grupo'),
-    # ...
-]
 
+    # Corrigindo as rotas dos módulos
+    path('modulos/', views.listar_modulos, name='listar_modulos'),
+    path('modulos/criar/', views.criar_modulo, name='criar_modulo'),
+    path('modulos/editar/<int:pk>/', views.editar_modulo, name='editar_modulo'),
+    path('modulos/excluir/<int:pk>/', views.excluir_modulo, name='excluir_modulo'),
+]

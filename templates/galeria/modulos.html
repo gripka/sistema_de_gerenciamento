@@ -1,2 +1,95 @@
-<h1>Oi</h1>
-<a href="{% url 'usuarios:logout' %}">Desconectar</a>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/modulos.css' %}">
+
+<div class="container-geral">
+    <div class="header-container">
+        <h2>Gestão de Módulos</h2>
+
+        <div class="botoes-container">
+            <a href="{% url 'galeria:criar_modulo' %}" class="botao botao-cadastrar">Criar Novo Módulo</a>
+            <form method="get" class="busca-container">
+                <input type="text" id="searchInput" onkeyup="filterModules()" class="campo-pesquisa" placeholder="Pesquisar Módulos...">
+                <button type="submit" class="botao botao-buscar">Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" id="modulesContainer">
+        {% for modulo in modulos %}
+            <div class="col-md-4 col-lg-3 mb-4 module-box">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{ modulo.nome }}</strong></h5>
+                        <div class="card-text-container">
+                            <p class="card-text">{{ modulo.descricao }}</p>
+                            <h6>Transações:</h6>
+                            <ul>
+                                {% for transacao in modulo.transacoes.all %}
+                                    <li>{{ transacao.nome }}</li>
+                                {% empty %}
+                                    <li>Nenhuma transação cadastrada neste módulo.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'galeria:editar_modulo' modulo.pk %}" class="btn btn-secondary btn-sm">Editar</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirModuloModal{{ modulo.id }}">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhum módulo encontrado.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Modal para excluir módulo -->
+    {% for modulo in modulos %}
+        <div class="modal fade" id="excluirModuloModal{{ modulo.id }}" tabindex="-1" role="dialog" aria-labelledby="excluirModuloModalLabel{{ modulo.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="excluirModuloModalLabel{{ modulo.id }}">Excluir Módulo</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir o módulo "{{ modulo.nome }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'galeria:excluir_modulo' modulo.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function filterModules() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const modulesContainer = document.getElementById('modulesContainer');
+        const modules = modulesContainer.getElementsByClassName('module-box');
+
+        for (let i = 0; i < modules.length; i++) {
+            const moduleBox = modules[i];
+            const title = moduleBox.getElementsByClassName('card-title')[0].innerText.toLowerCase();
+            const description = moduleBox.getElementsByClassName('card-text')[0].innerText.toLowerCase();
+            if (title.indexOf(filter) > -1 || description.indexOf(filter) > -1) {
+                moduleBox.style.display = "";
+            } else {
+                moduleBox.style.display = "none";
+            }
+        }
+    }
+</script>
+{% endblock content %}

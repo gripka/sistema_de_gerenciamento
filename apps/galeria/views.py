@@ -154,10 +154,6 @@ def editar_usuario(request, pk):
 
 
 
-def modulos(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')
-    return render(request, 'galeria/modulos.html')
 
 def transacoes(request):
     if not request.user.is_authenticated:  
@@ -270,5 +266,89 @@ def excluir_grupo(request, pk):
         return redirect('galeria:gestao_de_perfis')
     else:
         return render(request, 'galeria/confirmar_exclusao_grupo.html', {'grupo': grupo})
+    
+
+
+
+
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Modulo
+from .forms import ModuloForm
+
+@login_required
+def listar_modulos(request):
+    query = request.GET.get('q')
+    if query:
+        modulos = Modulo.objects.filter(Q(nome__icontains=query) | Q(descricao__icontains=query))
+    else:
+        modulos = Modulo.objects.all()
+    return render(request, 'galeria/modulos.html', {'modulos': modulos})
+
+from .models import Transacao, Modulo
+from .forms import ModuloForm
+from django.contrib import messages
+from django.shortcuts import render, redirect
+
+@login_required
+def criar_modulo(request):
+    if request.method == 'POST':
+        form = ModuloForm(request.POST)
+        if form.is_valid():
+            modulo = form.save()
+            transacoes_ids = request.POST.getlist('transacoes')
+            for transacao_id in transacoes_ids:
+                transacao = Transacao.objects.get(id=transacao_id)
+                transacao.modulo = modulo
+                transacao.save()
+            messages.success(request, 'Módulo criado com sucesso!')
+            form = ModuloForm()
+    else:
+        form = ModuloForm()
+    
+    transacoes = Transacao.objects.all()
+    return render(request, 'galeria/criar_modulo.html', {'form': form, 'transacoes': transacoes})
+
+
+
+
+
+
+
+
+from django.contrib import messages
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Modulo
+from .forms import ModuloForm
+
+@login_required
+def editar_modulo(request, pk):
+    modulo = get_object_or_404(Modulo, pk=pk)
+    if request.method == 'POST':
+        form = ModuloForm(request.POST, instance=modulo)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Módulo editado com sucesso!')
+            return redirect('galeria:listar_modulos')
+    else:
+        form = ModuloForm(instance=modulo)  # Preenche o formulário com os dados do módulo
+    return render(request, 'galeria/editar_modulo.html', {'form': form, 'modulo': modulo})
+
+
+
+
+@login_required
+def excluir_modulo(request, pk):
+    modulo = get_object_or_404(Modulo, pk=pk)
+    if request.method == 'POST':
+        modulo.delete()
+        messages.success(request, 'Módulo excluído com sucesso!')
+        return redirect('galeria:listar_modulos')
+    return render(request, 'galeria/confirmar_exclusao_modulo.html', {'modulo': modulo})
 
 

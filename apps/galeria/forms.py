@@ -123,3 +123,32 @@ class GroupForm(forms.ModelForm):
     class Meta:
         model = Group
         fields = ['name', 'permissions']
+
+
+from django import forms
+from .models import Modulo, Transacao
+
+class ModuloForm(forms.ModelForm):
+    # Campo personalizado para selecionar transações
+    transacoes = forms.ModelMultipleChoiceField(queryset=Transacao.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
+    class Meta:
+        model = Modulo
+        fields = ['nome', 'descricao', 'transacoes']
+
+    def __init__(self, *args, **kwargs):
+        super(ModuloForm, self).__init__(*args, **kwargs)
+        # Se estiver editando um módulo existente, pré-selecione as transações associadas a ele
+        if self.instance.pk:
+            self.fields['transacoes'].initial = self.instance.transacoes.all()
+
+    def save(self, commit=True):
+        # Salvar o módulo e as transações associadas
+        modulo = super(ModuloForm, self).save(commit=commit)
+        if commit:
+            modulo.transacoes.set(self.cleaned_data['transacoes'])
+        return modulo
+
+
+
+

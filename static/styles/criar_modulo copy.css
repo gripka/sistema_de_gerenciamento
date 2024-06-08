@@ -1,0 +1,168 @@
+/* Estilos Gerais */
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: #ffffff;
+    margin: 0;
+}
+
+/* Estilos do Container Geral */
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    overflow-y: auto;
+    max-width: 800px; /* Defina o tamanho máximo para evitar a rolagem horizontal */
+    margin: 0 auto; /* Centralize o conteúdo na tela */
+    padding: 20px; /* Adicione algum espaçamento interno */
+
+    max-width: 800px; /* Defina o tamanho máximo para evitar a rolagem horizontal */
+    margin: 0 auto; /* Centralize o conteúdo na tela */
+    padding: 20px; /* Adicione algum espaçamento interno */
+}
+
+/* Estilos do Container do Formulário */
+.cadastro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+}
+
+/* Estilos do Título */
+h2 {
+    text-align: center;
+    font-size: 30px;
+    margin: 20px 0;
+}
+
+/* Estilos dos Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+/* Estilos dos Placeholders */
+input[type="text"]::placeholder,
+input[type="email"]::placeholder,
+input[type="password"]::placeholder,
+textarea::placeholder {
+    color: black; /* Cor preta sólida */
+    opacity: 1;   /* Opacidade total */
+    text-align: left; /* Alinhamento à esquerda */
+}
+
+/* Estilos do Botão */
+button[type="submit"] {
+    background-color: #097600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Estilos para cada grupo de input e label */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+/* Estilos para a mensagem de sucesso */
+.cadastro-container .messages {
+    margin-top: 20px;
+}
+
+/* Estilos para a caixa de grupos (dropdown) */
+.grupos-container {
+    max-height: 300px;
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilos para os checkboxes dentro do dropdown */
+.grupos-container input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+input[type="text"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+button[type="submit"] {
+    background-color: #097600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+#transacao-search {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#transacoes-container {
+    max-height: 150px; /* Altura máxima para exibir até 5 transações */
+    overflow-y: auto; /* Habilitar rolagem vertical */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#transacoes-container .checkbox {
+    display: flex; /* Use flexbox para alinhar os elementos */
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#transacoes-container label {
+    margin-left: 10px; /* Adiciona um espaço entre a checkbox e o label */
+}
+
+.checkbox {
+    margin-bottom: 10px;
+}
+
+#transacoes-container.transacoes-scrollable {
+    max-height: 150px; /* Altura máxima para exibir 6 transações (ajuste conforme necessário) */
+    overflow-y: auto; /* Habilita a barra de rolagem vertical */
+}

@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/criar_modulo.css' %}">
+
+<div class="container-geral">
+    <div class="cadastro-container">
+        <h2>Criar Novo Módulo</h2>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+            </div>
+            <div class="form-group">
+                {{ form.descricao.label_tag }}
+                {{ form.descricao }}
+            </div>
+            <div class="form-group">
+                <label for="transacoes">Selecione as transações:</label>
+                <input type="text" id="transacao-search" placeholder="Buscar transações">
+                <div id="transacoes-container">
+                    {% for transacao in transacoes %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="transacoes" value="{{ transacao.id }}">
+                                {{ transacao.nome }} - {{ transacao.descricao }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('transacao-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var checkboxes = document.querySelectorAll('#transacoes-container .checkbox');
+        checkboxes.forEach(function(checkbox) {
+            var label = checkbox.querySelector('label').textContent.toLowerCase();
+            checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+    </script>
+    
+    {% endblock %}
