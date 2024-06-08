@@ -106,3 +106,20 @@ class GroupFilter(django_filters.FilterSet):
     class Meta:
         model = Group
         fields = ['name']
+
+from django import forms
+from django.contrib.auth.models import Group
+
+from django import forms
+from django.contrib.auth.models import Group, Permission
+
+class GroupForm(forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        label='Permissões'
+    )
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions']

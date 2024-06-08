@@ -164,10 +164,10 @@ def transacoes(request):
         return redirect('usuarios:login')
     return render(request, 'galeria/transacoes.html')
 
+@login_required
 def gestao_de_perfis(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')
-    return render(request, 'galeria/gestao_de_perfis.html')
+    grupos = Group.objects.all()  # Buscar todos os grupos do banco de dados
+    return render(request, 'galeria/gestao_de_perfis.html', {'grupos': grupos, 'teste': 'Olá, mundo!'})
 
 @login_required
 def excluir_usuario(request, pk):
@@ -186,3 +186,89 @@ def buscar_grupos(request):
     grupos = Group.objects.filter(Q(name__icontains=query))
     data = [{'id': grupo.id, 'name': grupo.name} for grupo in grupos]
     return JsonResponse(data, safe=False)
+
+
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group, Permission
+from django.contrib import messages
+from django.forms import modelformset_factory
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib.auth.models import Group
+from django.contrib import messages
+from .forms import GroupForm  # Certifique-se de ter um formulário para grupos
+
+@login_required
+def criar_grupo(request):
+    if request.method == 'POST':
+        form = GroupForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Perfil criado com sucesso!')
+            form = GroupForm()  # Limpa o formulário
+    else:
+        form = GroupForm()
+
+    return render(request, 'galeria/criar_grupo.html', {'form': form})
+
+
+
+# views.py
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.models import Group, Permission
+from django.contrib import messages
+from django.forms import modelformset_factory
+from django import forms
+
+@login_required
+def editar_grupo(request, pk):
+    grupo = get_object_or_404(Group, pk=pk)
+    PermissionFormSet = modelformset_factory(Permission, fields=('id', 'name'), extra=0, widgets={'id': forms.CheckboxSelectMultiple})
+
+
+    if request.method == 'POST':
+        formset = PermissionFormSet(request.POST)
+        if formset.is_valid():
+            grupo.name = request.POST['nome']
+            grupo.permissions.clear()
+            for form in formset:
+                if form.cleaned_data.get('id'):
+                    grupo.permissions.add(form.cleaned_data['id'])
+            grupo.save()
+            messages.success(request, 'Perfil editado com sucesso!')
+            return redirect('galeria:listar_grupos')
+    else:
+        initial_data = [{'id': perm.id} for perm in grupo.permissions.all()]
+        formset = PermissionFormSet(queryset=Permission.objects.all(), initial=initial_data)
+
+    return render(request, 'galeria/editar_grupo.html', {'formset': formset, 'grupo': grupo})
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.models import Group
+
+@login_required
+def excluir_grupo(request, pk):
+    grupo = get_object_or_404(Group, pk=pk)
+
+    if request.method == 'POST':
+        grupo.delete()
+        messages.success(request, 'Perfil excluído com sucesso!')
+        return redirect('galeria:gestao_de_perfis')
+    else:
+        return render(request, 'galeria/confirmar_exclusao_grupo.html', {'grupo': grupo})
+
+

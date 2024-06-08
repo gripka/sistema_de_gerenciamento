@@ -1,0 +1,64 @@
+/* gestao_de_perfis.css */
+/* Estilos Gerais da Página */
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: white;
+    margin: 0;
+    overflow-y: auto;
+}
+
+/* Estilos do Container Geral */
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Estilos da Tabela de Perfis */
+.tabela-usuarios { /* Reutilize a mesma classe da tabela de usuários */
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.cabecalho-tabela, .linha-tabela {
+    display: table-row;
+}
+
+.coluna {
+    display: table-cell;
+    padding: 10px;
+    border: 1px solid black;
+    text-align: center;
+    vertical-align: middle;
+}
+
+/* Estilos da Coluna de Ações */
+.acoes {
+    text-align: center;
+}
+
+.botao-editar-usuario, .botao-excluir-usuario {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.botao-editar-usuario {
+    background-color: #007bff; /* Azul */
+    color: white;
+}
+
+.botao-excluir-usuario {
+    background-color: #dc3545; /* Vermelho */
+    color: white;
+}

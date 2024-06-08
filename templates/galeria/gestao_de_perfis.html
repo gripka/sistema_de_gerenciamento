@@ -1,2 +1,64 @@
-<h1>Oi</h1>
-<a href="{% url 'usuarios:logout' %}">Desconectar</a>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+    <h2>Gestão de Perfis</h2>
+
+    <a href="{% url 'galeria:criar_grupo' %}" class="btn btn-primary">Criar Novo Perfil</a>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for grupo in grupos %}
+                <tr>
+                    <td>{{ grupo.name }}</td> 
+                    <td>
+                        <a href="{% url 'galeria:editar_grupo' grupo.pk %}" class="btn btn-secondary">Editar</a>
+                        <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#excluirGrupoModal{{ grupo.pk }}">Excluir</button>
+            
+                        <div class="modal fade" id="excluirGrupoModal{{ grupo.pk }}" tabindex="-1" aria-labelledby="excluirGrupoModalLabel{{ grupo.pk }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="excluirGrupoModalLabel{{ grupo.pk }}">Excluir Perfil</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja excluir o perfil {{ grupo.name }}?
+                                    </div>                                    
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <form method="post" action="{% url 'galeria:excluir_grupo' grupo.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Excluir</button>
+                                        </form> 
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="2">Nenhum grupo encontrado.</td> 
+                </tr>
+            {% endfor %}
+        </tbody>
+        
+    </table>
+{% endblock %}

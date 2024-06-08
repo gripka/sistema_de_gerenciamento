@@ -1,6 +1,5 @@
 from django.urls import path, include
 from . import views
-from django.urls import path
 
 app_name = 'galeria'
 
@@ -15,4 +14,11 @@ urlpatterns = [
     path('cadastro/', views.UserCreateView.as_view(), name='cadastro'),
     path('editar-usuario/<int:pk>/', views.editar_usuario, name='editar_usuario_id'),  # Formulário preenchido com o ID do usuário
     path('buscar_grupos/', views.buscar_grupos, name='buscar_grupos'),
+
+    # ... outras URLs ...
+    path('gestao-de-perfis/criar/', views.criar_grupo, name='criar_grupo'),
+    path('gestao-de-perfis/editar/<int:pk>/', views.editar_grupo, name='editar_grupo'),
+    path('gestao-de-perfis/excluir/<int:pk>/', views.excluir_grupo, name='excluir_grupo'),
+    # ...
 ]
+
