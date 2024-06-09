@@ -135,7 +135,7 @@ def editar_usuario(request, pk):
             usuario = form.save(commit=False)
             usuario.groups.clear()
             for group_id in form.cleaned_data['groups']:
-                group = Group.objects.get(pk=group_id)
+                group = Group.objects.get(pk=group_id.pk)  # Correção aqui: obter o ID do grupo (group_id.pk)
                 usuario.groups.add(group)
             usuario.save()
             messages.success(request, 'Usuário editado com sucesso!')

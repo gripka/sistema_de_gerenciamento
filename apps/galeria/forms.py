@@ -93,7 +93,8 @@ class EditarUsuarioForm(forms.ModelForm):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        label='Perfis'
+        label='Perfis',
+        required=False  # Tornar o campo opcional
     )
 
     class Meta:
@@ -168,10 +169,13 @@ class TransacaoForm(forms.ModelForm):
         fields = ['nome', 'descricao', 'permissoes']
 
     def clean_nome(self):
-        nome = self.cleaned_data['nome']
-        if Transacao.objects.filter(nome__iexact=nome).exists():
+        nome = self.cleaned_data['nome'].upper()
+        transacao_id = self.instance.pk
+
+        # Verifique se já existe uma transação com o mesmo nome, mas ignore a transação atual
+        if Transacao.objects.filter(nome=nome).exclude(pk=transacao_id).exists():
             raise ValidationError('Já existe uma transação com este nome.')
-        return nome.upper()
+        return nome
 
     def __init__(self, *args, **kwargs):
         super(TransacaoForm, self).__init__(*args, **kwargs)
