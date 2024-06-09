@@ -103,3 +103,38 @@ button[type="submit"]:hover {
     color: rgba(0, 0, 0, 0.5); /* Cor cinza transparente */
     text-align: center;        /* Alinhamento ao centro */
 }
+
+/* ... (seus estilos existentes) ... */
+
+#group-search {
+    /* ... (estilos do campo de busca) ... */
+}
+
+.group-results {
+    width: 100%; 
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 200px; /* Ajuste conforme necessário */
+    overflow-y: auto;
+}
+
+.group-results .checkbox {
+    padding: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group select { /* Incluindo select para campos de seleção */
+    width: 300px;
+    /* ... (outros estilos dos campos) ... */
+}
+
+/* ... (seus estilos existentes) ... */
+
+.formulario-container button[type="submit"] {
+    display: block; /* Garante que o botão ocupe toda a largura disponível */
+    margin: 0 auto; /* Centraliza horizontalmente com margens automáticas */
+    /* ... (outros estilos do botão) ... */
+}
+
+/* ... (outros estilos) ... */

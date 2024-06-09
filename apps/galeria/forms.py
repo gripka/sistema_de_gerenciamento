@@ -90,8 +90,8 @@ class CadastroForm(UserCreationForm):
         return email
 
 class EditarUsuarioForm(forms.ModelForm):
-    groups = forms.MultipleChoiceField(
-        choices=[(group.id, group.name) for group in Group.objects.all()],
+    groups = forms.ModelMultipleChoiceField(
+        queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label='Perfis'
     )
@@ -99,6 +99,7 @@ class EditarUsuarioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'groups')
+
 
 class GroupFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Buscar por nome')
