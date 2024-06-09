@@ -8,6 +8,8 @@
     <div class="header-container">
         <h2>Gestão de Módulos</h2>
 
+
+
         <div class="botoes-container">
             <a href="{% url 'galeria:criar_modulo' %}" class="botao botao-cadastrar">Criar Novo Módulo</a>
             <form method="get" class="busca-container">
@@ -16,6 +18,14 @@
             </form>
         </div>
     </div>
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
     <div class="row" id="modulesContainer">
         {% for modulo in modulos %}

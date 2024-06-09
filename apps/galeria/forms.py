@@ -149,6 +149,41 @@ class ModuloForm(forms.ModelForm):
             modulo.transacoes.set(self.cleaned_data['transacoes'])
         return modulo
 
+from django import forms
+from django.core.exceptions import ValidationError
+from .models import Transacao
+from django.contrib.auth.models import Permission
+
+class TransacaoForm(forms.ModelForm):
+    permissoes = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Funções (Permissões)"
+    )
+
+    class Meta:
+        model = Transacao
+        fields = ['nome', 'descricao', 'permissoes']
+
+    def clean_nome(self):
+        nome = self.cleaned_data['nome']
+        if Transacao.objects.filter(nome__iexact=nome).exists():
+            raise ValidationError('Já existe uma transação com este nome.')
+        return nome.upper()
+
+    def __init__(self, *args, **kwargs):
+        super(TransacaoForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            permissoes_associadas = self.instance.permissoes.all()
+            self.fields['permissoes'].initial = [permissao.pk for permissao in permissoes_associadas]
+
+    def save(self, commit=True):
+        transacao = super().save(commit=False)
+        if commit:
+            transacao.save()
+            self.save_m2m()  # Salva as relações Many-to-Many
+        return transacao
 
 
 

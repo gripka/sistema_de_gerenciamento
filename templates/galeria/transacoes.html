@@ -1,2 +1,120 @@
-<h1>Oi</h1>
-<a href="{% url 'usuarios:logout' %}">Desconectar</a>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/transacoes.css' %}">
+
+<div class="container-geral">
+    <div class="header-container">
+        <h2>Gestão de Transações</h2>
+
+        <div class="botoes-container">
+            <a href="{% url 'galeria:criar_transacao' %}" class="botao botao-cadastrar">Criar Nova Transação</a>
+            <form method="get" class="busca-container">
+                <input type="text" id="searchInput" onkeyup="filterTransactions()" class="campo-pesquisa" placeholder="Pesquisar Transações...">
+                <button type="submit" class="botao botao-buscar">Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row" id="transactionsContainer">
+        {% for transacao in transacoes %}
+            <div class="col-md-4 col-lg-3 mb-4 transaction-box">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{ transacao.nome }}</strong></h5>
+                        <div class="card-text-container">
+                            <p class="card-text">{{ transacao.descricao }}</p>
+                            <h6>Módulos:</h6>
+                            <ul>
+                                {% for modulo in transacao.modulos.all %}
+                                    <li>{{ modulo.nome }}</li>
+                                {% empty %}
+                                    <li>Nenhum módulo relacionado a esta transação.</li>
+                                {% endfor %}
+                            </ul>
+                            <h6>Permissões Habilitadas:</h6> <!-- Adicionando esta seção -->
+                            <ul>
+                                {% if transacao.permissoes.exists %}
+                                    {% for permissao in transacao.permissoes.all %}
+                                        <li>{{ permissao.name }}</li>
+                                    {% endfor %}
+                                {% else %}
+                                    <li>Nenhuma permissão habilitada</li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'galeria:editar_transacao' transacao.pk %}" class="btn btn-secondary btn-sm">Editar</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirTransacaoModal{{ transacao.id }}">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhuma transação encontrada.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Modal para excluir transação -->
+    {% for transacao in transacoes %}
+        <div class="modal fade" id="excluirTransacaoModal{{ transacao.id }}" tabindex="-1" role="dialog" aria-labelledby="excluirTransacaoModalLabel{{ transacao.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="excluirTransacaoModalLabel{{ transacao.id }}">Excluir Transação</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir a transação "{{ transacao.nome }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'galeria:excluir_transacao' transacao.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+function filterTransactions() {
+    const input = document.getElementById('searchInput');
+    const filter = input.value.toLowerCase();
+    const transactionsContainer = document.getElementById('transactionsContainer');
+    const transactions = transactionsContainer.getElementsByClassName('transaction-box');
+
+    for (let i = 0; i < transactions.length; i++) {
+        const transactionBox = transactions[i];
+        const title = transactionBox.getElementsByClassName('card-title')[0].innerText.toLowerCase();
+        const description = transactionBox.getElementsByClassName('card-text')[0].innerText.toLowerCase();
+        const moduleNames = transactionBox.querySelectorAll('.card-text-container ul li'); // Selecionar todos os nomes dos módulos
+
+        let found = false;
+
+        // Verificar se o nome da transação ou o nome do módulo contém o filtro
+        if (title.indexOf(filter) !== -1 || description.indexOf(filter) !== -1) {
+            found = true;
+        } else {
+            moduleNames.forEach(function(moduleName) {
+                if (moduleName.innerText.toLowerCase().indexOf(filter) !== -1) {
+                    found = true;
+                }
+            });
+        }
+
+        if (found) {
+            transactionBox.style.display = "";
+        } else {
+            transactionBox.style.display = "none";
+        }
+    }
+}
+</script>
+{% endblock content %}

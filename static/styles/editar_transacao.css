@@ -13,13 +13,6 @@ body {
     justify-content: center;
     min-height: 90vh;
     overflow-y: auto;
-    max-width: 800px; /* Defina o tamanho máximo para evitar a rolagem horizontal */
-    margin: 0 auto; /* Centralize o conteúdo na tela */
-    padding: 20px; /* Adicione algum espaçamento interno */
-
-    max-width: 800px; /* Defina o tamanho máximo para evitar a rolagem horizontal */
-    margin: 0 auto; /* Centralize o conteúdo na tela */
-    padding: 20px; /* Adicione algum espaçamento interno */
 }
 
 /* Estilos do Container do Formulário */
@@ -27,10 +20,11 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 100%;
+    width: 450px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos do Título */
@@ -38,13 +32,13 @@ h2 {
     text-align: center;
     font-size: 30px;
     margin: 20px 0;
+    color: #333;
 }
 
 /* Estilos dos Inputs */
 input[type="text"],
 input[type="email"],
-input[type="password"],
-textarea {
+input[type="password"] {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -52,16 +46,13 @@ textarea {
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 16px;
+    transition: border-color 0.3s;
 }
 
-/* Estilos dos Placeholders */
-input[type="text"]::placeholder,
-input[type="email"]::placeholder,
-input[type="password"]::placeholder,
-textarea::placeholder {
-    color: black; /* Cor preta sólida */
-    opacity: 1;   /* Opacidade total */
-    text-align: left; /* Alinhamento à esquerda */
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #097600;
 }
 
 /* Estilos do Botão */
@@ -74,6 +65,9 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 16px;
     text-align: center;
+    display: block;
+    margin: 0 auto; /* Centraliza o botão horizontalmente */
+    transition: background-color 0.3s;
 }
 
 button[type="submit"]:hover {
@@ -82,55 +76,27 @@ button[type="submit"]:hover {
 
 /* Estilos para cada grupo de input e label */
 .form-group {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 10px;
     width: 100%;
 }
 
 /* Estilos para a mensagem de sucesso */
 .cadastro-container .messages {
     margin-top: 20px;
+    list-style: none;
+    padding: 0;
 }
 
-/* Estilos para a caixa de grupos (dropdown) */
-.grupos-container {
-    max-height: 300px;
-    overflow-y: auto;
-    border: 1px solid #ccc;
+.cadastro-container .messages li {
+    margin-bottom: 10px;
     padding: 10px;
-    margin-bottom: 20px;
-}
-
-/* Estilos para os checkboxes dentro do dropdown */
-.grupos-container input[type="checkbox"] {
-    margin-right: 5px;
-}
-
-input[type="text"],
-textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 15px;
-    border: 1px solid black;
+    border: 1px solid #ddd;
     border-radius: 5px;
-    box-sizing: border-box;
-    font-size: 16px;
 }
-button[type="submit"] {
-    background-color: #097600;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    text-align: center;
-}
-
-button[type="submit"]:hover {
-    background-color: #45a049;
-}
-
-#transacao-search {
+/* Estilos para o campo de busca e container de permissões */
+#permissao-search {
     width: 100%;
     padding: 10px;
     margin-bottom: 15px;
@@ -140,21 +106,23 @@ button[type="submit"]:hover {
     font-size: 16px;
 }
 
-#transacoes-container {
-    max-height: 150px; /* Altura máxima para exibir até 5 transações */
+#permissoes-container {
+    max-height: 200px; /* Altura máxima para exibir até 5 permissões */
     overflow-y: auto; /* Habilitar rolagem vertical */
+    overflow-x: hidden; /* Ocultar rolagem horizontal */
     border: 1px solid #ccc;
     padding: 10px;
     margin-bottom: 20px;
+    width: 400px; /* Largura fixa */
 }
 
-#transacoes-container .checkbox {
+#permissoes-container .checkbox {
     display: flex; /* Use flexbox para alinhar os elementos */
     align-items: center;
     margin-bottom: 5px;
 }
 
-#transacoes-container label {
+#permissoes-container label {
     margin-left: 10px; /* Adiciona um espaço entre a checkbox e o label */
 }
 
@@ -162,7 +130,7 @@ button[type="submit"]:hover {
     margin-bottom: 10px;
 }
 
-#transacoes-container.transacoes-scrollable {
-    max-height: 150px; /* Altura máxima para exibir 6 transações (ajuste conforme necessário) */
+#permissoes-container.permission-scrollable {
+    max-height: 200px; /* Altura máxima para exibir 6 permissões (ajuste conforme necessário) */
     overflow-y: auto; /* Habilita a barra de rolagem vertical */
 }

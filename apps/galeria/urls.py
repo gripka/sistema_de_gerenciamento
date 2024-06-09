@@ -7,7 +7,7 @@ urlpatterns = [
     path('', views.index, name='index'), 
     path('meu-perfil/', views.meu_perfil, name='meu_perfil'),
     path('gerenciar-usuarios/', views.gerenciar_usuarios, name='gerenciar_usuarios'),
-    path('transacoes/', views.transacoes, name='transacoes'),
+
     path('gestao-de-perfis/', views.gestao_de_perfis, name='gestao_de_perfis'),
     path('cadastro/', views.UserCreateView.as_view(), name='cadastro'),
     path('editar-usuario/<int:pk>/', views.editar_usuario, name='editar_usuario_id'),  # Formulário preenchido com o ID do usuário
@@ -23,4 +23,12 @@ urlpatterns = [
     path('modulos/criar/', views.criar_modulo, name='criar_modulo'),
     path('modulos/editar/<int:pk>/', views.editar_modulo, name='editar_modulo'),
     path('modulos/excluir/<int:pk>/', views.excluir_modulo, name='excluir_modulo'),
+    
+    path('transacoes/', views.transacoes, name='transacoes'),
+    path('criar-transacao/', views.criar_transacao, name='criar_transacao'),
+
+    path('excluir-transacao/<int:pk>/', views.excluir_transacao, name='excluir_transacao'),
+    path('editar-transacao/<int:transacao_id>/', views.editar_transacao, name='editar_transacao'),
+    
+
 ]

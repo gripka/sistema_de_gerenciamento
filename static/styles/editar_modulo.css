@@ -24,6 +24,7 @@ body {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Estilos do Título */
@@ -31,6 +32,7 @@ h2 {
     text-align: center;
     font-size: 30px;
     margin: 20px 0;
+    color: #333;
 }
 
 /* Estilos dos Inputs */
@@ -44,6 +46,13 @@ input[type="password"] {
     border-radius: 5px;
     box-sizing: border-box;
     font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus {
+    border-color: #097600;
 }
 
 /* Estilos do Botão */
@@ -56,6 +65,9 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 16px;
     text-align: center;
+    display: block;
+    margin: 0 auto; /* Centraliza o botão horizontalmente */
+    transition: background-color 0.3s;
 }
 
 button[type="submit"]:hover {
@@ -73,4 +85,51 @@ button[type="submit"]:hover {
 /* Estilos para a mensagem de sucesso */
 .cadastro-container .messages {
     margin-top: 20px;
+    list-style: none;
+    padding: 0;
+}
+
+.cadastro-container .messages li {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Estilos para o campo de busca e container de transações */
+#transacao-search {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+#transacoes-container {
+    max-height: 200px; /* Altura máxima para exibir até 5 transações */
+    overflow-y: auto; /* Habilitar rolagem vertical */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+#transacoes-container .checkbox {
+    display: flex; /* Use flexbox para alinhar os elementos */
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+#transacoes-container label {
+    margin-left: 10px; /* Adiciona um espaço entre a checkbox e o label */
+}
+
+.checkbox {
+    margin-bottom: 10px;
+}
+
+#transacoes-container.transacoes-scrollable {
+    max-height: 200px; /* Altura máxima para exibir 6 transações (ajuste conforme necessário) */
+    overflow-y: auto; /* Habilita a barra de rolagem vertical */
 }

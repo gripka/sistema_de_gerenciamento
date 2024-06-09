@@ -155,10 +155,136 @@ def editar_usuario(request, pk):
 
 
 
+from .models import Transacao  # Certifique-se de importar o modelo Transacao
+
 def transacoes(request):
     if not request.user.is_authenticated:  
         return redirect('usuarios:login')
-    return render(request, 'galeria/transacoes.html')
+    
+    # Obtendo todas as transações do banco de dados
+    transacoes = Transacao.objects.all()
+    
+    # Passando as transações para o contexto do template
+    return render(request, 'galeria/transacoes.html', {'transacoes': transacoes})
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Transacao
+from .forms import TransacaoForm
+from django.contrib.auth.models import Permission
+
+@login_required
+def criar_transacao(request):
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST)
+        if form.is_valid():
+            transacao = form.save(commit=False)  # Salvar transação primeiro
+            transacao.save()
+            form.save_m2m()  # Salvar as relações Many-to-Many depois
+            messages.success(request, 'Transação criada com sucesso.')
+            return redirect('galeria:editar_transacao', transacao_id=transacao.id)
+        else:
+            messages.error(request, 'Nome já existente')
+    else:
+        form = TransacaoForm()
+
+    permissoes = Permission.objects.all()
+    permissoes_formatadas = []
+    for permissao in permissoes:
+        permissoes_formatadas.append({
+            'id': permissao.id,
+            'name': permissao.name,
+            'codename': permissao.codename,
+            'checked': False  # Por padrão, nenhuma permissão estará selecionada na criação
+        })
+
+    return render(request, 'galeria/criar_transacao.html', {
+        'form': form,
+        'permissoes': permissoes_formatadas,
+    })
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Transacao
+from .forms import TransacaoForm
+from django.contrib.auth.models import Permission
+
+from django.contrib import messages
+
+@login_required
+def editar_transacao(request, transacao_id):
+    transacao = get_object_or_404(Transacao, id=transacao_id)
+    permissoes = Permission.objects.all()
+
+    if request.method == 'POST':
+        form = TransacaoForm(request.POST, instance=transacao)
+        if form.is_valid():
+            transacao = form.save(commit=False)
+            transacao.permissoes.set(form.cleaned_data['permissoes'])
+            transacao.save()
+            messages.success(request, 'Transação atualizada com sucesso.')
+            return redirect('galeria:editar_transacao', transacao_id=transacao.id)
+        else:
+            messages.error(request, 'Nome já existente')
+
+    else:
+        form = TransacaoForm(instance=transacao)
+
+    permissoes_formatadas = []
+    for permissao in permissoes:
+        checked = permissao in transacao.permissoes.all()
+        permissoes_formatadas.append({
+            'id': permissao.id,
+            'name': permissao.name,
+            'codename': permissao.codename,
+            'checked': checked
+        })
+
+    return render(request, 'galeria/editar_transacao.html', {
+        'form': form,
+        'transacao': transacao,
+        'permissoes': permissoes_formatadas,
+    })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# views.py
+from django.shortcuts import render, redirect
+from .models import Transacao
+
+def excluir_transacao(request, pk):
+    transacao = Transacao.objects.get(pk=pk)
+    transacao.delete()
+    # Redirecione para a página desejada após a exclusão
+    return redirect('galeria:transacoes')
+
+
+
+
+
 
 @login_required
 def gestao_de_perfis(request):
@@ -321,9 +447,10 @@ def criar_modulo(request):
 
 
 
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Modulo
+from .models import Modulo, Transacao
 from .forms import ModuloForm
 
 @login_required
@@ -332,14 +459,22 @@ def editar_modulo(request, pk):
     if request.method == 'POST':
         form = ModuloForm(request.POST, instance=modulo)
         if form.is_valid():
-            form.save()
+            modulo = form.save()
+            transacoes_ids = request.POST.getlist('transacoes')
+            modulo.transacoes.clear()  # Limpa todas as transações associadas
+            for transacao_id in transacoes_ids:
+                transacao = Transacao.objects.get(id=transacao_id)
+                modulo.transacoes.add(transacao)  # Adiciona as novas transações
             messages.success(request, 'Módulo editado com sucesso!')
             return redirect('galeria:listar_modulos')
     else:
-        form = ModuloForm(instance=modulo)  # Preenche o formulário com os dados do módulo
-    return render(request, 'galeria/editar_modulo.html', {'form': form, 'modulo': modulo})
-
-
+        form = ModuloForm(instance=modulo)
+    
+    transacoes = Transacao.objects.all()
+    for transacao in transacoes:
+        transacao.checked = transacao in modulo.transacoes.all()
+    
+    return render(request, 'galeria/editar_modulo.html', {'form': form, 'modulo': modulo, 'transacoes': transacoes})
 
 
 @login_required

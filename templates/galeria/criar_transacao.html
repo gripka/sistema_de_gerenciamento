@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/editar_transacao.css' %}">
+
+<div class="container-geral">
+    <div class="cadastro-container">
+        <h2>Criar Nova Transação</h2>
+    
+        <div class="formulario-container">
+            <form method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_nome">Nome:</label>
+                    <input type="text" name="nome" id="id_nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="id_descricao">Descrição:</label>
+                    <input type="text" name="descricao" id="id_descricao" required>
+                </div>
+
+                <!-- Campo de busca de permissões -->
+                <div class="form-group">
+                    <label for="permissoes">Permissões:</label>
+                    <input type="text" id="permissao-search" placeholder="Buscar permissões">
+                <!-- Contêiner das permissões -->
+                    <div id="permissoes-container">
+                        {% for permissao in permissoes %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="permissoes" value="{{ permissao.id }}">
+                                    <!-- Adicione instrução print para verificar os valores -->
+                                    {% if permissao.name %}{{ permissao.name }} - {% endif %}
+                                    {% if permissao.codename %}{{ permissao.codename }}{% endif %}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <button type="submit">Salvar</button>
+            </form>
+        </div>
+
+        <!-- Exibição de mensagens de sucesso ou erro -->
+        {% block messages %}
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+        {% endblock messages %}
+    </div>
+</div>
+
+<script>
+document.getElementById('permissao-search').addEventListener('input', function() {
+    var searchTerm = this.value.toLowerCase();
+    var checkboxes = document.querySelectorAll('#permissoes-container .checkbox');
+    checkboxes.forEach(function(checkbox) {
+        var label = checkbox.querySelector('label').textContent.toLowerCase();
+        checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
+    });
+});
+</script>
+
+{% endblock %}
