@@ -13,12 +13,12 @@ urlpatterns = [
     path('editar-usuario/<int:pk>/', views.editar_usuario, name='editar_usuario_id'),  # Formulário preenchido com o ID do usuário
     path('buscar_grupos/', views.buscar_grupos, name='buscar_grupos'),
 
-    # ... outras URLs ...
+
     path('gestao-de-perfis/criar/', views.criar_grupo, name='criar_grupo'),
     path('gestao-de-perfis/editar/<int:pk>/', views.editar_grupo, name='editar_grupo'),
     path('gestao-de-perfis/excluir/<int:pk>/', views.excluir_grupo, name='excluir_grupo'),
 
-    # Corrigindo as rotas dos módulos
+
     path('modulos/', views.listar_modulos, name='listar_modulos'),
     path('modulos/criar/', views.criar_modulo, name='criar_modulo'),
     path('modulos/editar/<int:pk>/', views.editar_modulo, name='editar_modulo'),
@@ -26,9 +26,11 @@ urlpatterns = [
     
     path('transacoes/', views.transacoes, name='transacoes'),
     path('criar-transacao/', views.criar_transacao, name='criar_transacao'),
-
     path('excluir-transacao/<int:pk>/', views.excluir_transacao, name='excluir_transacao'),
     path('editar-transacao/<int:transacao_id>/', views.editar_transacao, name='editar_transacao'),
     
-
+    path('funcoes/', views.listar_funcoes, name='listar_funcoes'),
+    path('criar-funcao/', views.criar_funcao, name='criar_funcao'),
+    path('editar-funcao/<int:pk>/', views.editar_funcao, name='editar_funcao'),
+    path('excluir-funcao/<int:pk>/', views.excluir_funcao, name='excluir_funcao'),
 ]

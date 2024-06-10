@@ -433,12 +433,17 @@ def criar_modulo(request):
                 transacao.modulo = modulo
                 transacao.save()
             messages.success(request, 'Módulo criado com sucesso!')
-            form = ModuloForm()
+            return redirect('nome_da_url_para_listar_modulos')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error) # Passa as mensagens de erro para o sistema de mensagens
     else:
         form = ModuloForm()
-    
+
     transacoes = Transacao.objects.all()
     return render(request, 'galeria/criar_modulo.html', {'form': form, 'transacoes': transacoes})
+
 
 
 
@@ -456,6 +461,8 @@ from .forms import ModuloForm
 @login_required
 def editar_modulo(request, pk):
     modulo = get_object_or_404(Modulo, pk=pk)
+    error_message = None
+
     if request.method == 'POST':
         form = ModuloForm(request.POST, instance=modulo)
         if form.is_valid():
@@ -467,6 +474,10 @@ def editar_modulo(request, pk):
                 modulo.transacoes.add(transacao)  # Adiciona as novas transações
             messages.success(request, 'Módulo editado com sucesso!')
             return redirect('galeria:listar_modulos')
+        else:
+            # Se houver erro de validação (nome duplicado), adicione uma mensagem
+            if 'nome' in form.errors:
+                messages.error(request, form.errors['nome'][0])  # Exibe a mensagem de erro específica para o campo "nome"
     else:
         form = ModuloForm(instance=modulo)
     
@@ -486,4 +497,102 @@ def excluir_modulo(request, pk):
         return redirect('galeria:listar_modulos')
     return render(request, 'galeria/confirmar_exclusao_modulo.html', {'modulo': modulo})
 
+
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse_lazy
+from django.views import View
+from django.contrib.auth.models import Permission
+from django.contrib import messages
+from .forms import FuncaoForm
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render
+from django.contrib.auth.models import Permission
+
+@login_required
+def listar_funcoes(request):
+    funcoes = Permission.objects.all()
+    return render(request, 'galeria/funcoes.html', {'funcoes': funcoes})
+
+
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import FuncaoForm
+from django.contrib.contenttypes.models import ContentType
+
+@login_required
+def criar_funcao(request):
+    if request.method == 'POST':
+        form = FuncaoForm(request.POST)
+        if form.is_valid():
+            funcao = form.save(commit=False)  # Não salvar ainda
+
+            content_type_ids = request.POST.getlist('content_type')
+            for content_type_id in content_type_ids:
+                content_type = ContentType.objects.get(id=content_type_id)
+                funcao.content_type = content_type  # Associar o ContentType
+                funcao.save()  # Salvar a cada iteração
+
+            messages.success(request, 'Função criada com sucesso!')
+            return redirect('galeria:listar_funcoes')
+    else:
+        form = FuncaoForm()
+
+    content_types = ContentType.objects.all()
+    return render(request, 'galeria/criar_funcao.html', {'form': form, 'content_types': content_types})
+
+
+
+
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib import messages
+from .models import Transacao
+from .forms import FuncaoForm
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
+@login_required
+def editar_funcao(request, pk):
+    funcao = get_object_or_404(Permission, pk=pk)
+    content_types = ContentType.objects.all()
+
+    if request.method == 'POST':
+        form = FuncaoForm(request.POST, instance=funcao)
+        if form.is_valid():
+            funcao = form.save(commit=False)
+            content_type_ids = request.POST.getlist('content_type')
+            for content_type_id in content_type_ids:
+                content_type = ContentType.objects.get(id=content_type_id)
+                funcao.content_type = content_type
+                funcao.save()
+            messages.success(request, 'Função editada com sucesso!')
+            # Redireciona para a mesma página de edição
+            return redirect('galeria:editar_funcao', pk=pk)  
+
+    else:
+        form = FuncaoForm(instance=funcao)
+
+    return render(request, 'galeria/editar_funcao.html', {'form': form, 'content_types': content_types, 'funcao': funcao})
+
+
+
+
+
+
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.contrib.auth.models import Permission
+
+@login_required
+def excluir_funcao(request, pk):
+    funcao = get_object_or_404(Permission, pk=pk)
+    if request.method == 'POST':
+        funcao.delete()
+        messages.success(request, 'Função excluída com sucesso!')
+        return redirect('galeria:listar_funcoes')
 

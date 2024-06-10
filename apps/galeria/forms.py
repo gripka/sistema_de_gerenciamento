@@ -137,6 +137,15 @@ class ModuloForm(forms.ModelForm):
     class Meta:
         model = Modulo
         fields = ['nome', 'descricao', 'transacoes']
+    
+    def clean_nome(self):
+        nome = self.cleaned_data['nome']
+        
+        # Verifica se já existe um módulo com o mesmo nome, excluindo o módulo atual (se existir)
+        if Modulo.objects.filter(nome__iexact=nome).exclude(pk=self.instance.pk if self.instance else None).exists():
+            raise ValidationError('Já existe um módulo com este nome.')
+        
+        return nome
 
     def __init__(self, *args, **kwargs):
         super(ModuloForm, self).__init__(*args, **kwargs)
@@ -191,4 +200,38 @@ class TransacaoForm(forms.ModelForm):
         return transacao
 
 
+
+
+
+from django import forms
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
+
+class FuncaoForm(forms.ModelForm):
+    class Meta:
+        model = Permission
+        fields = ['name', 'codename', 'content_type']  # Inclua 'content_type' aqui
+
+
+    def __init__(self, *args, **kwargs):
+        super(FuncaoForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nome'
+        self.fields['codename'].label = 'Codename'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        content_type = cleaned_data.get('content_type')
+
+        if name and content_type:
+            existing_permission = Permission.objects.filter(
+                name=name,
+                content_type=content_type
+            ).exclude(id=self.instance.id if self.instance else None).exists()  # Exclui a instância atual se estiver editando
+
+            if existing_permission:
+                raise ValidationError(
+                    'Já existe uma permissão com este nome para este tipo de conteúdo.'
+                )
+        return cleaned_data
 

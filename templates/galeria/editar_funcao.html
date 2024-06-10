@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}<link rel="stylesheet" type="text/css" href="{% static 'styles/criar_funcao.css' %}"> 
+
+<div class="container-geral">
+    <div class="cadastro-container">
+        <h2>Editar Função</h2>
+
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% for field in form %}
+        {% if field.errors %}
+            <div class="alert alert-danger">
+                {{ field.label }}: {{ field.errors }}
+            </div>
+        {% endif %}
+    {% endfor %}
+    {% if form.non_field_errors %}
+        <div class="alert alert-danger">
+            {% for error in form.non_field_errors %}
+                {{ error }}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+
+
+        
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                {{ form.codename.label_tag }}
+                {{ form.codename }}
+            </div>
+            <div id="content-type-container">
+                <h6>Selecione o tipo de conteúdo:</h6>
+                <input type="text" id="content-type-search" class="form-control" style="width: 100%;" placeholder="Buscar tipos de conteúdo">
+                <div id="content-type-options" style="max-height: 200px; overflow-y: auto;">
+                    {% for content_type in content_types %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="content_type" value="{{ content_type.id }}" {% if content_type.id == funcao.content_type.id %}checked{% endif %}>
+                                {{ content_type.name }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+
+            <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+        </form>
+    </div>
+</div>
+<script>
+    document.getElementById('content-type-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var checkboxes = document.querySelectorAll('#content-type-options .checkbox');
+        checkboxes.forEach(function(checkbox) {
+            var label = checkbox.querySelector('label').textContent.toLowerCase();
+            checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+</script>
+
+
+{% endblock %}
