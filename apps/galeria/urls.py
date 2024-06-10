@@ -13,11 +13,9 @@ urlpatterns = [
     path('editar-usuario/<int:pk>/', views.editar_usuario, name='editar_usuario_id'),  # Formulário preenchido com o ID do usuário
     path('buscar_grupos/', views.buscar_grupos, name='buscar_grupos'),
 
-
     path('gestao-de-perfis/criar/', views.criar_grupo, name='criar_grupo'),
-    path('gestao-de-perfis/editar/<int:pk>/', views.editar_grupo, name='editar_grupo'),
+    path('gestao-de-perfis/editar/<int:grupo_id>/', views.editar_grupo, name='editar_grupo'),
     path('gestao-de-perfis/excluir/<int:pk>/', views.excluir_grupo, name='excluir_grupo'),
-
 
     path('modulos/', views.listar_modulos, name='listar_modulos'),
     path('modulos/criar/', views.criar_modulo, name='criar_modulo'),

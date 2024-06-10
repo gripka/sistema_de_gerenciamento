@@ -1,5 +1,9 @@
-/* gestao_de_perfis.css */
 /* Estilos Gerais da Página */
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
 body {
     font-family: 'K2D', sans-serif;
     background-color: white;
@@ -7,37 +11,77 @@ body {
     overflow-y: auto;
 }
 
-/* Estilos do Container Geral */
 .container-geral {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
-    width: 90%;
-    max-width: 1200px;
+    width: 100%;
+    max-width: 1600px;
     margin: 0 auto;
+    padding: 20px;
 }
 
-/* Estilos da Tabela de Perfis */
-.tabela-usuarios { /* Reutilize a mesma classe da tabela de usuários */
+.header-container {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.header-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.botoes-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.botao {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+}
+
+.botao-cadastrar {
+    background-color: #097600;
+}
+
+.botao-buscar {
+    background-color: #097600;
+}
+
+.campo-pesquisa {
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-right: 10px;
+    flex-grow: 1;
+    width: auto;
+}
+
+.tabela-usuarios {
     display: table;
     width: 100%;
     border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 auto;
+    width: 100%;
 }
 
-.cabecalho-tabela, .linha-tabela {
-    display: table-row;
-}
-
-.coluna {
-    display: table-cell;
+.tabela-usuarios th, .tabela-usuarios td {
     padding: 10px;
-    border: 1px solid black;
     text-align: center;
     vertical-align: middle;
 }
 
-/* Estilos da Coluna de Ações */
 .acoes {
     text-align: center;
 }
@@ -51,14 +95,38 @@ body {
     cursor: pointer;
     text-decoration: none;
     font-size: 14px;
+    color: white;
 }
 
 .botao-editar-usuario {
-    background-color: #007bff; /* Azul */
+    background-color: #097600;
+}
+
+.botao-editar-usuario:hover,
+.botao-editar-usuario:focus {
+    background-color: #45a049;
     color: white;
+    text-decoration: none;
 }
 
 .botao-excluir-usuario {
-    background-color: #dc3545; /* Vermelho */
-    color: white;
+    background-color: #dc3545;
+}
+
+.botao-excluir-usuario:hover,
+.botao-excluir-usuario:focus {
+    background-color: #c82333; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+}
+
+.botao:hover,
+.botao:focus,
+.botao-cadastrar:hover,
+.botao-cadastrar:focus,
+.botao-buscar:hover,
+.botao-buscar:focus {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
 }

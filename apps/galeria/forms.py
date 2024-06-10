@@ -109,22 +109,44 @@ class GroupFilter(django_filters.FilterSet):
         model = Group
         fields = ['name']
 
-from django import forms
-from django.contrib.auth.models import Group
+# forms.py
 
 from django import forms
 from django.contrib.auth.models import Group, Permission
+from .models import Modulo
 
 class GroupForm(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
-        widget=forms.CheckboxSelectMultiple,
-        label='Permissões'
+        required=False,
+        widget=forms.CheckboxSelectMultiple
+    )
+    modulo = forms.ModelMultipleChoiceField(  # Mudança para ModelMultipleChoiceField
+        queryset=Modulo.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple  # Adicionando widget para exibição de checkboxes
     )
 
     class Meta:
         model = Group
-        fields = ['name', 'permissions']
+        fields = ['name', 'permissions']    # Adicionando o campo 'modulo' aos campos do formulário
+
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['permissions'].initial = self.instance.permissions.all()
+            if hasattr(self.instance, 'modulo'):
+                self.fields['modulo'].initial = self.instance.modulo
+
+
+
+
+    
+
+    
+    
+
 
 
 from django import forms

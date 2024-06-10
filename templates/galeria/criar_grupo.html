@@ -1,19 +1,69 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <h2>Criar Novo Perfil</h2>
+<link rel="stylesheet" type="text/css" href="{% static 'styles/criar_grupo.css' %}">
 
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{{ message.tags }}" role="alert">
-                {{ message }}
+<div class="container-geral">
+    <div class="cadastro-container">
+        <h2>Criar Novo Grupo</h2>
+
+        {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        {% if error_message %}
+            <div class="error-message">
+                {{ error_message }}
             </div>
-        {% endfor %}
-    {% endif %}
+        {% endif %}
 
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}  {# Renderiza os campos do formulário #}
-        <button type="submit" class="btn btn-primary">Criar Perfil</button>
-    </form>
+
+
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="nome">Nome do Grupo:</label>
+                <input type="text" id="nome" name="name">  
+            </div>            
+
+            <div class="form-group">
+                {{ form.permissions.label_tag }}
+                {{ form.permissions }}
+            </div>
+
+            <div class="form-group">
+                <label for="modulos">Módulos:</label>
+                <input type="text" id="modulo-search" placeholder="Buscar módulos">
+                <div id="modulos-container" class="transacoes-scrollable">
+                    {% for modulo in modulos %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="modulos" value="{{ modulo.id }}"> {{ modulo.nome }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <button type="submit">Salvar</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('modulo-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var options = document.querySelectorAll('#modulo-select option');
+        options.forEach(function(option) {
+            var label = option.textContent.toLowerCase();
+            option.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+</script>
 {% endblock %}

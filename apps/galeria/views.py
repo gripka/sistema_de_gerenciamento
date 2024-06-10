@@ -323,57 +323,98 @@ from django.forms import modelformset_factory
 
 
 
-from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.contrib import messages
-from .forms import GroupForm  # Certifique-se de ter um formulário para grupos
+
+from .forms import GroupForm
+from .models import Modulo
 
 @login_required
 def criar_grupo(request):
     if request.method == 'POST':
         form = GroupForm(request.POST)
         if form.is_valid():
-            form.save()
+            grupo = form.save()
+
+            modulos_ids = request.POST.getlist('modulos', [])
+            if modulos_ids:
+                # Filtra as permissões pelo tipo de conteúdo do modelo Modulo e pelos IDs dos módulos selecionados
+                content_type = ContentType.objects.get_for_model(Modulo) 
+                permissoes_modulos = Permission.objects.filter(
+                    content_type=content_type,
+                    codename__in=[f'change_{modulo.nome.lower()}' for modulo in Modulo.objects.filter(id__in=modulos_ids)]
+                )
+                # Associe as permissões encontradas ao grupo
+                grupo.permissions.set(permissoes_modulos) 
+
             messages.success(request, 'Perfil criado com sucesso!')
-            form = GroupForm()  # Limpa o formulário
+            return redirect('galeria:gestao_de_perfis')
+        else:
+            # Adicione as mensagens de erro do formulário ao contexto de mensagens do Django
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error) 
     else:
         form = GroupForm()
 
-    return render(request, 'galeria/criar_grupo.html', {'form': form})
+    modulos = Modulo.objects.all()
+    return render(request, 'galeria/criar_grupo.html', {'form': form, 'modulos': modulos})
 
 
 
-# views.py
-from django.contrib.auth.decorators import login_required
+
+
+
+
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.models import Group, Permission
 from django.contrib import messages
-from django.forms import modelformset_factory
-from django import forms
+from django.contrib.auth.decorators import login_required
+from .forms import GroupForm
+from .models import Modulo
 
 @login_required
-def editar_grupo(request, pk):
-    grupo = get_object_or_404(Group, pk=pk)
-    PermissionFormSet = modelformset_factory(Permission, fields=('id', 'name'), extra=0, widgets={'id': forms.CheckboxSelectMultiple})
-
-
+def editar_grupo(request, grupo_id):
+    grupo = get_object_or_404(Group, pk=grupo_id)
+    modulos_disponiveis = Modulo.objects.all()
+    
     if request.method == 'POST':
-        formset = PermissionFormSet(request.POST)
-        if formset.is_valid():
-            grupo.name = request.POST['nome']
-            grupo.permissions.clear()
-            for form in formset:
-                if form.cleaned_data.get('id'):
-                    grupo.permissions.add(form.cleaned_data['id'])
-            grupo.save()
-            messages.success(request, 'Perfil editado com sucesso!')
-            return redirect('galeria:listar_grupos')
+        form = GroupForm(request.POST, instance=grupo)
+        if form.is_valid():
+            grupo = form.save()
+            
+            for modulo in modulos_disponiveis:
+                if str(modulo.id) in request.POST.getlist('modulos'):
+                    modulo.grupos.add(grupo)
+                else:
+                    modulo.grupos.remove(grupo)
+            
+            messages.success(request, 'Grupo editado com sucesso!')
+            return redirect('galeria:gestao_de_perfis')
+        else:
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, error)
     else:
-        initial_data = [{'id': perm.id} for perm in grupo.permissions.all()]
-        formset = PermissionFormSet(queryset=Permission.objects.all(), initial=initial_data)
+        form = GroupForm(instance=grupo)
 
-    return render(request, 'galeria/editar_grupo.html', {'formset': formset, 'grupo': grupo})
+    modulos_do_grupo = grupo.modulo_set.all()  # Use modulo_set.all()
+
+    context = {
+        'form': form,
+        'modulos_disponiveis': modulos_disponiveis,
+        'modulos_do_grupo': modulos_do_grupo,  
+    }
+    return render(request, 'galeria/editar_grupo.html', context)
+
+
+
+
+
+
+
+
 
 
 
@@ -548,36 +589,35 @@ def criar_funcao(request):
 
 
 
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import Transacao
 from .forms import FuncaoForm
 from django.contrib.auth.models import Permission
 from django.contrib.contenttypes.models import ContentType
 
+
 @login_required
-def editar_funcao(request, pk):
+def editar_funcao(request, pk):  # Recebe o ID da função
     funcao = get_object_or_404(Permission, pk=pk)
     content_types = ContentType.objects.all()
 
     if request.method == 'POST':
-        form = FuncaoForm(request.POST, instance=funcao)
+        form = FuncaoForm(request.POST, instance=funcao)  # Preenche o formulário com os dados da função existente
         if form.is_valid():
-            funcao = form.save(commit=False)
+            funcao = form.save(commit=False)  # Não salvar ainda
+
             content_type_ids = request.POST.getlist('content_type')
             for content_type_id in content_type_ids:
                 content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type
-                funcao.save()
+                funcao.content_type = content_type  # Associar o ContentType
+                funcao.save()  # Salvar a cada iteração
+
             messages.success(request, 'Função editada com sucesso!')
-            # Redireciona para a mesma página de edição
-            return redirect('galeria:editar_funcao', pk=pk)  
-
+            return redirect('galeria:listar_funcoes')  # Nome da URL para a listagem de funções (criar se não existir)
     else:
-        form = FuncaoForm(instance=funcao)
-
+        form = FuncaoForm(instance=funcao)  # Preenche o formulário com os dados da função existente
     return render(request, 'galeria/editar_funcao.html', {'form': form, 'content_types': content_types, 'funcao': funcao})
-
 
 
 
