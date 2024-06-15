@@ -7,7 +7,6 @@
 <div class="container-geral">
     <div class="cadastro-container">
         <h2>Criar Nova Transação</h2>
-    
         <div class="formulario-container">
             <form method="post">
                 {% csrf_token %}
@@ -20,17 +19,15 @@
                     <input type="text" name="descricao" id="id_descricao" required>
                 </div>
 
-                <!-- Campo de busca de permissões -->
                 <div class="form-group">
                     <label for="permissoes">Permissões:</label>
                     <input type="text" id="permissao-search" placeholder="Buscar permissões">
-                <!-- Contêiner das permissões -->
+
                     <div id="permissoes-container">
                         {% for permissao in permissoes %}
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" name="permissoes" value="{{ permissao.id }}">
-                                    <!-- Adicione instrução print para verificar os valores -->
                                     {% if permissao.name %}{{ permissao.name }} - {% endif %}
                                     {% if permissao.codename %}{{ permissao.codename }}{% endif %}
                                 </label>
@@ -43,7 +40,6 @@
             </form>
         </div>
 
-        <!-- Exibição de mensagens de sucesso ou erro -->
         {% block messages %}
         {% if messages %}
             <ul class="messages">

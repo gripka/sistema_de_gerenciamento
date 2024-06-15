@@ -22,8 +22,6 @@
         </div>
     {% endif %}
 
-
-
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -34,10 +32,6 @@
                 {{ form.codename.label_tag }}
                 <input type="text" id="id_codename" name="codename" class="form-control" style="width: 100%;" placeholder="Codinome">
             </div>            
-            
-            <!-- Outros campos do formulário aqui... -->
-
-            
                 <div id="content-type-container">
                     <h6>Selecione o tipo de conteúdo:</h6>
                     <input type="text" id="content-type-search" class="form-control" style="width: 100%;" placeholder="Buscar tipos de conteúdo">

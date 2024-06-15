@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Relatórios</h2>
+
+    <h3>Usuários Cadastrados</h3>
+    <ul>
+        {% for usuario in usuarios %}
+            <li>{{ usuario.username }} - {{ usuario.email }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Perfis de Usuários</h3>
+    <ul>
+        {% for perfil in perfis %}
+            <li>{{ perfil.name }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Lista de Módulos</h3>
+    <ul>
+        {% for modulo in modulos %}
+            <li>{{ modulo.nome }} - {{ modulo.descricao }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Lista de Transações</h3>
+    <ul>
+        {% for transacao in transacoes %}
+            <li>{{ transacao.nome }} - {{ transacao.descricao }}</li>
+        {% endfor %}
+    </ul>
+
+    <h3>Lista de Funções Cadastradas</h3>
+    <ul>
+        {% for permissao in permissoes %}
+            <li>{{ permissao.name }} - {{ permissao.codename }}</li>
+        {% endfor %}
+    </ul>
+
+    <form action="{% url 'exportar_relatorios' %}" method="get">
+        <button type="submit">Exportar para CSV</button>
+    </form>
+</div>
+{% endblock %}

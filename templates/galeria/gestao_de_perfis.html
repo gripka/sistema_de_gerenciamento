@@ -43,7 +43,6 @@
                             <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ grupo.pk }}">Excluir</button>
                         </div>
 
-                        <!-- Modal -->
                         <div class="modal fade" id="excluirModal{{ grupo.pk }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ grupo.pk }}" aria-hidden="true">
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
@@ -85,7 +84,7 @@
         const groupsContainer = document.getElementById('groupsContainer');
         const groups = groupsContainer.getElementsByTagName('tr');
     
-        for (let i = 1; i < groups.length; i++) { // i starts from 1 to skip the header row
+        for (let i = 1; i < groups.length; i++) {
             const group = groups[i];
             const name = group.getElementsByTagName('td')[0].innerText.toLowerCase();
             if (name.indexOf(filter) > -1) {

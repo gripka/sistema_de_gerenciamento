@@ -1,0 +1,78 @@
+/* styles.css */
+
+/* Estilos para a tabela */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #212529;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #dee2e6;
+}
+
+.table-sm th,
+.table-sm td {
+    padding: 0.3rem;
+}
+
+/* Estilos para as células da tabela */
+.table-bordered {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered thead th,
+.table-bordered thead td {
+    border-bottom-width: 2px;
+}
+
+/* Estilos para as cores das linhas */
+.table-striped tbody tr:nth-of-type(odd) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Estilos para o cabeçalho */
+.thead-dark {
+    color: #fff;
+    background-color: #343a40;
+}
+
+/* Estilos para o botão de exportar */
+.btn-export {
+    background-color: #097600;
+    color: #fff;
+    border: none;
+}
+
+.btn-export:hover {
+    background-color: #085a00;
+    color: #fff;
+}
+
+/* Estilos para o botão de navegação */
+.nav-button-container {
+    margin-bottom: 20px;
+    text-align: right;
+}
+
+.nav-button-container a {
+    margin-right: 10px;
+}
+

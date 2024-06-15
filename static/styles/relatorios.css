@@ -1,0 +1,94 @@
+/* styles.css */
+.relatorios-container {
+    /* Adicione suas regras de estilo específicas aqui */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-top: 10px;
+}
+
+
+/* Estilo para as tabelas */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Estilo para as células do cabeçalho */
+.table th {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estilo para as células do corpo */
+.table td {
+    padding: 8px;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Estilo para as linhas alternadas */
+.table tbody tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+/* Adicione essas regras ao seu arquivo relatorios.css */
+
+/* Estilo para o botão de exportação */
+.btn-export {
+    background-color: #097600;
+    color: #fff;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn-export:hover {
+    background-color: #075800; /* Cor ligeiramente mais escura quando hover */
+}
+
+/* Posicionamento do botão de exportação */
+.btn-export-container {
+    margin-top: 20px; /* Espaço entre o botão e o título */
+    text-align: right; /* Alinhar o botão à direita */
+}
+
+.btn-export-fixed {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Fim das regras */
+
+.table-container {
+    margin-bottom: 40px; /* Adicione uma margem inferior maior para a última tabela */
+}
+
+/* ... (seus estilos anteriores) ... */
+
+/* Estilo para o menu superior */
+.btn-relatorios-container .btn-group {
+    background-color: #097600; /* Cor de fundo verde */
+    border-radius: 4px; /* Bordas arredondadas */
+    overflow: hidden; /* Para que as bordas arredondadas funcionem corretamente */
+    display: flex; /* Para alinhar os botões horizontalmente */
+    margin-top: 20px; /* Espaço entre o botão de exportação e o menu */
+}
+
+.btn-relatorios-container .btn-group .btn {
+    background-color: transparent; /* Remove a cor de fundo dos botões */
+    color: #fff; /* Cor do texto branca */
+    border: none; /* Remove as bordas dos botões */
+    padding: 8px 16px; /* Ajusta o espaçamento dos botões */
+}
+
+.btn-relatorios-container .btn-group .btn:hover {
+    background-color: #075800; /* Cor de fundo mais escura ao passar o mouse */
+}
+

@@ -158,3 +158,54 @@ body {
     color: white; /* Cor do texto ao passar o mouse */
     text-decoration: none; /* Remova a decoração do texto ao passar o mouse */
 }
+
+
+/* Estilos para telas menores que 768px (bootstrap breakpoint 'md') */
+@media (max-width: 767px) {
+    .module-box {
+        width: 100%; 
+        max-width: none; 
+    }
+
+    body { /* Aumenta o tamanho da fonte em telas pequenas */
+        font-size: 23px; /* Ou outro valor adequado */
+    }
+
+    .botao { /* Aumenta o tamanho dos botões em telas pequenas */
+        padding: 12px 24px; /* Ajuste conforme necessário */
+        font-size: 23px;  /* Ou outro valor adequado */
+    }
+    h6 { /* Aumenta o tamanho do h6 em telas médias */
+        font-size: 23px; /* Ou outro valor adequado */
+    }
+    .btn-secondary, .btn-danger { /* Aumenta os botões em telas pequenas */
+        padding: 8px 16px; /* Ajuste conforme necessário */
+        font-size: 23px;  /* Ajuste conforme necessário */
+    }
+}
+
+/* Estilos para telas entre 768px e 992px (bootstrap breakpoint 'md') */
+@media (min-width: 768px) and (max-width: 991px) {
+    .module-box {
+        width: calc(50% - 1rem); 
+        max-width: none; 
+    }
+
+    body { /* Aumenta o tamanho da fonte em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+
+    .botao { /* Aumenta o tamanho dos botões em telas médias */
+        padding: 14px 28px; /* Ajuste conforme necessário */
+        font-size: 25px;  /* Ou outro valor adequado */
+    }
+
+    h6 { /* Aumenta o tamanho do h6 em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+    .btn-secondary, .btn-danger { /* Aumenta os botões em telas médias */
+        padding: 10px 20px; /* Ajuste conforme necessário */
+        font-size: 25px;  /* Ajuste conforme necessário */
+    }
+}
+

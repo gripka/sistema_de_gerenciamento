@@ -101,7 +101,6 @@ button[type="submit"]:hover {
     margin-top: 40px; /* Deixe espaço para a barra de busca */
 }
 
-/* Restante do seu CSS */
 
 #modulo-select {
     margin-top: 40px; /* Deixe espaço para a barra de busca */
@@ -115,11 +114,6 @@ button[type="submit"]:hover {
     max-width: 450px; /* Adapte conforme necessário */
 }
 
-/* ... outros estilos ... */
-
-
-/* ... outros estilos ... */
-
 #transacoes-container.transacoes-scrollable,
 #modulos-container.transacoes-scrollable { /* Seletor mais específico */
     max-height: 200px; 
@@ -129,4 +123,10 @@ button[type="submit"]:hover {
     margin-bottom: 20px;
 }
 
-/* ... outros estilos ... */
+.transacoes-scrollable {
+    max-height: 200px; /* ajuste conforme necessário */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-top: 20px;
+}

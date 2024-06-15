@@ -22,7 +22,6 @@
             </div>
         {% endif %}
 
-
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -52,8 +51,6 @@
     </div>
 </div>
 
-
-
 <script>
     document.getElementById('transacao-search').addEventListener('input', function() {
         var searchTerm = this.value.toLowerCase();
@@ -65,4 +62,4 @@
     });
     </script>
     
-    {% endblock %}
+{% endblock %}

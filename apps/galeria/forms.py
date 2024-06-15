@@ -1,11 +1,15 @@
+import django_filters
+
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User, Group
-from django.db import models
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+
 from django_select2.forms import ModelSelect2MultipleWidget
 
-import django_filters
-from django.contrib.auth.models import Group
+from .models import Modulo, Transacao
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -44,7 +48,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    first_name = forms.CharField(  # Altere 'nome' para 'first_name'
+    first_name = forms.CharField( 
         label="Nome",
         required=True,
         max_length=100,
@@ -55,7 +59,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    last_name = forms.CharField(   # Altere 'sobrenome' para 'last_name'
+    last_name = forms.CharField(
         label="Sobrenome",
         required=True,
         max_length=100,
@@ -70,7 +74,7 @@ class CadastroForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name')  # Use os nomes corretos
+        fields = ('username', 'email', 'first_name', 'last_name') 
 
     def clean_username(self):
         nome = self.cleaned_data.get("username")
@@ -89,12 +93,13 @@ class CadastroForm(UserCreationForm):
             raise forms.ValidationError("Este e-mail já está cadastrado.")
         return email
 
+
 class EditarUsuarioForm(forms.ModelForm):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label='Perfis',
-        required=False  # Tornar o campo opcional
+        required=False 
     )
 
     class Meta:
@@ -109,51 +114,55 @@ class GroupFilter(django_filters.FilterSet):
         model = Group
         fields = ['name']
 
-# forms.py
-
-from django import forms
-from django.contrib.auth.models import Group, Permission
-from .models import Modulo
 
 class GroupForm(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
         queryset=Permission.objects.all(),
         required=False,
-        widget=forms.CheckboxSelectMultiple
+        widget=forms.CheckboxSelectMultiple,
+        label='Permissões'
     )
-    modulo = forms.ModelMultipleChoiceField(  # Mudança para ModelMultipleChoiceField
+    modulos = forms.ModelMultipleChoiceField(
         queryset=Modulo.objects.all(),
         required=False,
-        widget=forms.CheckboxSelectMultiple  # Adicionando widget para exibição de checkboxes
+        widget=forms.CheckboxSelectMultiple,
+        label='Módulos'
+    )
+    transacoes = forms.ModelMultipleChoiceField(
+        queryset=Transacao.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Transações'
     )
 
     class Meta:
         model = Group
-        fields = ['name', 'permissions']    # Adicionando o campo 'modulo' aos campos do formulário
-
+        fields = ['name', 'permissions', 'modulos', 'transacoes']
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.fields['permissions'].initial = self.instance.permissions.all()
-            if hasattr(self.instance, 'modulo'):
-                self.fields['modulo'].initial = self.instance.modulo
+            self.fields['modulos'].initial = self.instance.modulo_set.all()
+            self.fields['transacoes'].initial = self.instance.transacoes.all()
 
+    def save(self, commit=True):
+        instance = super().save(commit=False)
 
+        if commit:
+            instance.save()
 
+        instance.permissions.set(self.cleaned_data['permissions'])
+        instance.modulo_set.set(self.cleaned_data['modulos'])
+        instance.transacoes.set(self.cleaned_data['transacoes'])
 
-    
+        if commit:
+            instance.save()
 
-    
-    
+        return instance
 
-
-
-from django import forms
-from .models import Modulo, Transacao
 
 class ModuloForm(forms.ModelForm):
-    # Campo personalizado para selecionar transações
     transacoes = forms.ModelMultipleChoiceField(queryset=Transacao.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
 
     class Meta:
@@ -163,7 +172,6 @@ class ModuloForm(forms.ModelForm):
     def clean_nome(self):
         nome = self.cleaned_data['nome']
         
-        # Verifica se já existe um módulo com o mesmo nome, excluindo o módulo atual (se existir)
         if Modulo.objects.filter(nome__iexact=nome).exclude(pk=self.instance.pk if self.instance else None).exists():
             raise ValidationError('Já existe um módulo com este nome.')
         
@@ -171,21 +179,15 @@ class ModuloForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(ModuloForm, self).__init__(*args, **kwargs)
-        # Se estiver editando um módulo existente, pré-selecione as transações associadas a ele
         if self.instance.pk:
             self.fields['transacoes'].initial = self.instance.transacoes.all()
 
     def save(self, commit=True):
-        # Salvar o módulo e as transações associadas
         modulo = super(ModuloForm, self).save(commit=commit)
         if commit:
             modulo.transacoes.set(self.cleaned_data['transacoes'])
         return modulo
 
-from django import forms
-from django.core.exceptions import ValidationError
-from .models import Transacao
-from django.contrib.auth.models import Permission
 
 class TransacaoForm(forms.ModelForm):
     permissoes = forms.ModelMultipleChoiceField(
@@ -203,7 +205,6 @@ class TransacaoForm(forms.ModelForm):
         nome = self.cleaned_data['nome'].upper()
         transacao_id = self.instance.pk
 
-        # Verifique se já existe uma transação com o mesmo nome, mas ignore a transação atual
         if Transacao.objects.filter(nome=nome).exclude(pk=transacao_id).exists():
             raise ValidationError('Já existe uma transação com este nome.')
         return nome
@@ -218,21 +219,14 @@ class TransacaoForm(forms.ModelForm):
         transacao = super().save(commit=False)
         if commit:
             transacao.save()
-            self.save_m2m()  # Salva as relações Many-to-Many
+            self.save_m2m()  
         return transacao
 
-
-
-
-
-from django import forms
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
 
 class FuncaoForm(forms.ModelForm):
     class Meta:
         model = Permission
-        fields = ['name', 'codename', 'content_type']  # Inclua 'content_type' aqui
+        fields = ['name', 'codename', 'content_type']  
 
 
     def __init__(self, *args, **kwargs):
@@ -249,11 +243,10 @@ class FuncaoForm(forms.ModelForm):
             existing_permission = Permission.objects.filter(
                 name=name,
                 content_type=content_type
-            ).exclude(id=self.instance.id if self.instance else None).exists()  # Exclui a instância atual se estiver editando
+            ).exclude(id=self.instance.id if self.instance else None).exists() 
 
             if existing_permission:
                 raise ValidationError(
                     'Já existe uma permissão com este nome para este tipo de conteúdo.'
                 )
         return cleaned_data
-

@@ -22,9 +22,6 @@
             </div>
         {% endif %}
 
-
-
-
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -33,8 +30,18 @@
             </div>            
 
             <div class="form-group">
-                {{ form.permissions.label_tag }}
-                {{ form.permissions }}
+                <label for="funcoes">Funções:</label>
+                <input type="text" id="funcoes-search" placeholder="Buscar funções">
+                <div id="funcoes-container" class="transacoes-scrollable">
+                    {% for permission in form.permissions %}
+                        <div class="checkbox">
+                            <label>
+                                {{ permission.tag }} 
+                                {{ permission.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="form-group">
@@ -44,7 +51,23 @@
                     {% for modulo in modulos %}
                         <div class="checkbox">
                             <label>
-                                <input type="checkbox" name="modulos" value="{{ modulo.id }}"> {{ modulo.nome }}
+                                <input type="checkbox" name="modulos" value="{{ modulo.id }}"> 
+                                {{ modulo.nome }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="transacoes">Transações:</label>
+                <input type="text" id="transacao-search" placeholder="Buscar transações">
+                <div id="transacoes-container" class="transacoes-scrollable">
+                    {% for transacao in transacoes_disponiveis %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="transacoes" value="{{ transacao.id }}"> 
+                                {{ transacao.nome }}
                             </label>
                         </div>
                     {% endfor %}
@@ -59,7 +82,25 @@
 <script>
     document.getElementById('modulo-search').addEventListener('input', function() {
         var searchTerm = this.value.toLowerCase();
-        var options = document.querySelectorAll('#modulo-select option');
+        var options = document.querySelectorAll('#modulos-container .checkbox');
+        options.forEach(function(option) {
+            var label = option.textContent.toLowerCase();
+            option.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('transacao-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var options = document.querySelectorAll('#transacoes-container .checkbox');
+        options.forEach(function(option) {
+            var label = option.textContent.toLowerCase();
+            option.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('funcoes-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var options = document.querySelectorAll('#funcoes-container .checkbox');
         options.forEach(function(option) {
             var label = option.textContent.toLowerCase();
             option.style.display = label.includes(searchTerm) ? 'block' : 'none';

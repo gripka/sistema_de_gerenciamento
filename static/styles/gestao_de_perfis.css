@@ -130,3 +130,39 @@ body {
     color: white; /* Cor do texto */
     text-decoration: none; /* Remove sublinhado */
 }
+
+/* Responsividade */
+@media screen and (max-width: 1000px) {
+    .botoes-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .botao {
+        width: 30%;
+        margin-bottom: 10px;
+        font-size: 25px; /* Aumenta o tamanho da fonte de todos os botões */
+    }
+
+    /* Ajusta o tamanho do campo de pesquisa */
+    .campo-pesquisa {
+        padding: 10px;
+        font-size: 22px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    .header-container h2 {
+        font-size: 35px;
+    }
+
+    .botao-excluir-usuario,
+    .botao-editar-usuario {
+        padding: 12px 20px;
+        font-size: 18px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    .tabela-usuarios th,
+    .tabela-usuarios td {
+        font-size: 25px; /* Ajuste o tamanho da fonte conforme necessário */
+    }
+    
+}

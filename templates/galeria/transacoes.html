@@ -33,7 +33,7 @@
                                     <li>Nenhum módulo relacionado a esta transação.</li>
                                 {% endfor %}
                             </ul>
-                            <h6>Permissões Habilitadas:</h6> <!-- Adicionando esta seção -->
+                            <h6>Permissões Habilitadas:</h6>
                             <ul>
                                 {% if transacao.permissoes.exists %}
                                     {% for permissao in transacao.permissoes.all %}
@@ -56,7 +56,6 @@
         {% endfor %}
     </div>
 
-    <!-- Modal para excluir transação -->
     {% for transacao in transacoes %}
         <div class="modal fade" id="excluirTransacaoModal{{ transacao.id }}" tabindex="-1" role="dialog" aria-labelledby="excluirTransacaoModalLabel{{ transacao.id }}" aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -94,11 +93,10 @@ function filterTransactions() {
         const transactionBox = transactions[i];
         const title = transactionBox.getElementsByClassName('card-title')[0].innerText.toLowerCase();
         const description = transactionBox.getElementsByClassName('card-text')[0].innerText.toLowerCase();
-        const moduleNames = transactionBox.querySelectorAll('.card-text-container ul li'); // Selecionar todos os nomes dos módulos
+        const moduleNames = transactionBox.querySelectorAll('.card-text-container ul li'); 
 
         let found = false;
 
-        // Verificar se o nome da transação ou o nome do módulo contém o filtro
         if (title.indexOf(filter) !== -1 || description.indexOf(filter) !== -1) {
             found = true;
         } else {

@@ -158,3 +158,69 @@ body {
     color: white; /* Cor do texto ao passar o mouse */
     text-decoration: none; /* Remova a decoração do texto ao passar o mouse */
 }
+
+
+
+
+/* Estilos para telas menores que 768px (bootstrap breakpoint 'md') */
+@media (max-width: 767px) {
+    .transaction-box {
+        width: 100%;
+        max-width: none;
+        flex-grow: 1; /* Adiciona flex-grow */
+    }
+
+    body {
+        font-size: 16px;
+    }
+
+    .botao {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    h6 {
+        font-size: 14px;
+    }
+
+    .btn-secondary, .btn-danger {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* Estilos para telas entre 768px e 991px (bootstrap breakpoint 'md') */
+@media (min-width: 768px) and (max-width: 991px) {
+    .transaction-box {
+        width: calc(50% - 1rem);
+        max-width: none;
+        flex-grow: 1; /* Adiciona flex-grow */
+    }
+
+    body {
+        font-size: 25px;
+    }
+
+    .botao {
+        padding: 14px 28px;
+        font-size: 25px;
+    }
+
+    h6 {
+        font-size: 25px;
+    }
+
+    .btn-secondary, .btn-danger {
+        padding: 10px 20px;
+        font-size: 25px;
+    }
+}
+
+/* Estilos para telas menores que 1000px (2 cards por linha) */
+@media (max-width: 991px) {
+    .transaction-box {
+        width: calc(50% - 1rem);
+        max-width: none;
+        flex-grow: 1; /* Adiciona flex-grow */
+    }
+}

@@ -25,14 +25,12 @@
     </ul>
     {% endif %}
 
-    
-
     <div class="row" id="permissionsContainer">
         {% for funcao in funcoes %}
             <div class="col-md-4 col-lg-3 mb-4 permission-box">
                 <div class="card h-100">
                     <div class="card-header">
-                        <h6><strong>{{ funcao.content_type }}</strong></h6> <!-- Deixa "Content Type:" em negrito -->
+                        <h6><strong>{{ funcao.content_type }}</strong></h6> 
                     </div>
                     <div class="card-body">
                         <h5 class="card-title"><strong>{{ funcao.name }}</strong></h5>
@@ -60,7 +58,6 @@
         {% endfor %}
     </div>
 
-    <!-- Modal para excluir função -->
     {% for funcao in funcoes %}
         <div class="modal fade" id="excluirFuncaoModal{{ funcao.id }}" tabindex="-1" role="dialog" aria-labelledby="excluirFuncaoModalLabel{{ funcao.id }}" aria-hidden="true">
             <div class="modal-dialog" role="document">

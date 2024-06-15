@@ -20,17 +20,14 @@
                     {{ form.descricao }}
                 </div>
 
-                <!-- Campo de busca de permissões -->
                 <div class="form-group">
                     <label for="permissoes">Permissões:</label>
                     <input type="text" id="permissao-search" placeholder="Buscar permissões">
-                <!-- Contêiner das permissões -->
                     <div id="permissoes-container">
                         {% for permissao in permissoes %}
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" name="permissoes" value="{{ permissao.id }}" {% if permissao.checked %} checked {% endif %}>
-                                    <!-- Adicione instrução print para verificar os valores -->
                                     {% if permissao.name %}{{ permissao.name }} - {% endif %}
                                     {% if permissao.codename %}{{ permissao.codename }}{% endif %}
                                 </label>
@@ -43,7 +40,6 @@
             </form>
         </div>
 
-        <!-- Exibição de mensagens de sucesso ou erro -->
         {% block messages %}
         {% if messages %}
             <ul class="messages">

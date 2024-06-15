@@ -106,10 +106,6 @@ button[type="submit"]:hover {
 
 /* ... (seus estilos existentes) ... */
 
-#group-search {
-    /* ... (estilos do campo de busca) ... */
-}
-
 .group-results {
     width: 100%; 
     background-color: white;
@@ -137,4 +133,65 @@ button[type="submit"]:hover {
     /* ... (outros estilos do botão) ... */
 }
 
-/* ... (outros estilos) ... */
+/* Estilos para telas menores que 768px */
+@media (max-width: 767px) {
+    body {
+        font-size: 25px; /* Tamanho de fonte maior em telas pequenas */
+    }
+
+    .cadastro-container {
+        width: 90%; /* Ocupa mais espaço na tela */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    #group-search {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    button[type="submit"] {
+        padding: 15px 30px;
+    }
+
+    .group-results .checkbox {
+        padding: 12px;
+    }
+    .formulario-container button[type="submit"] { /* Aumenta o botão Salvar em telas pequenas */
+        padding: 15px 30px; /* Ajuste conforme necessário */
+        font-size: 18px;  /* Ajuste conforme necessário */
+        width: 100%; /* Ocupa toda a largura do container em telas pequenas */
+    }
+}
+
+/* Estilos para telas entre 768px e 992px */
+@media (min-width: 768px) and (max-width: 991px) {
+    body {
+        font-size: 25px; /* Tamanho de fonte maior em telas médias */
+    }
+
+    .cadastro-container {
+        width: 70%; /* Ocupa mais espaço na tela */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    #group-search {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    button[type="submit"] {
+        padding: 15px 30px;
+    }
+
+    .group-results .checkbox {
+        padding: 12px;
+    }
+    .formulario-container button[type="submit"] { /* Aumenta o botão Salvar em telas médias */
+        padding: 15px 30px; /* Ajuste conforme necessário */
+        font-size: 18px;  /* Ajuste conforme necessário */
+    }
+}

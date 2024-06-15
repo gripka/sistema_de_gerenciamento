@@ -16,34 +16,63 @@
             </ul>
         {% endif %}
 
+        {% if error_message %}
+            <div class="error-message">
+                {{ error_message }}
+            </div>
+        {% endif %}
+
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
                 <label for="nome">Nome do Grupo:</label>
-                {{ form.name }}
+                {{ form.name }} 
             </div>            
 
             <div class="form-group">
-                {{ form.permissions.label_tag }}
-                {{ form.permissions }}
+                <label for="funcoes">Funções:</label>
+                <input type="text" id="funcoes-search" placeholder="Buscar funções">
+                <div id="funcoes-container" class="transacoes-scrollable">
+                    {% for permission in form.permissions %}
+                        <div class="checkbox" data-selected="{% if permission.data.value in form.initial.permissions %}true{% else %}false{% endif %}">
+                            <label>
+                                {{ permission.tag }} 
+                                {{ permission.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
 
             <div class="form-group">
                 <label for="modulos">Módulos:</label>
+                <input type="text" id="modulo-search" placeholder="Buscar módulos">
                 <div id="modulos-container" class="transacoes-scrollable">
                     {% for modulo in modulos_disponiveis %}
-                        <div class="checkbox">
+                        <div class="checkbox" data-selected="{% if modulo in modulos_do_grupo %}true{% else %}false{% endif %}">
                             <label>
-                                <input type="checkbox" name="modulos" value="{{ modulo.id }}"
-                                    {% if modulo in modulos_do_grupo %} checked {% endif %}> 
+                                <input type="checkbox" name="modulos" value="{{ modulo.id }}" {% if modulo in modulos_do_grupo %}checked{% endif %}> 
                                 {{ modulo.nome }}
                             </label>
                         </div>
                     {% endfor %}
-
                 </div>
             </div>
             
+            <div class="form-group">
+                <label for="transacoes">Transações:</label>
+                <input type="text" id="transacao-search" placeholder="Buscar transações">
+                <div id="transacoes-container" class="transacoes-scrollable">
+                    {% for transacao in transacoes_disponiveis %}
+                        <div class="checkbox" data-selected="{% if transacao in transacoes_do_grupo %}true{% else %}false{% endif %}">
+                            <label>
+                                <input type="checkbox" name="transacoes" value="{{ transacao.id }}" {% if transacao in transacoes_do_grupo %}checked{% endif %}> 
+                                {{ transacao.nome }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
 
             <button type="submit">Salvar</button>
         </form>
@@ -51,9 +80,44 @@
 </div>
 
 <script>
+    function moveSelectedToTop(containerId) {
+    var container = document.getElementById(containerId);
+    var items = Array.from(container.getElementsByClassName('checkbox'));
+    items.sort(function(a, b) {
+        return (b.getAttribute('data-selected') === 'true') - (a.getAttribute('data-selected') === 'true');
+    });
+    items.forEach(function(item) {
+        container.appendChild(item);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    moveSelectedToTop('funcoes-container');
+    moveSelectedToTop('modulos-container');
+    moveSelectedToTop('transacoes-container');
+});
+
     document.getElementById('modulo-search').addEventListener('input', function() {
         var searchTerm = this.value.toLowerCase();
-        var options = document.querySelectorAll('#modulo-select option');
+        var options = document.querySelectorAll('#modulos-container .checkbox');
+        options.forEach(function(option) {
+            var label = option.textContent.toLowerCase();
+            option.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('transacao-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var options = document.querySelectorAll('#transacoes-container .checkbox');
+        options.forEach(function(option) {
+            var label = option.textContent.toLowerCase();
+            option.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+
+    document.getElementById('funcoes-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var options = document.querySelectorAll('#funcoes-container .checkbox');
         options.forEach(function(option) {
             var label = option.textContent.toLowerCase();
             option.style.display = label.includes(searchTerm) ? 'block' : 'none';

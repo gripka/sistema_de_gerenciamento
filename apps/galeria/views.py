@@ -1,94 +1,95 @@
-# apps/galeria/views.py
-from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.messages import success
+from django.core.paginator import Paginator
+from django.db.models import Q
+from django.db.models.functions import Lower, Substr, Coalesce
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
+from django.views import View
+from django.views.generic.edit import CreateView
 
-from django.views.generic.edit import CreateView  # Importar do módulo correto
-from .forms import CadastroForm  # Certifique-se de importar o formulário correto
-from django.contrib.messages import success
-from django.db.models import Q, Case, When, Value, CharField
+import csv
 
-from django.contrib.auth.forms import UserChangeForm, UserCreationForm
-from django.contrib.auth.models import User, Group
-
-from django.contrib import messages
-
-from django.core.paginator import Paginator
-
-from .forms import CadastroForm, EditarUsuarioForm
-
-from django.db.models.functions import Lower, Substr
-from django.db.models.functions import Concat, Lower, Substr, Coalesce
-
-from dal import autocomplete
-from .filters import GroupFilter  # Se o filtro estiver em um arquivo filters.py
-
+from .filters import GroupFilter
+from .forms import (
+    CadastroForm,
+    EditarUsuarioForm,
+    TransacaoForm,
+    GroupForm,
+    ModuloForm,
+    FuncaoForm,
+)
+from .models import Transacao, Modulo
 
 
 def index(request):
-    if not request.user.is_authenticated:  # Verifica se o usuário está autenticado
-        return redirect('usuarios:login')  # Redireciona para o login se não estiver
+    if not request.user.is_authenticated:
+        return redirect("usuarios:login")
 
-    return render(request, 'galeria/index.html')
+    return render(request, "galeria/index.html")
+
 
 def meu_perfil(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')  
-    return render(request, 'galeria/meu_perfil.html')
+    if not request.user.is_authenticated:
+        return redirect("usuarios:login")
+    return render(request, "galeria/meu_perfil.html")
 
-#Gerenciar usuarios ///
+
 @login_required
 def gerenciar_usuarios(request):
-    busca = request.GET.get('q', '')
-    page_number = request.GET.get('page')
+    busca = request.GET.get("q", "")
+    page_number = request.GET.get("page")
 
     usuarios = User.objects.annotate(
-        primeira_letra=Lower(Substr(Coalesce('first_name', 'username'), 1, 1))
-    ).order_by('primeira_letra')
+        primeira_letra=Lower(Substr(Coalesce("first_name", "username"), 1, 1))
+    ).order_by("primeira_letra")
 
     if busca:
         usuarios = usuarios.filter(
-            Q(username__icontains=busca) | 
-            Q(first_name__icontains=busca) | 
-            Q(last_name__icontains=busca) |
-            Q(email__icontains=busca)
+            Q(username__icontains=busca)
+            | Q(first_name__icontains=busca)
+            | Q(last_name__icontains=busca)
+            | Q(email__icontains=busca)
         )
 
-    paginator = Paginator(usuarios, 7)  # 7 usuários por página
+    paginator = Paginator(usuarios, 7)
     page_obj = paginator.get_page(page_number)
 
     grupos = Group.objects.all()
 
-    # Excluir usuário
-    if request.method == 'POST':
-        usuario_id = request.POST.get('usuario_id')
+    if request.method == "POST":
+        usuario_id = request.POST.get("usuario_id")
         try:
             usuario = User.objects.get(id=usuario_id)
             usuario.delete()
-            messages.success(request, 'Usuário excluído com sucesso!')
+            messages.success(request, "Usuário excluído com sucesso!")
         except User.DoesNotExist:
-            messages.error(request, 'Usuário não encontrado.')
-        
-        return redirect('galeria:gerenciar_usuarios')  # Redireciona para evitar reenvio do formulário
+            messages.error(request, "Usuário não encontrado.")
 
+        return redirect(
+            "galeria:gerenciar_usuarios"
+        )
 
-
-    # Cadastro de novo usuário
-    if request.method == 'POST' and 'cadastrar_usuario' in request.POST:
+    if request.method == "POST" and "cadastrar_usuario" in request.POST:
         form = CadastroForm(request.POST)
         if form.is_valid():
-            print(form.cleaned_data)  # Imprime os dados do formulário
+            print(form.cleaned_data) 
             usuario = form.save()
-            print(usuario)  # Imprime o objeto User criado
-            messages.success(request, 'Novo usuário cadastrado com sucesso!')
-            return redirect(f'{request.path}?page={page_obj.number}&q={busca}')  # Redireciona com página e busca
+            print(usuario) 
+            messages.success(request, "Novo usuário cadastrado com sucesso!")
+            return redirect(
+                f"{request.path}?page={page_obj.number}&q={busca}"
+            )  
     else:
         form = CadastroForm()
-        
-    # Edição de perfis de usuário existente
-    if request.method == 'POST' and 'editar_perfis' in request.POST:
-        usuario_id = request.POST.get('usuario_id')
-        perfis_selecionados = request.POST.getlist('perfis')
+
+    if request.method == "POST" and "editar_perfis" in request.POST:
+        usuario_id = request.POST.get("usuario_id")
+        perfis_selecionados = request.POST.getlist("perfis")
 
         usuario = get_object_or_404(User, pk=usuario_id)
         grupos_atuais = usuario.groups.all()
@@ -101,138 +102,137 @@ def gerenciar_usuarios(request):
             grupo = Group.objects.get(pk=perfil_id)
             usuario.groups.add(grupo)
 
-        messages.success(request, 'Perfis do usuário atualizados com sucesso!')
-        return redirect(f'{request.path}?page={page_obj.number}&q={busca}')  # Redireciona com página e busca
+        messages.success(request, "Perfis do usuário atualizados com sucesso!")
+        return redirect(
+            f"{request.path}?page={page_obj.number}&q={busca}"
+        ) 
 
-    return render(request, 'galeria/gerenciar_usuarios.html', {
-        'usuarios': page_obj, 
-        'grupos': grupos, 
-        'busca': busca,
-        'form': form,  # Passa o formulário para o template
-    })
+    return render(
+        request,
+        "galeria/gerenciar_usuarios.html",
+        {
+            "usuarios": page_obj,
+            "grupos": grupos,
+            "busca": busca,
+            "form": form, 
+        },
+    )
 
 
 class UserCreateView(CreateView):
-    form_class = CadastroForm  # Usar o nome correto do formulário
-    template_name = 'galeria/cadastro.html'
+    form_class = CadastroForm 
+    template_name = "galeria/cadastro.html"
 
     def form_valid(self, form):
         user = form.save()
-        success(self.request, 'Novo usuário cadastrado com sucesso!')  # Adiciona a mensagem de sucesso
-        return render(self.request, self.template_name, {'form': self.form_class()})  # Renderiza o formulário em branco novamente
-    
+        success(
+            self.request, "Novo usuário cadastrado com sucesso!"
+        )  
+        return render(
+            self.request, self.template_name, {"form": self.form_class()}
+        ) 
+
     def form_invalid(self, form):
-        return render(self.request, self.template_name, {'form': form})  # Renderiza o formulário com os erros
+        return render(
+            self.request, self.template_name, {"form": form}
+        ) 
+    
 
 @login_required
 def editar_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
     group_filter = GroupFilter(request.GET, queryset=Group.objects.all())
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = EditarUsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
             usuario = form.save(commit=False)
             usuario.groups.clear()
-            for group_id in form.cleaned_data['groups']:
-                group = Group.objects.get(pk=group_id.pk)  # Correção aqui: obter o ID do grupo (group_id.pk)
+            for group_id in form.cleaned_data["groups"]:
+                group = Group.objects.get(
+                    pk=group_id.pk
+                ) 
                 usuario.groups.add(group)
             usuario.save()
-            messages.success(request, 'Usuário editado com sucesso!')
+            messages.success(request, "Usuário editado com sucesso!")
         else:
-            messages.error(request, 'Erro ao editar usuário. Verifique os dados.')
+            messages.error(request, "Erro ao editar usuário. Verifique os dados.")
 
     else:
         form = EditarUsuarioForm(instance=usuario)
 
-    return render(request, 'galeria/editar_usuario.html', {
-        'form': form,
-        'usuario': usuario,
-        'filter': group_filter,
-    })
+    return render(
+        request,
+        "galeria/editar_usuario.html",
+        {
+            "form": form,
+            "usuario": usuario,
+            "filter": group_filter,
+        },
+    )
 
-
-
-
-
-from .models import Transacao  # Certifique-se de importar o modelo Transacao
 
 def transacoes(request):
-    if not request.user.is_authenticated:  
-        return redirect('usuarios:login')
-    
-    # Obtendo todas as transações do banco de dados
+    if not request.user.is_authenticated:
+        return redirect("usuarios:login")
+
     transacoes = Transacao.objects.all()
-    
-    # Passando as transações para o contexto do template
-    return render(request, 'galeria/transacoes.html', {'transacoes': transacoes})
 
+    return render(request, "galeria/transacoes.html", {"transacoes": transacoes})
 
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .models import Transacao
-from .forms import TransacaoForm
-from django.contrib.auth.models import Permission
 
 @login_required
 def criar_transacao(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TransacaoForm(request.POST)
         if form.is_valid():
-            transacao = form.save(commit=False)  # Salvar transação primeiro
+            transacao = form.save(commit=False)  
             transacao.save()
-            form.save_m2m()  # Salvar as relações Many-to-Many depois
-            messages.success(request, 'Transação criada com sucesso.')
-            return redirect('galeria:editar_transacao', transacao_id=transacao.id)
+            form.save_m2m()  
+            messages.success(request, "Transação criada com sucesso.")
+            return redirect("galeria:editar_transacao", transacao_id=transacao.id)
         else:
-            messages.error(request, 'Nome já existente')
+            messages.error(request, "Nome já existente")
     else:
         form = TransacaoForm()
 
     permissoes = Permission.objects.all()
     permissoes_formatadas = []
     for permissao in permissoes:
-        permissoes_formatadas.append({
-            'id': permissao.id,
-            'name': permissao.name,
-            'codename': permissao.codename,
-            'checked': False  # Por padrão, nenhuma permissão estará selecionada na criação
-        })
+        permissoes_formatadas.append(
+            {
+                "id": permissao.id,
+                "name": permissao.name,
+                "codename": permissao.codename,
+                "checked": False,  
+            }
+        )
 
-    return render(request, 'galeria/criar_transacao.html', {
-        'form': form,
-        'permissoes': permissoes_formatadas,
-    })
+    return render(
+        request,
+        "galeria/criar_transacao.html",
+        {
+            "form": form,
+            "permissoes": permissoes_formatadas,
+        },
+    )
 
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from .models import Transacao
-from .forms import TransacaoForm
-from django.contrib.auth.models import Permission
-
-from django.contrib import messages
 
 @login_required
 def editar_transacao(request, transacao_id):
     transacao = get_object_or_404(Transacao, id=transacao_id)
     permissoes = Permission.objects.all()
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = TransacaoForm(request.POST, instance=transacao)
         if form.is_valid():
             transacao = form.save(commit=False)
-            transacao.permissoes.set(form.cleaned_data['permissoes'])
+            transacao.permissoes.set(form.cleaned_data["permissoes"])
             transacao.save()
-            messages.success(request, 'Transação atualizada com sucesso.')
-            return redirect('galeria:editar_transacao', transacao_id=transacao.id)
+            messages.success(request, "Transação atualizada com sucesso.")
+            return redirect("galeria:editar_transacao", transacao_id=transacao.id)
         else:
-            messages.error(request, 'Nome já existente')
+            messages.error(request, "Nome já existente")
 
     else:
         form = TransacaoForm(instance=transacao)
@@ -240,156 +240,117 @@ def editar_transacao(request, transacao_id):
     permissoes_formatadas = []
     for permissao in permissoes:
         checked = permissao in transacao.permissoes.all()
-        permissoes_formatadas.append({
-            'id': permissao.id,
-            'name': permissao.name,
-            'codename': permissao.codename,
-            'checked': checked
-        })
+        permissoes_formatadas.append(
+            {
+                "id": permissao.id,
+                "name": permissao.name,
+                "codename": permissao.codename,
+                "checked": checked,
+            }
+        )
 
-    return render(request, 'galeria/editar_transacao.html', {
-        'form': form,
-        'transacao': transacao,
-        'permissoes': permissoes_formatadas,
-    })
+    return render(
+        request,
+        "galeria/editar_transacao.html",
+        {
+            "form": form,
+            "transacao": transacao,
+            "permissoes": permissoes_formatadas,
+        },
+    )
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# views.py
-from django.shortcuts import render, redirect
-from .models import Transacao
 
 def excluir_transacao(request, pk):
     transacao = Transacao.objects.get(pk=pk)
     transacao.delete()
-    # Redirecione para a página desejada após a exclusão
-    return redirect('galeria:transacoes')
-
-
-
-
+    return redirect("galeria:transacoes")
 
 
 @login_required
 def gestao_de_perfis(request):
-    grupos = Group.objects.all()  # Buscar todos os grupos do banco de dados
-    return render(request, 'galeria/gestao_de_perfis.html', {'grupos': grupos, 'teste': 'Olá, mundo!'})
+    grupos = Group.objects.all() 
+    return render(
+        request,
+        "galeria/gestao_de_perfis.html",
+        {"grupos": grupos, "teste": "Olá, mundo!"},
+    )
+
 
 @login_required
 def excluir_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         usuario.delete()
-        return redirect('galeria:gerenciar_usuarios')
-    
-from django.http import JsonResponse
-from django.contrib.auth.models import Group
-from django.db.models import Q
+        return redirect("galeria:gerenciar_usuarios")
+
 
 def buscar_grupos(request):
-    query = request.GET.get('q', '')
+    query = request.GET.get("q", "")
     grupos = Group.objects.filter(Q(name__icontains=query))
-    data = [{'id': grupo.id, 'name': grupo.name} for grupo in grupos]
+    data = [{"id": grupo.id, "name": grupo.name} for grupo in grupos]
     return JsonResponse(data, safe=False)
 
 
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group, Permission
-from django.contrib import messages
-from django.forms import modelformset_factory
-
-
-
-
-from django.shortcuts import render, redirect
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from django.contrib import messages
-
-from .forms import GroupForm
-from .models import Modulo
-
 @login_required
 def criar_grupo(request):
-    if request.method == 'POST':
+    modulos = Modulo.objects.all()
+    transacoes_disponiveis = Transacao.objects.all()
+
+    if request.method == "POST":
         form = GroupForm(request.POST)
         if form.is_valid():
             grupo = form.save()
 
-            modulos_ids = request.POST.getlist('modulos', [])
-            if modulos_ids:
-                # Filtra as permissões pelo tipo de conteúdo do modelo Modulo e pelos IDs dos módulos selecionados
-                content_type = ContentType.objects.get_for_model(Modulo) 
-                permissoes_modulos = Permission.objects.filter(
-                    content_type=content_type,
-                    codename__in=[f'change_{modulo.nome.lower()}' for modulo in Modulo.objects.filter(id__in=modulos_ids)]
-                )
-                # Associe as permissões encontradas ao grupo
-                grupo.permissions.set(permissoes_modulos) 
+            transacoes_ids = request.POST.getlist("transacoes", [])
+            if transacoes_ids:
+                transacoes = Transacao.objects.filter(id__in=transacoes_ids)
+                grupo.transacoes.set(transacoes)
 
-            messages.success(request, 'Perfil criado com sucesso!')
-            return redirect('galeria:gestao_de_perfis')
+            modulos_ids = request.POST.getlist("modulos", [])
+            if modulos_ids:
+                modulos = Modulo.objects.filter(id__in=modulos_ids)
+                grupo.modulo_set.set(modulos) 
+
+            messages.success(request, "Grupo criado com sucesso!")
+            return redirect("galeria:gestao_de_perfis")
         else:
-            # Adicione as mensagens de erro do formulário ao contexto de mensagens do Django
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, error) 
+                    messages.error(request, error)
+
     else:
         form = GroupForm()
+        
+    context = {
+        "form": form,
+        "modulos": modulos,
+        "transacoes_disponiveis": transacoes_disponiveis,
+    }
+    return render(request, "galeria/criar_grupo.html", context)
 
-    modulos = Modulo.objects.all()
-    return render(request, 'galeria/criar_grupo.html', {'form': form, 'modulos': modulos})
-
-
-
-
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from .forms import GroupForm
-from .models import Modulo
 
 @login_required
 def editar_grupo(request, grupo_id):
     grupo = get_object_or_404(Group, pk=grupo_id)
     modulos_disponiveis = Modulo.objects.all()
+    transacoes_disponiveis = Transacao.objects.all()
     
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=grupo)
         if form.is_valid():
-            grupo = form.save()
-            
-            for modulo in modulos_disponiveis:
-                if str(modulo.id) in request.POST.getlist('modulos'):
-                    modulo.grupos.add(grupo)
-                else:
-                    modulo.grupos.remove(grupo)
-            
+            grupo = form.save(commit=False)
+
+            transacoes_ids = request.POST.getlist("transacoes", [])
+            transacoes = Transacao.objects.filter(id__in=transacoes_ids)
+            grupo.transacoes.set(transacoes)
+
+            modulos_ids = request.POST.getlist("modulos", [])
+            modulos = Modulo.objects.filter(id__in=modulos_ids)
+            grupo.modulo_set.set(modulos)
+
+            form.save_m2m() 
+
             messages.success(request, 'Grupo editado com sucesso!')
             return redirect('galeria:gestao_de_perfis')
         else:
@@ -399,240 +360,289 @@ def editar_grupo(request, grupo_id):
     else:
         form = GroupForm(instance=grupo)
 
-    modulos_do_grupo = grupo.modulo_set.all()  # Use modulo_set.all()
+    modulos_do_grupo = grupo.modulo_set.all()
+    transacoes_do_grupo = grupo.transacoes.all()
 
     context = {
         'form': form,
         'modulos_disponiveis': modulos_disponiveis,
-        'modulos_do_grupo': modulos_do_grupo,  
+        'transacoes_disponiveis': transacoes_disponiveis,
+        'modulos_do_grupo': modulos_do_grupo,
+        'transacoes_do_grupo': transacoes_do_grupo,
     }
     return render(request, 'galeria/editar_grupo.html', context)
 
-
-
-
-
-
-
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.models import Group
 
 @login_required
 def excluir_grupo(request, pk):
     grupo = get_object_or_404(Group, pk=pk)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         grupo.delete()
-        messages.success(request, 'Perfil excluído com sucesso!')
-        return redirect('galeria:gestao_de_perfis')
+        messages.success(request, "Perfil excluído com sucesso!")
+        return redirect("galeria:gestao_de_perfis")
     else:
-        return render(request, 'galeria/confirmar_exclusao_grupo.html', {'grupo': grupo})
-    
+        return render(
+            request, "galeria/confirmar_exclusao_grupo.html", {"grupo": grupo}
+        )
 
-
-
-
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from .models import Modulo
-from .forms import ModuloForm
 
 @login_required
 def listar_modulos(request):
-    query = request.GET.get('q')
+    query = request.GET.get("q")
     if query:
-        modulos = Modulo.objects.filter(Q(nome__icontains=query) | Q(descricao__icontains=query))
+        modulos = Modulo.objects.filter(
+            Q(nome__icontains=query) | Q(descricao__icontains=query)
+        )
     else:
         modulos = Modulo.objects.all()
-    return render(request, 'galeria/modulos.html', {'modulos': modulos})
+    return render(request, "galeria/modulos.html", {"modulos": modulos})
 
-from .models import Transacao, Modulo
-from .forms import ModuloForm
-from django.contrib import messages
-from django.shortcuts import render, redirect
 
 @login_required
 def criar_modulo(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ModuloForm(request.POST)
         if form.is_valid():
             modulo = form.save()
-            transacoes_ids = request.POST.getlist('transacoes')
+            transacoes_ids = request.POST.getlist("transacoes")
             for transacao_id in transacoes_ids:
                 transacao = Transacao.objects.get(id=transacao_id)
                 transacao.modulo = modulo
                 transacao.save()
-            messages.success(request, 'Módulo criado com sucesso!')
-            return redirect('nome_da_url_para_listar_modulos')
+            messages.success(request, "Módulo criado com sucesso!")
+            return redirect("galeria:criar_modulo")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(request, error) # Passa as mensagens de erro para o sistema de mensagens
+                    messages.error(
+                        request, error
+                    )  
     else:
         form = ModuloForm()
 
     transacoes = Transacao.objects.all()
-    return render(request, 'galeria/criar_modulo.html', {'form': form, 'transacoes': transacoes})
+    return render(
+        request, "galeria/criar_modulo.html", {"form": form, "transacoes": transacoes}
+    )
 
-
-
-
-
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from .models import Modulo, Transacao
-from .forms import ModuloForm
 
 @login_required
 def editar_modulo(request, pk):
     modulo = get_object_or_404(Modulo, pk=pk)
     error_message = None
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ModuloForm(request.POST, instance=modulo)
         if form.is_valid():
             modulo = form.save()
-            transacoes_ids = request.POST.getlist('transacoes')
-            modulo.transacoes.clear()  # Limpa todas as transações associadas
+            transacoes_ids = request.POST.getlist("transacoes")
+            modulo.transacoes.clear() 
             for transacao_id in transacoes_ids:
                 transacao = Transacao.objects.get(id=transacao_id)
-                modulo.transacoes.add(transacao)  # Adiciona as novas transações
-            messages.success(request, 'Módulo editado com sucesso!')
-            return redirect('galeria:listar_modulos')
+                modulo.transacoes.add(transacao)  
+            messages.success(request, "Módulo editado com sucesso!")
+            return redirect("galeria:listar_modulos")
         else:
-            # Se houver erro de validação (nome duplicado), adicione uma mensagem
-            if 'nome' in form.errors:
-                messages.error(request, form.errors['nome'][0])  # Exibe a mensagem de erro específica para o campo "nome"
+            if "nome" in form.errors:
+                messages.error(
+                    request, form.errors["nome"][0]
+                )  
     else:
         form = ModuloForm(instance=modulo)
-    
+
     transacoes = Transacao.objects.all()
     for transacao in transacoes:
         transacao.checked = transacao in modulo.transacoes.all()
-    
-    return render(request, 'galeria/editar_modulo.html', {'form': form, 'modulo': modulo, 'transacoes': transacoes})
+
+    return render(
+        request,
+        "galeria/editar_modulo.html",
+        {"form": form, "modulo": modulo, "transacoes": transacoes},
+    )
 
 
 @login_required
 def excluir_modulo(request, pk):
     modulo = get_object_or_404(Modulo, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         modulo.delete()
-        messages.success(request, 'Módulo excluído com sucesso!')
-        return redirect('galeria:listar_modulos')
-    return render(request, 'galeria/confirmar_exclusao_modulo.html', {'modulo': modulo})
+        messages.success(request, "Módulo excluído com sucesso!")
+        return redirect("galeria:listar_modulos")
+    return render(request, "galeria/confirmar_exclusao_modulo.html", {"modulo": modulo})
 
-
-
-
-
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.urls import reverse_lazy
-from django.views import View
-from django.contrib.auth.models import Permission
-from django.contrib import messages
-from .forms import FuncaoForm
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import render
-from django.contrib.auth.models import Permission
 
 @login_required
 def listar_funcoes(request):
     funcoes = Permission.objects.all()
-    return render(request, 'galeria/funcoes.html', {'funcoes': funcoes})
+    return render(request, "galeria/funcoes.html", {"funcoes": funcoes})
 
-
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import FuncaoForm
-from django.contrib.contenttypes.models import ContentType
 
 @login_required
 def criar_funcao(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = FuncaoForm(request.POST)
         if form.is_valid():
-            funcao = form.save(commit=False)  # Não salvar ainda
+            funcao = form.save(commit=False) 
 
-            content_type_ids = request.POST.getlist('content_type')
+            content_type_ids = request.POST.getlist("content_type")
             for content_type_id in content_type_ids:
                 content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type  # Associar o ContentType
-                funcao.save()  # Salvar a cada iteração
+                funcao.content_type = content_type 
+                funcao.save()  
 
-            messages.success(request, 'Função criada com sucesso!')
-            return redirect('galeria:listar_funcoes')
+            messages.success(request, "Função criada com sucesso!")
+            return redirect("galeria:listar_funcoes")
     else:
         form = FuncaoForm()
 
     content_types = ContentType.objects.all()
-    return render(request, 'galeria/criar_funcao.html', {'form': form, 'content_types': content_types})
-
-
-
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
-from django.contrib import messages
-from .forms import FuncaoForm
-from django.contrib.auth.models import Permission
-from django.contrib.contenttypes.models import ContentType
+    return render(
+        request,
+        "galeria/criar_funcao.html",
+        {"form": form, "content_types": content_types},
+    )
 
 
 @login_required
-def editar_funcao(request, pk):  # Recebe o ID da função
+def editar_funcao(request, pk): 
     funcao = get_object_or_404(Permission, pk=pk)
     content_types = ContentType.objects.all()
 
-    if request.method == 'POST':
-        form = FuncaoForm(request.POST, instance=funcao)  # Preenche o formulário com os dados da função existente
+    if request.method == "POST":
+        form = FuncaoForm(
+            request.POST, instance=funcao
+        )  
         if form.is_valid():
-            funcao = form.save(commit=False)  # Não salvar ainda
+            funcao = form.save(commit=False) 
 
-            content_type_ids = request.POST.getlist('content_type')
+            content_type_ids = request.POST.getlist("content_type")
             for content_type_id in content_type_ids:
                 content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type  # Associar o ContentType
-                funcao.save()  # Salvar a cada iteração
+                funcao.content_type = content_type  
+                funcao.save()  
 
-            messages.success(request, 'Função editada com sucesso!')
-            return redirect('galeria:listar_funcoes')  # Nome da URL para a listagem de funções (criar se não existir)
+            messages.success(request, "Função editada com sucesso!")
+            return redirect(
+                "galeria:listar_funcoes"
+            )  
     else:
-        form = FuncaoForm(instance=funcao)  # Preenche o formulário com os dados da função existente
-    return render(request, 'galeria/editar_funcao.html', {'form': form, 'content_types': content_types, 'funcao': funcao})
+        form = FuncaoForm(
+            instance=funcao
+        )  
+    return render(
+        request,
+        "galeria/editar_funcao.html",
+        {"form": form, "content_types": content_types, "funcao": funcao},
+    )
 
-
-
-
-
-from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib import messages
-from django.contrib.auth.models import Permission
 
 @login_required
 def excluir_funcao(request, pk):
     funcao = get_object_or_404(Permission, pk=pk)
-    if request.method == 'POST':
+    if request.method == "POST":
         funcao.delete()
-        messages.success(request, 'Função excluída com sucesso!')
-        return redirect('galeria:listar_funcoes')
+        messages.success(request, "Função excluída com sucesso!")
+        return redirect("galeria:listar_funcoes")
 
+
+@login_required
+@permission_required("galeria.VSRS")
+def relatorios(request):
+    usuarios = User.objects.all()
+    perfis = Group.objects.all()
+    modulos = Modulo.objects.all()
+    transacoes = Transacao.objects.all()
+    permissoes = Permission.objects.all()
+
+    context = {
+        "usuarios": usuarios,
+        "perfis": perfis,
+        "modulos": modulos,
+        "transacoes": transacoes,
+        "permissoes": permissoes,
+    }
+    return render(request, "galeria/relatorios.html", context)
+
+
+@login_required
+@permission_required("galeria.vsrs", raise_exception=True)
+def exportar_relatorios(request):
+    usuarios = User.objects.all()
+    perfis = Group.objects.all()
+    modulos = Modulo.objects.all()
+    transacoes = Transacao.objects.all()
+    permissoes = Permission.objects.all()
+
+    response = HttpResponse(content_type="text/csv")
+    response["Content-Disposition"] = 'attachment; filename="relatorios.csv"'
+
+    writer = csv.writer(response)
+
+    writer.writerow(
+        [
+            "Usuário",
+            "Nome",
+            "Sobrenome",
+            "Email",
+            "Data de Cadastro", 
+            "Perfis de Usuários",
+            "Lista de Módulos",
+            "Lista de Transações",
+            "Lista de Funções Cadastradas",
+        ]
+    )
+
+    max_rows = max(
+        len(usuarios), len(perfis), len(modulos), len(transacoes), len(permissoes)
+    )
+
+    for i in range(max_rows):
+        usuario = usuarios[i] if i < len(usuarios) else None
+        perfil = perfis[i] if i < len(perfis) else None
+        modulo = modulos[i] if i < len(modulos) else None
+        transacao = transacoes[i] if i < len(transacoes) else None
+        permissao = permissoes[i] if i < len(permissoes) else None
+
+        writer.writerow(
+            [
+                usuario.username if usuario else "",
+                usuario.first_name if usuario else "",
+                usuario.last_name if usuario else "",
+                usuario.email if usuario else "",
+                (
+                    usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S") if usuario else ""
+                ),  
+                perfil.name if perfil else "",
+                f"{modulo.nome} - {modulo.descricao}" if modulo else "",
+                f"{transacao.nome} - {transacao.descricao}" if transacao else "",
+                f"{permissao.name} - {permissao.codename}" if permissao else "",
+            ]
+        )
+
+    return response
+
+
+def usuarios_cadastrados(request):
+    usuarios = User.objects.all()
+    return render(request, "galeria/usuarios_cadastrados.html", {"usuarios": usuarios})
+
+
+def perfis_usuarios(request):
+    perfis = Group.objects.all()
+    return render(request, "galeria/perfis_usuarios.html", {"perfis": perfis})
+
+
+def lista_modulos(request):
+    modulos = Modulo.objects.all()
+    return render(request, "galeria/lista_modulos.html", {"modulos": modulos})
+
+
+def lista_transacoes(request):
+    transacoes = Transacao.objects.all()
+    return render(request, "galeria/lista_transacoes.html", {"transacoes": transacoes})
+
+
+def funcoes_cadastradas(request):
+    funcoes = Permission.objects.all()
+    return render(request, "galeria/funcoes_cadastradas.html", {"funcoes": funcoes})

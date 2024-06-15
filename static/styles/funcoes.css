@@ -154,3 +154,110 @@ body {
     color: white; /* Cor do texto ao passar o mouse */
     text-decoration: none; /* Remova a decoração do texto ao passar o mouse */
 }
+
+
+/* Estilos Gerais da Página */
+/* ... (seus estilos anteriores) ... */
+
+/* Sobrescrevendo o Bootstrap com Media Queries */
+@media (max-width: 767px) { /* Telas pequenas (até 767px) */
+    .permission-box { /* Alvo para os cards de função */
+        width: 100%; /* Ocupa a largura total da tela */
+        max-width: none;
+        flex-grow: 1; /* Permite que o card cresça para preencher o espaço */
+    }
+
+    body {
+        font-size: 16px;
+    }
+
+    .botao {
+        padding: 12px 24px;
+        font-size: 16px;
+    }
+
+    h5, h6 { /* Aumenta o tamanho de h5 e h6 */
+        font-size: 14px;
+    }
+
+    .btn-secondary, .btn-danger {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    .botao-cadastrar, .botao-buscar { /* Aumenta os botões em telas pequenas */
+        padding: 12px 24px; /* Ajuste conforme necessário */
+        font-size: 16px;  /* Ajuste conforme necessário */
+    }
+
+    .campo-pesquisa { /* Aumenta a barra de pesquisa em telas pequenas */
+        padding: 10px;  /* Ajuste conforme necessário */
+        font-size: 16px; /* Ajuste conforme necessário */
+    }
+    p { /* Aumenta o tamanho do parágrafo em telas pequenas */
+        font-size: 14px; /* Ou outro valor adequado */
+    }
+
+    .card-text-container h6 { /* Aumenta o texto abaixo do perfil em telas pequenas */
+        font-size: 14px; /* Ou outro valor adequado */
+    }
+    .card-text-container ul li { /* Aumenta o tamanho do li em telas pequenas */
+        font-size: 14px; /* Ou outro valor adequado */
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) { /* Telas médias (768px - 991px) */
+    .permission-box {
+        width: calc(50% - 1rem); /* Duas colunas por linha */
+        max-width: none;
+        flex-grow: 1;
+    }
+
+    body {
+        font-size: 25;
+    }
+
+    .botao {
+        padding: 14px 28px;
+        font-size: 25;
+    }
+
+    h5, h6 { 
+        font-size: 25px;
+    }
+
+    .btn-secondary, .btn-danger {
+        padding: 10px 20px;
+        font-size: 25px;
+    }
+    .botao-cadastrar, .botao-buscar { /* Aumenta os botões em telas médias */
+        padding: 14px 28px; /* Ajuste conforme necessário */
+        font-size: 25;  /* Ajuste conforme necessário */
+    }
+    .botoes-container { /* Aumenta os botões em telas médias */
+        padding: 14px 28px; /* Ajuste conforme necessário */
+        font-size: 25px;  /* Ajuste conforme necessário */
+    }
+
+    .campo-pesquisa { /* Aumenta a barra de pesquisa em telas médias */
+        padding: 12px;  /* Ajuste conforme necessário */
+        font-size: 25px; /* Ajuste conforme necessário */
+    }
+    p { /* Aumenta o tamanho do parágrafo em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+
+    .card-text-container h6 { /* Aumenta o texto abaixo do perfil em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+    .card-text-container ul li { /* Aumenta o tamanho do li em telas pequenas */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+}
+
+@media (max-width: 991px) { /* Garante 2 colunas em telas até 991px */
+    .permission-box {
+        width: calc(50% - 1rem);
+        max-width: none;
+        flex-grow: 1;
+    }
+}

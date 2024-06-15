@@ -20,7 +20,6 @@
                     {{ form.descricao }}
                 </div>
 
-                <!-- Adicionando a barra de busca e a lista de transações -->
                 <div class="form-group">
                     <label for="transacoes">Selecione as transações:</label>
                     <input type="text" id="transacao-search" placeholder="Buscar transações">
@@ -39,9 +38,7 @@
                 <button type="submit">Salvar</button>
             </form>
         </div>
-
-
-        <!-- Exibição de mensagens de sucesso ou erro -->
+        
         {% block messages %}
             {% if messages %}
                 <ul class="messages">
