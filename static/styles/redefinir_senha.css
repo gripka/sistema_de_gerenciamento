@@ -1,0 +1,92 @@
+/* Estilos Gerais (copiados do recuperar_senha.css) */
+body, html {
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.top-background {
+    background-color: rgb(2, 72, 36);
+    height: 35%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Container de Redefinição de Senha */
+.redefinir-senha-container {
+    width: 400px; /* Largura para telas maiores */
+    padding: 32px;
+    background-color: rgba(0, 166, 81, 100%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.redefinir-senha-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 48px;
+    font-weight: 400;
+    word-wrap: break-word;
+}
+
+/* Campos do Formulário */
+.redefinir-senha-container input[type="password"] {
+    width: calc(100% - 32px);
+    padding: 15px;
+    margin: 8px 0;
+    display: block;
+    border: 1px solid #000000;
+    box-sizing: border-box;
+    border-radius: 5px;
+}
+
+/* Botão */
+.redefinir-senha-container button {
+    background-color: rgb(2, 72, 36);
+    color: white;
+    padding: 14px 20px;
+    margin: 16px auto;
+    border: none;
+    cursor: pointer;
+    border-radius: 20px;
+    width: 100%;
+    font-weight: bold;
+}
+
+.redefinir-senha-container button:hover {
+    opacity: 0.9;
+}
+
+/* Mensagens de Erro do Formulário */
+.redefinir-senha-container .errorlist {
+    color: red;
+    margin-bottom: 10px;
+}
+
+/* Link Voltar ao Login */
+.redefinir-senha-container .back-button {
+    display: block;
+    text-align: center;
+    color: white;
+    text-decoration: none;
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+.redefinir-senha-container .back-button:hover {
+    text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+    .redefinir-senha-container {
+        width: 80%;
+        padding: 15px;
+    }
+}

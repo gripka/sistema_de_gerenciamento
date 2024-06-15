@@ -1,0 +1,122 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/relatorios.css' %}">
+
+<div class="btn-export-container ml-auto">
+    <form action="{% url 'galeria:exportar_relatorios' %}" method="get">
+        <button type="submit" class="btn btn-export">Exportar para CSV</button>
+    </form>
+</div>
+
+<div class="btn-relatorios-container">
+    <div class="btn-group" role="group">
+        <a href="{% url 'galeria:relatorios' %}" class="btn btn-primary">Relatórios</a>
+        <a href="{% url 'galeria:usuarios_cadastrados' %}" class="btn btn-primary">Usuários Cadastrados</a>
+        <a href="{% url 'galeria:perfis_usuarios' %}" class="btn btn-primary">Perfis de Usuários</a>
+        <a href="{% url 'galeria:lista_modulos' %}" class="btn btn-primary">Lista de Módulos</a>
+        <a href="{% url 'galeria:lista_transacoes' %}" class="btn btn-primary">Lista de Transações</a>
+        <a href="{% url 'galeria:funcoes_cadastradas' %}" class="btn btn-primary">Funções Cadastradas</a>
+    </div>
+</div>
+
+    <h3 id="usuarios" class="relatorio-titulo">Usuários Cadastrados</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Usuário</th>
+                <th>Nome</th>
+                <th>Sobrenome</th>
+                <th>Email</th>
+                <th>Data de Cadastro</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usuario in usuarios %}
+            <tr>
+                <td>{{ usuario.username }}</td>
+                <td>{{ usuario.first_name }}</td>
+                <td>{{ usuario.last_name }}</td>
+                <td>{{ usuario.email }}</td>
+                <td>{{ usuario.date_joined }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 id="perfis" class="relatorio-titulo">Perfis de Usuários</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nome do Perfil</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for perfil in perfis %}
+            <tr>
+                <td>{{ perfil.name }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 id="modulos" class="relatorio-titulo">Lista de Módulos</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nome do Módulo</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for modulo in modulos %}
+            <tr>
+                <td>{{ modulo.nome }}</td>
+                <td>{{ modulo.descricao }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 id="transacoes" class="relatorio-titulo">Lista de Transações</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nome da Transação</th>
+                <th>Descrição</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for transacao in transacoes %}
+            <tr>
+                <td>{{ transacao.nome }}</td>
+                <td>{{ transacao.descricao }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h3 id="funcoes" class="relatorio-titulo">Lista de Funções Cadastradas</h3>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nome da Função</th>
+                <th>Código</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for permissao in permissoes %}
+            <tr>
+                <td>{{ permissao.name }}</td>
+                <td>{{ permissao.codename }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="btn-export-container">
+        <form action="{% url 'galeria:exportar_relatorios' %}" method="get">
+            <button type="submit" class="btn btn-export">Exportar para CSV</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

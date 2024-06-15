@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/funcoes.css' %}">
+
+<div class="container-geral">
+    <div class="header-container">
+        <h2>Gestão de Funções</h2>
+
+        <div class="botoes-container">
+            <a href="{% url 'galeria:criar_funcao' %}" class="botao botao-cadastrar">Criar Nova Função</a>
+            <form method="get" class="busca-container">
+                <input type="text" id="searchInput" onkeyup="filterPermissions()" class="campo-pesquisa" placeholder="Pesquisar Funções...">
+                <button type="submit" class="botao botao-buscar">Buscar</button>
+            </form>
+        </div>
+    </div>
+    
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <div class="row" id="permissionsContainer">
+        {% for funcao in funcoes %}
+            <div class="col-md-4 col-lg-3 mb-4 permission-box">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6><strong>{{ funcao.content_type }}</strong></h6> 
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{ funcao.name }}</strong></h5>
+                        <div class="card-text-container">
+                            <p class="card-text">{{ funcao.codename }}</p>
+                            <h6><strong>Tipo de conteúdo:</strong> {{ funcao.content_type }}</h6>
+                            <h6>Perfis:</h6>
+                            <ul>
+                                {% for perfil in funcao.group_set.all %}
+                                    <li>{{ perfil.name }}</li>
+                                {% empty %}
+                                    <li>Nenhum perfil associado a esta função.</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <a href="{% url 'galeria:editar_funcao' funcao.pk %}" class="btn btn-secondary btn-sm">Editar</a>
+                        <button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#excluirFuncaoModal{{ funcao.id }}">Excluir</button>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>Nenhuma função encontrada.</p>
+        {% endfor %}
+    </div>
+
+    {% for funcao in funcoes %}
+        <div class="modal fade" id="excluirFuncaoModal{{ funcao.id }}" tabindex="-1" role="dialog" aria-labelledby="excluirFuncaoModalLabel{{ funcao.id }}" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="excluirFuncaoModalLabel{{ funcao.id }}">Excluir Função</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Tem certeza que deseja excluir a função "{{ funcao.name }}"?
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <form method="post" action="{% url 'galeria:excluir_funcao' funcao.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script>
+    function filterPermissions() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const permissionsContainer = document.getElementById('permissionsContainer');
+        const permissions = permissionsContainer.getElementsByClassName('permission-box');
+
+        for (let i = 0; i < permissions.length; i++) {
+            const permissionBox = permissions[i];
+            const title = permissionBox.getElementsByClassName('card-title')[0].innerText.toLowerCase();
+            const codename = permissionBox.getElementsByClassName('card-text')[0].innerText.toLowerCase();
+            if (title.indexOf(filter) > -1 || codename.indexOf(filter) > -1) {
+                permissionBox.style.display = "";
+            } else {
+                permissionBox.style.display = "none";
+            }
+        }
+    }
+</script>
+{% endblock %}

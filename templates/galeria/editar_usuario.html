@@ -2,49 +2,75 @@
 {% load static %}
 
 {% block content %}
-
-<link rel="stylesheet" type="text/css" href="{% static 'styles/cadastro.css' %}"> 
+<link rel="stylesheet" type="text/css" href="{% static 'styles/editar_usuario.css' %}">
 
 <div class="container-geral">
     <div class="cadastro-container">
-        <form method="post">
-            {% csrf_token %}
-            <h2>{% if usuario %}Editar Usuário: {{ usuario.username }}{% else %}Criar Novo Usuário{% endif %}</h2>
-            {% if usuario %}
-            <div class="form-group">
-                {{ form.first_name.label_tag }}
-                {{ form.first_name }}
-            </div>
+        <h2>{% if usuario %}Editar Usuário: {{ usuario.username }}{% else %}Criar Novo Usuário{% endif %}</h2>
+        
+        <div class="formulario-container">
+            <form method="post">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    {{ form.first_name.label_tag }}
+                    {{ form.first_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.last_name.label_tag }}
+                    {{ form.last_name }}
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                </div>
 
-            <div class="form-group">
-                {{ form.last_name.label_tag }}
-                {{ form.last_name }}
-            </div>
-
-            <div class="form-group">
-                {{ form.email.label_tag }}
-                {{ form.email }}
-            </div>
-            <div class="form-group">
-                {{ form.groups.label_tag }}
-                {{ form.groups }}
-            </div>
-            {% else %}
-                {{ form.as_p }}
-            {% endif %}
-            <button type="submit">Salvar</button>
-            
-            {% block messages %}
-                {% if messages %}
-                    <ul class="messages">
-                        {% for message in messages %}
-                            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                <div class="form-group">  
+                    <label for="group-search">Selecione os Perfis:</label>
+                    <input type="text" id="group-search" placeholder="Buscar Perfis">
+                
+                    <div class="group-results"> 
+                        {% for group in filter.qs %}
+                            <div class="checkbox">
+                                <input type="checkbox" name="groups" value="{{ group.id }}" {% if group in usuario.groups.all %} checked {% endif %}>
+                                <label>{{ group.name }}</label>
+                            </div>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-            {% endblock messages %}
-        </form>
+                    </div>
+                </div>
+                
+
+                <button type="submit">Salvar</button>
+            </form>
+            {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+        </div>
     </div>
 </div>
-{{ form.media }}
+
+<script>
+const groupSearch = document.getElementById('group-search');
+const groupResults = document.querySelector('.group-results');
+const allGroups = Array.from(groupResults.querySelectorAll('input[type="checkbox"]')).map(checkbox => ({
+    id: checkbox.value,
+    name: checkbox.nextElementSibling.textContent,
+    element: checkbox
+}));
+
+groupSearch.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    allGroups.forEach(group => {
+        const shouldShow = group.name.toLowerCase().includes(searchTerm);
+        group.element.parentElement.style.display = shouldShow ? 'block' : 'none';
+    });
+});
+
+</script>
+
 {% endblock %}

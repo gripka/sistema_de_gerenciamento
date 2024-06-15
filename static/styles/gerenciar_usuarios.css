@@ -71,7 +71,7 @@ h2 {
     display: table; /* Ou use display: grid para um layout mais flexível */
     width: 100%;
     border-collapse: collapse; /* Remove espaçamento entre as células */
-    table-layout: fixed;
+    table-layout: auto;
     margin: 0 auto;
     width: 100%; 
 }
@@ -87,7 +87,7 @@ h2 {
     min-width: 50px; /* Largura mínima para cada coluna */
     text-align: center;      /* Centraliza o texto horizontalmente */
     vertical-align: middle !important;  /* Centraliza o texto verticalmente */
-    width: 25%
+    width: auto;
 }
 
 .tabela-usuarios td, .tabela-usuarios th {
@@ -100,7 +100,7 @@ h2 {
 }
 
 .tabela-usuarios th { /* Segmenta os elementos <th> */
-    min-width: 120px; 
+    min-width: auto;
     padding: 8px; 
     text-align: left;
 }
@@ -151,11 +151,6 @@ h2 {
     color: white;
 }
 
-/* Estilos da Paginação */
-.paginacao {
-    text-align: center;
-    margin-top: 20px;
-}
 
 /* Estilos do Container da Busca */
 .busca-container {
@@ -208,7 +203,7 @@ h2 {
 .pagination {
     width: 100%; /* Ocupa toda a largura do container da tabela */
     margin-top: 1rem; /* Adiciona um espaçamento superior */
-    display: grid; /* Usa Grid Layout */
+    display: flex; /* Usa Grid Layout */
     justify-content: center; /* Centraliza horizontalmente */
 }
 
@@ -250,4 +245,79 @@ h2 {
     color: #fff; /* Cor do texto (branco) */
     background-color: #097600; /* Cor de fundo (azul primário) */
     border-color: #097600; /* Cor da borda (azul primário) */
+}
+
+
+.filtro-container {
+    /* Estilos para o container do filtro */
+    margin-bottom: 10px; /* Adicione um espaço entre a busca e o dropdown */
+}
+
+/* ... outros estilos ... */
+
+.grupos-container {
+    max-height: 100px; /* Altura máxima da caixa */
+    overflow-y: auto; /* Habilita a barra de rolagem vertical quando necessário */
+    border: 1px solid #ccc;
+    padding: 10px;
+}
+
+
+.grupos-container select {
+    /* Estilos para o dropdown */
+    width: 100%;
+}
+
+.pagination .btn.btn-outline-primary:active,
+.pagination .btn.btn-outline-primary:focus,
+.pagination .btn.btn-outline-secondary:active,
+.pagination .btn.btn-outline-secondary:focus {
+    color: #fff; /* Cor do texto quando clicado ou em foco */
+    background-color: #097600; /* Cor de fundo quando clicado ou em foco */
+    border-color: #097600; /* Cor da borda quando clicado ou em foco */
+}
+
+@media screen and (max-width: 1000px) {
+    /* Oculta a coluna de perfil em telas menores que 1000px */
+    .perfil-coluna {
+        display: none;
+    }
+
+    /* Ajusta o tamanho dos elementos para ocupar toda a largura da tela */
+    .container-geral {
+        max-width: 100%;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    /* Ajusta o tamanho da tabela */
+    .tabela-usuarios {
+        width: 100%;
+    }
+
+    /* Ajusta o tamanho do conteúdo das células da tabela */
+    .table td,
+    .table th {
+        padding: 15px;
+        font-size: 25px; /* Aumenta o tamanho da fonte para 25 pixels */
+    }
+
+    /* Ajusta o tamanho dos botões "Excluir" e "Editar" */
+    .botao-excluir-usuario,
+    .botao-editar-usuario {
+        padding: 12px 20px;
+        font-size: 18px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    /* Ajusta o tamanho do campo de pesquisa */
+    .campo-pesquisa {
+        padding: 10px;
+        font-size: 22px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    /* Ajusta o tamanho dos botões de paginação */
+    .pagination .btn {
+        padding: 10px 15px;
+        font-size: 22px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
 }

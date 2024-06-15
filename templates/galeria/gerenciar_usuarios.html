@@ -6,7 +6,6 @@
 
 <div class="container-geral">
 
-
     <div class="usuarios-cadastrados-container">
         <h2>Usuários Cadastrados</h2>
 
@@ -22,7 +21,7 @@
                 <tr>
                     <th>Nome</th>
                     <th>E-mail</th>
-                    <th>Perfil</th>
+                    <th class="perfil-coluna">Perfil</th>
                     <th></th>
                 </tr>
             </thead>
@@ -36,45 +35,50 @@
                         {% else %}
                             {{ usuario.username }} 
                         {% endif %}
-                        <td>{{ usuario.email }}</td>
-                        <td>
+                    </td>
+                    <td>{{ usuario.email }}</td>
+                    <td class="perfil-coluna">
+                        {% if window.innerWidth >= 768 %}
+                            Perfil
+                        {% else %}
                             {% for grupo in usuario.groups.all %}
                                 {{ grupo.name }}
                                 {% if not forloop.last %}, {% endif %}
                             {% endfor %}
-                        </td>
-                        <td>
-                    </div>
-                    <div class="coluna acoes">
-                        <div style="display: flex; gap: 0.5rem;" role="group" aria-label="Ações do Usuário">
-                        <a href="{% url 'galeria:editar_usuario_id' usuario.id %}" class="botao-editar-usuario">Editar</a>
-                        <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ usuario.id }}"> Excluir </button>
-                    </div>
-                        <!-- Modal -->
-                        <div class="modal fade" id="excluirModal{{ usuario.id }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ usuario.id }}" aria-hidden="true">
-                            <div class="modal-dialog" role="document">
-                                <div class="modal-content"> 
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="excluirModalLabel{{ usuario.id }}">Confirmar Exclusão</h5>
-                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                            <span aria-hidden="true">&times;</span>
-                                        </button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Tem certeza que deseja excluir o usuário {{ usuario.username }}?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                        <form method="post" action="{% url 'galeria:gerenciar_usuarios' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
-                                            <button type="submit" class="btn btn-danger">Excluir</button>
-                                        </form>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <div class="coluna acoes">
+                            <div style="display: flex; gap: 0.5rem;" role="group" aria-label="Ações do Usuário">
+                                <a href="{% url 'galeria:editar_usuario_id' usuario.id %}" class="botao-editar-usuario">Editar</a>
+                                <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ usuario.id }}"> Excluir </button>
+                            </div>
+                            <div class="modal fade" id="excluirModal{{ usuario.id }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ usuario.id }}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content"> 
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="excluirModalLabel{{ usuario.id }}">Confirmar Exclusão</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Tem certeza que deseja excluir o usuário {{ usuario.username }}?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                            <form method="post" action="{% url 'galeria:gerenciar_usuarios' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" name="usuario_id" value="{{ usuario.id }}">
+                                                <button type="submit" class="btn btn-danger">Excluir</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
@@ -87,11 +91,11 @@
                             <a href="?page=1&q={{ busca }}" class="btn btn-outline-secondary">&laquo; primeira</a>
                             <a href="?page={{ usuarios.previous_page_number }}&q={{ busca }}" class="btn btn-outline-secondary">anterior</a>
                         {% endif %}
-    
+
                         <span class="current mx-2">
                             Página {{ usuarios.number }} de {{ usuarios.paginator.num_pages }}
                         </span>
-    
+
                         {% if usuarios.has_next %}
                             <a href="?page={{ usuarios.next_page_number }}&q={{ busca }}" class="btn btn-outline-primary">próxima</a>
                             <a href="?page={{ usuarios.paginator.num_pages }}&q={{ busca }}" class="btn btn-outline-primary">última &raquo;</a>

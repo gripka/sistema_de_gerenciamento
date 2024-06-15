@@ -1,15 +1,13 @@
 /* Estilos Gerais do Container */
 .container {
     display: flex; 
-    padding-left: 15%; /* Desconta o tamanho do menu */
     max-width: 1440px;
-
 }
 
 /* Estilos do Menu Lateral */
 .sidebar {
     width: 300px; /* Largura fixa do menu lateral */
-    height: 100vh; /* Ocupa toda a altura da janela de visualização */
+    height: 100%; /* Ocupa toda a altura da janela de visualização */
     background-color: #1B5B3A;
     padding: 20px;
     position: fixed; /* Fixa o menu lateral na tela */
@@ -17,149 +15,118 @@
     left: 0; /* Posiciona o menu na esquerda */
     overflow-y: auto; /* Permite rolagem vertical se o conteúdo for maior que o menu */
     z-index: 1; /* Certifique-se de que o z-index do menu seja menor que o do conteúdo */
+    box-sizing: border-box;
 }
 
 .sidebar-top { /* Novo container para foto e nome */
-margin-bottom: 40px; /* Adiciona espaço abaixo do container superior */
-text-align: center; /* Centraliza o texto horizontalmente */
+    margin-bottom: 40px; /* Adiciona espaço abaixo do container superior */
+    text-align: center; /* Centraliza o texto horizontalmente */
 }
 
 /* Estilos do Cabeçalho do Menu */
 .sistema-de-gerenciamento {
-font-family: 'K2D', sans-serif;
-font-size: 24px;
-line-height: 32px;
-text-align: center;
-color: #FFFFFF;
-margin-top: 20px; /* Adiciona espaço acima do título */
+    font-family: 'K2D', sans-serif;
+    font-size: 24px;
+    line-height: 32px;
+    text-align: center;
+    color: #FFFFFF;
+    margin-top: 20px; /* Adiciona espaço acima do título */
 }
 
 .usuario-logado { /* Ou .sidebar-top .usuario-logado se estiver dentro de sidebar-top */
-font-family: 'K2D', sans-serif !important;
-font-size: 15px !important;
-line-height: 24px !important;
-text-align: center !important;
-color: #FFFFFF !important;
-margin-top: 10px !important;
+    font-family: 'K2D', sans-serif !important;
+    font-size: 15px;
+    line-height: 24px !important;
+    text-align: center !important;
+    color: #FFFFFF !important;
+    margin-top: 10px !important;
 }
-
 
 /* Estilos dos Links do Menu */
 .sidebar-links { /* Novo container para os links */
-display: flex;
-flex-direction: column;
-align-items: center; /* Centraliza os links horizontalmente */
-margin-top: 40px; /* Ajuste o valor para o espaçamento desejado */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os links horizontalmente */
+    margin-top: 40px; /* Ajuste o valor para o espaçamento desejado */
 }
 
 .sidebar a {
-display: flex;
-flex-direction: column;
-padding: 15px;
-text-decoration: none;
-color: #FFFFFF;
-font-family: 'K2D', sans-serif;
-font-size: 18px;
-transition: background-color 0.3s;
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-family: 'K2D', sans-serif;
+    font-size: 18px;
+    transition: background-color 0.3s;
+}
+
+.main-content {
+    padding-left: 320px; /* Largura do menu + padding interno */
+    box-sizing: border-box;
 }
 
 .sidebar a:hover {
-background-color: #00A651;
+    background-color: #00A651;
 }
 
 /* Estilos da Imagem de Perfil */
 .imagem-perfil {
-width: 120px;
-height: 120px;
-border-radius: 50%;
-display: block;
-margin: 0 auto 20px; /* Centraliza a imagem e adiciona espaço abaixo */
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    display: block;
+    margin: 0 auto 20px; /* Centraliza a imagem e adiciona espaço abaixo */
 }
 
-/* Estilos do Conteúdo Principal */
 /* Estilos do Conteúdo Principal */
 .content {
-    flex: 1; /* Ocupa o espaço restante */
+    flex: 1;
     padding: 20px;
     background-color: #f4f4f4;
+    padding-left: 320px; /* Largura do menu + padding interno */
+    box-sizing: border-box; /* Adicione box-sizing */
 }
 
-
 .body {
-display: flex;
-margin: 0; /* Remove as margens do body */
+    display: flex;
+    margin: 0; /* Remove as margens do body */
 }
 
 .sidebar-links {
-display: flex;
-flex-direction: column;
-align-items: center; /* Centraliza os links horizontalmente */
-margin-top: 40px;
-width: 100%;
-text-align: center; /* Centraliza o texto dos links */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centraliza os links horizontalmente */
+    margin-top: 40px;
+    width: 100%;
+    text-align: center; /* Centraliza o texto dos links */
 }
 
 .sidebar-links a {
-display: block;
-padding: 15px;
-text-decoration: none;
-color: #FFFFFF;
-font-family: 'K2D', sans-serif;
-font-size: 18px;
-transition: background-color 0.3s;
-width: 100%; /* Garante que os links ocupem toda a largura do container */
+    display: block;
+    padding: 15px;
+    text-decoration: none;
+    color: #FFFFFF;
+    font-family: 'K2D', sans-serif;
+    font-size: 18px;
+    transition: background-color 0.3s;
+    width: 100%; /* Garante que os links ocupem toda a largura do container */
 }
 
 .sidebar-links a:hover {
-background-color: #00A651;
+    background-color: #00A651;
 }
 
 .menu-bottom {
-width: 100%;
-text-align: center;
-margin-top: auto; /* Empurra o botão para o final */
-
-position: absolute;
-bottom: 40px; /* Ajuste a distância da parte inferior conforme necessário */
-left: 50%; /* Posiciona o centro do botão no meio do menu */
-transform: translateX(-50%); /* Ajusta a posição horizontal para centralizar */
-width: 100%;
+    width: 100%;
+    text-align: center;
+    margin-top: auto; /* Empurra o botão para o final */
+    position: absolute;
+    bottom: 40px; /* Ajuste a distância da parte inferior conforme necessário */
+    left: 50%; /* Posiciona o centro do botão no meio do menu */
+    transform: translateX(-50%); /* Ajusta a posição horizontal para centralizar */
+    width: 100%;
 }
-
-
-/* Media Query para Telas Menores */
-@media (max-width: 768px) { /* Ajuste o valor conforme necessário */
-    .sidebar {
-        /* Oculta o menu lateral */
-        position: fixed; /* Fixa o menu para que ele possa sobrepor o conteúdo */
-        top: 0;
-        left: -300px; /* Esconde o menu fora da tela */
-        z-index: 1000; /* Garante que o menu fique acima do conteúdo */
-        transition: left 0.3s ease; /* Adiciona uma transição suave */
-    }
-
-    .sidebar.open { /* Estilos para quando o menu estiver aberto */
-        left: 0;
-    }
-
-    /* Botão para abrir/fechar o menu */
-    .menu-toggle {
-        display: block;
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 1001; /* Garante que o botão fique acima do menu */
-        background-color: #1B5B3A;
-        color: white;
-        padding: 10px;
-        border: none;
-        cursor: pointer;
-    }
-}
-
-
-
-
 
 /* base.css ou outro arquivo CSS */
 .messages {
@@ -184,4 +151,60 @@ width: 100%;
     background-color: #f8d7da; /* Vermelho claro */
     color: #721c24; /* Vermelho escuro */
     border: 1px solid #f5c6cb; /* Vermelho mais claro */
+}
+
+/* Media Query para Telas Menores */
+@media (max-width: 1000px) { /* Ajuste o valor conforme necessário */
+    .sidebar {
+        /* Oculta o menu lateral */
+        position: fixed; /* Fixa o menu para que ele possa sobrepor o conteúdo */
+        top: 0;
+        left: -100%; /* Esconde o menu fora da tela */
+        width: 100%; /* Faz o menu ocupar toda a largura da tela */
+        height: 100%; /* Faz o menu ocupar toda a altura da tela */
+        z-index: 1000; /* Garante que o menu fique acima do conteúdo */
+        transition: left 0.3s ease; /* Adiciona uma transição suave */
+    }
+
+    .sidebar.open { /* Estilos para quando o menu estiver aberto */
+        left: 0;
+    }
+
+    /* Botão para abrir/fechar o menu */
+    .menu-toggle {
+        display: block;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 1001; /* Garante que o botão fique acima do menu */
+        background-color: #1B5B3A;
+        color: white;
+        padding: 10px;
+        border: none;
+        cursor: pointer;
+    }
+
+    .content {
+        width: 100%; /* Ocupa toda a largura da tela */
+        padding-left: 0; /* Remove o padding esquerdo */
+    }
+
+    .sidebar,
+    .sistema-de-gerenciamento,
+    .sidebar a,
+    .menu-bottom a {
+        font-size: 35px; /* Aumenta o tamanho da fonte para todos os elementos da sidebar */
+    }
+
+    .sidebar a {
+        margin-bottom: 20px; /* Aumenta o espaçamento entre os links */
+    }
+
+    .usuario-logado {
+        font-size: 25px; /* Mantém o tamanho da fonte do usuário logado */
+    }
+
+    .sistema-de-gerenciamento {
+        font-size: 30px; /* Aumenta o tamanho da fonte do cabeçalho */
+    }
 }

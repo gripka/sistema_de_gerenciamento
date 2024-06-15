@@ -5,7 +5,6 @@ body {
     margin: 0;
 }
 
-
 /* Estilos do Container Geral */
 .container-geral {
     display: flex;
@@ -14,20 +13,19 @@ body {
     justify-content: center;
     min-height: 90vh;
     overflow-y: auto; /* Permite rolagem vertical */
-
 }
-
 
 /* Estilos do Container do Formulário */
 .cadastro-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 450px;
+    width: 90%;
+    max-width: 600px;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    
+    box-sizing: border-box;
 }
 
 /* Estilos do Título */
@@ -68,8 +66,6 @@ button[type="submit"] {
     cursor: pointer;
     font-size: 16px;
     text-align: center; /* Centraliza o texto horizontalmente */
-    /*margin: -10px auto;  /* Centraliza o botão horizontalmente e adiciona margem superior */
-    /* width: auto; */   /* Opcional: ajusta a largura do botão */
 }
 
 /* Estilos da Mensagem de Erro */
@@ -93,7 +89,7 @@ button[type="submit"] {
     justify-content: space-around; /* ou space-between */
     align-items: center;          /* Alinha os botões verticalmente ao centro */
     margin-bottom: 20px;
-    width: 450px;
+    width: 100%;
     gap: 40px; /* Aumenta a distância entre os botões */
 }
 
@@ -146,7 +142,7 @@ button[type="submit"] {
     margin-top: 20px;
 }
 
-/* cadastro.css */
+/* Estilos do Formulário */
 .cadastro-container form {
     display: flex;
     flex-direction: column; /* Organiza os elementos em coluna */
@@ -156,4 +152,47 @@ button[type="submit"] {
 .botao:hover {
     color: inherit; /* Mantém a cor original do texto no hover */
     text-decoration: none; /* Remove o sublinhado no hover */
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 1000px) {
+    .cadastro-container {
+        width: 100%; /* Ocupa toda a largura da tela */
+        margin: 0 10px; /* Adiciona margem lateral para espaçamento */
+    }
+
+    h2 {
+        font-size: 35px; /* Ajusta o tamanho da fonte do título */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        font-size: 24px; /* Aumenta o tamanho da fonte dos inputs */
+        padding: 20px; /* Aumenta o padding dos inputs */
+    }
+
+    button[type="submit"] {
+        font-size: 24px; /* Aumenta o tamanho da fonte do botão */
+        padding: 20px 40px; /* Aumenta o padding do botão */
+    }
+
+    /* Ajustes de tamanho de fonte para textos fora dos botões */
+    .error-message,
+    .error label,
+    .error input[type="text"]::placeholder,
+    .error input[type="email"]::placeholder,
+    .error input[type="password"]::placeholder {
+        font-size: 24px; /* Aumenta o tamanho da fonte dos textos de erro e placeholders */
+    }
+
+    /* Ajuste de tamanho de fonte para labels específicas */
+    label[for="id_username"],
+    label[for="id_email"],
+    label[for="id_first_name"],
+    label[for="id_last_name"],
+    label[for="id_password1"],
+    label[for="id_password2"] {
+        font-size: 24px; /* Ajusta o tamanho da fonte das labels específicas */
+    }
 }

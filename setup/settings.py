@@ -22,8 +22,6 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'dal',
-    'dal_select2',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -35,6 +33,7 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_select2',
     'widget_tweaks',
+    'django_choices',
 ]
 
 MIDDLEWARE = [
@@ -80,11 +79,16 @@ DATABASES = {
         'HOST': 'localhost',             # Host do PostgreSQL (geralmente 'localhost')
         'PORT': '5432',                  # Porta do PostgreSQL (geralmente 5432)
         'OPTIONS': {
-            'options': '-c search_path=beaba_schema', 
+            'options': '-c search_path=public', 
         },
     }
 }
-
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
@@ -134,4 +138,16 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 LOGIN_URL = '/usuarios/login/'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com' 
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+
+SITE_URL = os.getenv('SITE_URL')
+
+
 

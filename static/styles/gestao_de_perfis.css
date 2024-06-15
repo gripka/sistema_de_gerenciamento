@@ -1,0 +1,168 @@
+/* Estilos Gerais da Página */
+* {
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: white;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header-container {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.header-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.botoes-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.botao {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+}
+
+.botao-cadastrar {
+    background-color: #097600;
+}
+
+.botao-buscar {
+    background-color: #097600;
+}
+
+.campo-pesquisa {
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-right: 10px;
+    flex-grow: 1;
+    width: auto;
+}
+
+.tabela-usuarios {
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    margin: 0 auto;
+    width: 100%;
+}
+
+.tabela-usuarios th, .tabela-usuarios td {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.acoes {
+    text-align: center;
+}
+
+.botao-editar-usuario, .botao-excluir-usuario {
+    display: inline-block;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    color: white;
+}
+
+.botao-editar-usuario {
+    background-color: #097600;
+}
+
+.botao-editar-usuario:hover,
+.botao-editar-usuario:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
+}
+
+.botao-excluir-usuario {
+    background-color: #dc3545;
+}
+
+.botao-excluir-usuario:hover,
+.botao-excluir-usuario:focus {
+    background-color: #c82333; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+}
+
+.botao:hover,
+.botao:focus,
+.botao-cadastrar:hover,
+.botao-cadastrar:focus,
+.botao-buscar:hover,
+.botao-buscar:focus {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+}
+
+/* Responsividade */
+@media screen and (max-width: 1000px) {
+    .botoes-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .botao {
+        width: 30%;
+        margin-bottom: 10px;
+        font-size: 25px; /* Aumenta o tamanho da fonte de todos os botões */
+    }
+
+    /* Ajusta o tamanho do campo de pesquisa */
+    .campo-pesquisa {
+        padding: 10px;
+        font-size: 22px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    .header-container h2 {
+        font-size: 35px;
+    }
+
+    .botao-excluir-usuario,
+    .botao-editar-usuario {
+        padding: 12px 20px;
+        font-size: 18px; /* Aumenta o tamanho da fonte para 18 pixels */
+    }
+
+    .tabela-usuarios th,
+    .tabela-usuarios td {
+        font-size: 25px; /* Ajuste o tamanho da fonte conforme necessário */
+    }
+    
+}

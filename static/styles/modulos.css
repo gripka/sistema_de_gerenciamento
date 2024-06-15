@@ -1,0 +1,211 @@
+/* Estilos Gerais da Página */
+* {
+    margin: 0;
+    /*padding: 0;*/
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: white;
+    margin: 0;
+    overflow-y: auto;
+}
+
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header-container {
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+}
+
+.header-container h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.botoes-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.botao {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    text-align: center;
+    color: white;
+}
+
+
+
+.botao-buscar {
+    background-color: #097600;
+}
+
+.campo-pesquisa {
+    padding: 8px;
+    border: 1px solid black;
+    border-radius: 5px;
+    margin-right: 10px;
+    flex-grow: 1;
+    width: auto;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.module-box {
+    flex: 0 0 auto; /* Remove a flex-basis fixa */
+    width: 100%; /* Ocupa a largura total em telas menores */
+    padding: 0.5rem;
+}
+
+.card {
+    width: 100%;
+    max-width: 500px;  /* Define a largura máxima de cada card */
+    height: 100%;  /* Garante que todos os cards tenham a mesma altura */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-body {
+    flex-grow: 1;
+}
+
+.card-text-container {
+    max-height: 250px;  /* Define a altura máxima para o conteúdo do texto */
+    overflow-y: auto;  /* Adiciona barra de rolagem vertical se necessário */
+}
+
+.card-footer {
+    display: flex;
+    justify-content: center;  /* Centraliza os botões horizontalmente */
+    gap: 10px;
+}
+
+/* Estilo do botão Editar */
+.btn-secondary  {
+    background-color: #097600; /* Cor de fundo desejada */
+    color: white;              /* Cor do texto */
+    border: none;              /* Remove a borda */
+    padding: 5px 10px;         /* Ajusta o padding */
+    border-radius: 5px;        /* Bordas arredondadas */
+    cursor: pointer;           /* Cursor de ponteiro */
+    text-decoration: none;     /* Remove sublinhado */
+}
+
+.btn-secondary:hover {
+    background-color: #097600; /* Cor de fundo ao passar o mouse */
+    color: white;              /* Cor do texto ao passar o mouse */
+}
+
+/* Estilo do botão excluir */
+.btn-danger  {
+    background-color: #C82333; /* Cor de fundo desejada */
+    color: white;              /* Cor do texto */
+    border: none;              /* Remove a borda */
+    padding: 5px 10px;         /* Ajusta o padding */
+    border-radius: 5px;        /* Bordas arredondadas */
+    cursor: pointer;           /* Cursor de ponteiro */
+    text-decoration: none;     /* Remove sublinhado */
+}
+
+
+/* Adicione este estilo se quiser personalizar a aparência do campo de seleção de transações */
+.form-select {
+    width: 100%;
+    padding: .375rem .75rem;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: #fff;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.botao-cadastrar {
+    background-color: #097600; /* Cor de fundo */
+    color: white; /* Cor do texto */
+    padding: 10px 20px; /* Espaçamento interno */
+    border: none; /* Remova a borda */
+    border-radius: 5px; /* Bordas arredondadas */
+    cursor: pointer; /* Cursor de ponteiro ao passar o mouse */
+    text-align: center; /* Alinhamento do texto */
+    text-decoration: none; /* Remova a decoração do texto */
+    display: inline-block; /* Garanta que ele seja tratado como um botão */
+}
+
+.botao-cadastrar:hover {
+    background-color: #45a049; /* Cor de fundo ao passar o mouse */
+    color: white; /* Cor do texto ao passar o mouse */
+    text-decoration: none; /* Remova a decoração do texto ao passar o mouse */
+}
+
+
+/* Estilos para telas menores que 768px (bootstrap breakpoint 'md') */
+@media (max-width: 767px) {
+    .module-box {
+        width: 100%; 
+        max-width: none; 
+    }
+
+    body { /* Aumenta o tamanho da fonte em telas pequenas */
+        font-size: 23px; /* Ou outro valor adequado */
+    }
+
+    .botao { /* Aumenta o tamanho dos botões em telas pequenas */
+        padding: 12px 24px; /* Ajuste conforme necessário */
+        font-size: 23px;  /* Ou outro valor adequado */
+    }
+    h6 { /* Aumenta o tamanho do h6 em telas médias */
+        font-size: 23px; /* Ou outro valor adequado */
+    }
+    .btn-secondary, .btn-danger { /* Aumenta os botões em telas pequenas */
+        padding: 8px 16px; /* Ajuste conforme necessário */
+        font-size: 23px;  /* Ajuste conforme necessário */
+    }
+}
+
+/* Estilos para telas entre 768px e 992px (bootstrap breakpoint 'md') */
+@media (min-width: 768px) and (max-width: 991px) {
+    .module-box {
+        width: calc(50% - 1rem); 
+        max-width: none; 
+    }
+
+    body { /* Aumenta o tamanho da fonte em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+
+    .botao { /* Aumenta o tamanho dos botões em telas médias */
+        padding: 14px 28px; /* Ajuste conforme necessário */
+        font-size: 25px;  /* Ou outro valor adequado */
+    }
+
+    h6 { /* Aumenta o tamanho do h6 em telas médias */
+        font-size: 25px; /* Ou outro valor adequado */
+    }
+    .btn-secondary, .btn-danger { /* Aumenta os botões em telas médias */
+        padding: 10px 20px; /* Ajuste conforme necessário */
+        font-size: 25px;  /* Ajuste conforme necessário */
+    }
+}
+

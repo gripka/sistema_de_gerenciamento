@@ -1,2 +1,99 @@
-<h1>Oi</h1>
-<a href="{% url 'usuarios:logout' %}">Desconectar</a>
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/gestao_de_perfis.css' %}">
+
+<div class="container-geral">
+    <div class="header-container">
+        <h2>Gestão de Perfis</h2>
+
+        <div class="botoes-container">
+            <a href="{% url 'galeria:criar_grupo' %}" class="botao botao-cadastrar">Criar Novo Perfil</a>
+            <form method="get" class="busca-container">
+                <input type="text" id="searchInput" onkeyup="filterGroups()" class="campo-pesquisa" placeholder="Pesquisar Perfis...">
+                <button type="submit" class="botao botao-buscar">Buscar</button>
+            </form>
+        </div>
+    </div>
+
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}" role="alert">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <main>
+        <table class="table table-striped tabela-usuarios" id="groupsContainer">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for grupo in grupos %}
+                <tr>
+                    <td>{{ grupo.name }}</td>
+                    <td>
+                        <div class="acoes">
+                            <a href="{% url 'galeria:editar_grupo' grupo.pk %}" class="botao-editar-usuario">Editar</a>
+                            <button type="button" class="botao-excluir-usuario" data-bs-toggle="modal" data-bs-target="#excluirModal{{ grupo.pk }}">Excluir</button>
+                        </div>
+
+                        <div class="modal fade" id="excluirModal{{ grupo.pk }}" tabindex="-1" aria-labelledby="excluirModalLabel{{ grupo.pk }}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="excluirModalLabel{{ grupo.pk }}">Excluir Perfil</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Tem certeza que deseja excluir o perfil {{ grupo.name }}?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                        <form method="post" action="{% url 'galeria:excluir_grupo' grupo.pk %}">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-danger">Excluir</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="2">Nenhum perfil encontrado.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</div>
+
+<script>
+    function filterGroups() {
+        const input = document.getElementById('searchInput');
+        const filter = input.value.toLowerCase();
+        const groupsContainer = document.getElementById('groupsContainer');
+        const groups = groupsContainer.getElementsByTagName('tr');
+    
+        for (let i = 1; i < groups.length; i++) {
+            const group = groups[i];
+            const name = group.getElementsByTagName('td')[0].innerText.toLowerCase();
+            if (name.indexOf(filter) > -1) {
+                group.style.display = "";
+            } else {
+                group.style.display = "none";
+            }
+        }
+    }
+    </script>
+    
+    {% endblock %}

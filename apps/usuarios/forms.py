@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
 
 
 class LoginForm(forms.Form):
@@ -13,7 +14,7 @@ class LoginForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Nome de usuário",
             }
-        )
+        ),
     )
 
     password = forms.CharField(
@@ -24,11 +25,11 @@ class LoginForm(forms.Form):
                 "class": "form-control",
                 "placeholder": "Digite sua senha",
             }
-        )
+        ),
     )
 
 
-class CadastroForm(UserCreationForm):  # Herda de UserCreationForm
+class CadastroForm(UserCreationForm): 
     email = forms.EmailField(
         label="E-mail",
         required=True,
@@ -38,12 +39,12 @@ class CadastroForm(UserCreationForm):  # Herda de UserCreationForm
                 "class": "form-control",
                 "placeholder": "Ex: luiz@luiz.com",
             }
-        )
+        ),
     )
 
     class Meta:
         model = User
-        fields = ('username', 'email')
+        fields = ("username", "email")
 
     def clean_username(self):
         nome = self.cleaned_data.get("username")
@@ -62,3 +63,22 @@ class CadastroForm(UserCreationForm):  # Herda de UserCreationForm
             raise forms.ValidationError("Este e-mail já está cadastrado.")
         return email
 
+
+class RedefinirSenhaForm(forms.Form):
+    new_password = forms.CharField(
+        label="Nova senha",
+        widget=forms.PasswordInput,
+        validators=[validate_password],
+    )
+    confirm_password = forms.CharField(
+        label="Confirme a nova senha",
+        widget=forms.PasswordInput,
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        new_password = cleaned_data.get("new_password")
+        confirm_password = cleaned_data.get("confirm_password")
+
+        if new_password != confirm_password:
+            raise forms.ValidationError("As senhas não coincidem.")

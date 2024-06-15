@@ -1,9 +1,15 @@
+import django_filters
+
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm
-from django.contrib.auth.models import User
-from django.contrib.auth.models import Group
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User, Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.core.exceptions import ValidationError
+
 from django_select2.forms import ModelSelect2MultipleWidget
-from dal import autocomplete
+
+from .models import Modulo, Transacao
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(
@@ -42,7 +48,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    first_name = forms.CharField(  # Altere 'nome' para 'first_name'
+    first_name = forms.CharField( 
         label="Nome",
         required=True,
         max_length=100,
@@ -53,7 +59,7 @@ class CadastroForm(UserCreationForm):
             }
         )
     )
-    last_name = forms.CharField(   # Altere 'sobrenome' para 'last_name'
+    last_name = forms.CharField(
         label="Sobrenome",
         required=True,
         max_length=100,
@@ -68,7 +74,7 @@ class CadastroForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ('username', 'email', 'first_name', 'last_name')  # Use os nomes corretos
+        fields = ('username', 'email', 'first_name', 'last_name') 
 
     def clean_username(self):
         nome = self.cleaned_data.get("username")
@@ -87,13 +93,160 @@ class CadastroForm(UserCreationForm):
             raise forms.ValidationError("Este e-mail já está cadastrado.")
         return email
 
-class EditarUsuarioForm(UserChangeForm):
+
+class EditarUsuarioForm(forms.ModelForm):
     groups = forms.ModelMultipleChoiceField(
         queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
-        label='Perfis'
+        label='Perfis',
+        required=False 
     )
 
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'groups')
+
+
+class GroupFilter(django_filters.FilterSet):
+    name = django_filters.CharFilter(lookup_expr='icontains', label='Buscar por nome')
+
+    class Meta:
+        model = Group
+        fields = ['name']
+
+
+class GroupForm(forms.ModelForm):
+    permissions = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Permissões'
+    )
+    modulos = forms.ModelMultipleChoiceField(
+        queryset=Modulo.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Módulos'
+    )
+    transacoes = forms.ModelMultipleChoiceField(
+        queryset=Transacao.objects.all(),
+        required=False,
+        widget=forms.CheckboxSelectMultiple,
+        label='Transações'
+    )
+
+    class Meta:
+        model = Group
+        fields = ['name', 'permissions', 'modulos', 'transacoes']
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['permissions'].initial = self.instance.permissions.all()
+            self.fields['modulos'].initial = self.instance.modulo_set.all()
+            self.fields['transacoes'].initial = self.instance.transacoes.all()
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+
+        if commit:
+            instance.save()
+
+        instance.permissions.set(self.cleaned_data['permissions'])
+        instance.modulo_set.set(self.cleaned_data['modulos'])
+        instance.transacoes.set(self.cleaned_data['transacoes'])
+
+        if commit:
+            instance.save()
+
+        return instance
+
+
+class ModuloForm(forms.ModelForm):
+    transacoes = forms.ModelMultipleChoiceField(queryset=Transacao.objects.all(), widget=forms.CheckboxSelectMultiple, required=False)
+
+    class Meta:
+        model = Modulo
+        fields = ['nome', 'descricao', 'transacoes']
+    
+    def clean_nome(self):
+        nome = self.cleaned_data['nome']
+        
+        if Modulo.objects.filter(nome__iexact=nome).exclude(pk=self.instance.pk if self.instance else None).exists():
+            raise ValidationError('Já existe um módulo com este nome.')
+        
+        return nome
+
+    def __init__(self, *args, **kwargs):
+        super(ModuloForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            self.fields['transacoes'].initial = self.instance.transacoes.all()
+
+    def save(self, commit=True):
+        modulo = super(ModuloForm, self).save(commit=commit)
+        if commit:
+            modulo.transacoes.set(self.cleaned_data['transacoes'])
+        return modulo
+
+
+class TransacaoForm(forms.ModelForm):
+    permissoes = forms.ModelMultipleChoiceField(
+        queryset=Permission.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        label="Funções (Permissões)"
+    )
+
+    class Meta:
+        model = Transacao
+        fields = ['nome', 'descricao', 'permissoes']
+
+    def clean_nome(self):
+        nome = self.cleaned_data['nome'].upper()
+        transacao_id = self.instance.pk
+
+        if Transacao.objects.filter(nome=nome).exclude(pk=transacao_id).exists():
+            raise ValidationError('Já existe uma transação com este nome.')
+        return nome
+
+    def __init__(self, *args, **kwargs):
+        super(TransacaoForm, self).__init__(*args, **kwargs)
+        if self.instance.pk:
+            permissoes_associadas = self.instance.permissoes.all()
+            self.fields['permissoes'].initial = [permissao.pk for permissao in permissoes_associadas]
+
+    def save(self, commit=True):
+        transacao = super().save(commit=False)
+        if commit:
+            transacao.save()
+            self.save_m2m()  
+        return transacao
+
+
+class FuncaoForm(forms.ModelForm):
+    class Meta:
+        model = Permission
+        fields = ['name', 'codename', 'content_type']  
+
+
+    def __init__(self, *args, **kwargs):
+        super(FuncaoForm, self).__init__(*args, **kwargs)
+        self.fields['name'].label = 'Nome'
+        self.fields['codename'].label = 'Codename'
+
+    def clean(self):
+        cleaned_data = super().clean()
+        name = cleaned_data.get('name')
+        content_type = cleaned_data.get('content_type')
+
+        if name and content_type:
+            existing_permission = Permission.objects.filter(
+                name=name,
+                content_type=content_type
+            ).exclude(id=self.instance.id if self.instance else None).exists() 
+
+            if existing_permission:
+                raise ValidationError(
+                    'Já existe uma permissão com este nome para este tipo de conteúdo.'
+                )
+        return cleaned_data

@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('apps.galeria.urls')), 
     path('usuarios/', include('apps.usuarios.urls', namespace='usuarios')),  
     path('select2/', include('django_select2.urls')),
+    
 ]
 
 if settings.DEBUG:
