@@ -14,6 +14,7 @@ from django.views.generic.edit import CreateView
 
 import csv
 
+from openpyxl import Workbook
 from .filters import GroupFilter
 from .forms import (
     CadastroForm,
@@ -566,6 +567,25 @@ def relatorios(request):
 
 
 @login_required
+@permission_required("galeria.VSRS")
+def relatorios(request):
+    usuarios = User.objects.all()
+    perfis = Group.objects.all()
+    modulos = Modulo.objects.all()
+    transacoes = Transacao.objects.all()
+    permissoes = Permission.objects.all()
+
+    context = {
+        "usuarios": usuarios,
+        "perfis": perfis,
+        "modulos": modulos,
+        "transacoes": transacoes,
+        "permissoes": permissoes,
+    }
+    return render(request, "galeria/relatorios.html", context)
+
+
+@login_required
 @permission_required("galeria.vsrs", raise_exception=True)
 def exportar_relatorios(request):
     usuarios = User.objects.all()
@@ -574,54 +594,80 @@ def exportar_relatorios(request):
     transacoes = Transacao.objects.all()
     permissoes = Permission.objects.all()
 
-    response = HttpResponse(content_type="text/csv")
-    response["Content-Disposition"] = 'attachment; filename="relatorios.csv"'
+    wb = Workbook()
 
-    writer = csv.writer(response)
+    def add_to_sheet(sheet, headers, data):
+        sheet.append(headers)
+        for row in data:
+            sheet.append(row)
 
-    writer.writerow(
+    usuarios_sheet = wb.active
+    usuarios_sheet.title = "Usuários Cadastrados"
+    usuarios_headers = ["Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Grupos"]
+    usuarios_data = [
         [
-            "Usuário",
-            "Nome",
-            "Sobrenome",
-            "Email",
-            "Data de Cadastro", 
-            "Perfis de Usuários",
-            "Lista de Módulos",
-            "Lista de Transações",
-            "Lista de Funções Cadastradas",
+            usuario.username,
+            usuario.first_name,
+            usuario.last_name,
+            usuario.email,
+            usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+            ", ".join([grupo.name for grupo in usuario.groups.all()]),
         ]
-    )
+        for usuario in usuarios
+    ]
+    add_to_sheet(usuarios_sheet, usuarios_headers, usuarios_data)
 
-    max_rows = max(
-        len(usuarios), len(perfis), len(modulos), len(transacoes), len(permissoes)
-    )
+    perfis_sheet = wb.create_sheet(title="Perfis de Usuários")
+    perfis_headers = ["Nome do Perfil", "Funções", "Módulos", "Transações"]
+    perfis_data = [
+        [
+            perfil.name,
+            ", ".join([permissao.name for permissao in perfil.permissions.all()]),
+            ", ".join([modulo.nome for modulo in perfil.modulo_set.all()]),
+            ", ".join([transacao.nome for transacao in perfil.transacoes.all()]),
+        ]
+        for perfil in perfis
+    ]
+    add_to_sheet(perfis_sheet, perfis_headers, perfis_data)
 
-    for i in range(max_rows):
-        usuario = usuarios[i] if i < len(usuarios) else None
-        perfil = perfis[i] if i < len(perfis) else None
-        modulo = modulos[i] if i < len(modulos) else None
-        transacao = transacoes[i] if i < len(transacoes) else None
-        permissao = permissoes[i] if i < len(permissoes) else None
+    modulos_sheet = wb.create_sheet(title="Lista de Módulos")
+    modulos_headers = ["Nome do Módulo", "Descrição", "Transações Associadas"]
+    modulos_data = [
+        [
+            modulo.nome,
+            modulo.descricao,
+            "\n".join([f"{transacao.nome} - {transacao.descricao}" for transacao in modulo.transacoes.all()])
+        ]
+        for modulo in modulos
+    ]
+    add_to_sheet(modulos_sheet, modulos_headers, modulos_data)
 
-        writer.writerow(
-            [
-                usuario.username if usuario else "",
-                usuario.first_name if usuario else "",
-                usuario.last_name if usuario else "",
-                usuario.email if usuario else "",
-                (
-                    usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S") if usuario else ""
-                ),  
-                perfil.name if perfil else "",
-                f"{modulo.nome} - {modulo.descricao}" if modulo else "",
-                f"{transacao.nome} - {transacao.descricao}" if transacao else "",
-                f"{permissao.name} - {permissao.codename}" if permissao else "",
-            ]
-        )
+    transacoes_sheet = wb.create_sheet(title="Lista de Transações")
+    transacoes_headers = ["Nome da Transação", "Descrição", "Funções"]
+    transacoes_data = [
+        [
+            transacao.nome,
+            transacao.descricao,
+            ", ".join([permissao.name for permissao in transacao.permissoes.all()]),
+        ]
+        for transacao in transacoes
+    ]
+    add_to_sheet(transacoes_sheet, transacoes_headers, transacoes_data)
+
+
+    permissoes_sheet = wb.create_sheet(title="Funções Cadastradas")
+    permissoes_headers = ["Nome", "Código"]
+    permissoes_data = [
+        [permissao.name, permissao.codename]
+        for permissao in permissoes
+    ]
+    add_to_sheet(permissoes_sheet, permissoes_headers, permissoes_data)
+
+    response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+    response["Content-Disposition"] = 'attachment; filename="relatorios.xlsx"'
+    wb.save(response)
 
     return response
-
 
 def usuarios_cadastrados(request):
     usuarios = User.objects.all()
