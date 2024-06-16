@@ -594,16 +594,13 @@ def exportar_relatorios(request):
     transacoes = Transacao.objects.all()
     permissoes = Permission.objects.all()
 
-    # Criação do workbook
     wb = Workbook()
 
-    # Função para adicionar dados a uma planilha
     def add_to_sheet(sheet, headers, data):
         sheet.append(headers)
         for row in data:
             sheet.append(row)
 
-    # Usuários Cadastrados
     usuarios_sheet = wb.active
     usuarios_sheet.title = "Usuários Cadastrados"
     usuarios_headers = ["Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Grupos"]
@@ -620,7 +617,6 @@ def exportar_relatorios(request):
     ]
     add_to_sheet(usuarios_sheet, usuarios_headers, usuarios_data)
 
-    # Perfis de Usuários
     perfis_sheet = wb.create_sheet(title="Perfis de Usuários")
     perfis_headers = ["Nome do Perfil", "Funções", "Módulos", "Transações"]
     perfis_data = [
@@ -634,7 +630,6 @@ def exportar_relatorios(request):
     ]
     add_to_sheet(perfis_sheet, perfis_headers, perfis_data)
 
-    # Lista de Módulos
     modulos_sheet = wb.create_sheet(title="Lista de Módulos")
     modulos_headers = ["Nome do Módulo", "Descrição", "Transações Associadas"]
     modulos_data = [
@@ -647,7 +642,6 @@ def exportar_relatorios(request):
     ]
     add_to_sheet(modulos_sheet, modulos_headers, modulos_data)
 
-    # Lista de Transações
     transacoes_sheet = wb.create_sheet(title="Lista de Transações")
     transacoes_headers = ["Nome da Transação", "Descrição", "Funções"]
     transacoes_data = [
@@ -661,7 +655,6 @@ def exportar_relatorios(request):
     add_to_sheet(transacoes_sheet, transacoes_headers, transacoes_data)
 
 
-    # Funções Cadastradas
     permissoes_sheet = wb.create_sheet(title="Funções Cadastradas")
     permissoes_headers = ["Nome", "Código"]
     permissoes_data = [
@@ -670,7 +663,6 @@ def exportar_relatorios(request):
     ]
     add_to_sheet(permissoes_sheet, permissoes_headers, permissoes_data)
 
-    # Salvando o arquivo
     response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     response["Content-Disposition"] = 'attachment; filename="relatorios.xlsx"'
     wb.save(response)
