@@ -117,12 +117,13 @@ The system allows creation, editing, and deletion of users, profiles, modules, t
   git clone https://github.com/gripka/sistema_de_gerenciamento.git
   ```
 2. Navigate into the project directory:
-cd repository-name
-
+  ```
+  cd repository-name
+  ```
 3. Create a virtual environment:
-python -m venv env
-
-Example: .venv\Scripts\activate  
+  ```
+  python -m venv env
+  ```
 
 4. Activate the virtual environment:
 - On Windows:
@@ -135,9 +136,12 @@ Example: .venv\Scripts\activate
   ```
 
 5. Install dependencies:
-pip install -r requirements.txt
+  ```
+  pip install -r requirements.txt
+  ```
 
-6. Set up environment variables:
+
+7. Set up environment variables:
 - Create a `.env` file in the root directory with the following contents:
   ```
   DEBUG=True
@@ -150,14 +154,17 @@ pip install -r requirements.txt
   ```
 
 7. Apply database migrations:
-python manage.py migrate
-
+  ```
+  python manage.py migrate
+  ```
 8. Create a superuser (admin):
-python manage.py createsuperuser
-
+  ```
+  python manage.py createsuperuser
+  ```
 9. Run the development server:
-python manage.py runserver
-
+  ```
+  python manage.py runserver
+  ```
 
 ## Contribution
 - Vlw tmj
