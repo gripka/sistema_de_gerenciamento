@@ -113,8 +113,9 @@ The system allows creation, editing, and deletion of users, profiles, modules, t
 ## Installation and Configuration
 
 1. Clone the repository:
-git clone https://github.com/gripka/sistema_de_gerenciamento.git
-
+  ```
+  git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
 2. Navigate into the project directory:
 cd repository-name
 
