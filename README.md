@@ -279,7 +279,9 @@ O sistema permite a criação, edição e exclusão de usuários, perfis, módul
 ## Instalação e Configuração
 
 1. Clone o repositório:
-git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
+  git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
 
 2. Navegue até o diretório do projeto:
 cd nome-do-repositorio
