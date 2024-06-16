@@ -291,11 +291,13 @@ O sistema permite a criação, edição e exclusão de usuários, perfis, módul
   ```
 
 2. Navegue até o diretório do projeto:
-cd nome-do-repositorio
-
+  ```
+  cd nome-do-repositorio
+  ```
 3. Crie um ambiente virtual:
-python -m venv env
-
+  ```
+  python -m venv env
+  ```
 4. Ative o ambiente virtual:
 - No Windows:
   ```
@@ -307,8 +309,9 @@ python -m venv env
   ```
 
 5. Instale as dependências:
-pip install -r requirements.txt
-
+  ```
+  pip install -r requirements.txt
+  ```
 6. Configure as variáveis de ambiente:
 - Crie um arquivo `.env` no diretório raiz com o seguinte conteúdo:
   ```
@@ -322,13 +325,19 @@ pip install -r requirements.txt
   ```
 
 7. Aplique as migrações do banco de dados:
-python manage.py migrate
+  ```
+  python manage.py migrate
+  ```
 
 8. Crie um superusuário (admin):
-python manage.py createsuperuser
+  ```
+  python manage.py createsuperuser
+  ```
 
 9. Execute o servidor de desenvolvimento:
-python manage.py runserver
+  ```
+  python manage.py runserver
+  ```
 
 
 ## Contribuição
