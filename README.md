@@ -146,11 +146,33 @@ The system allows creation, editing, and deletion of users, profiles, modules, t
   ```
   DEBUG=True
   SECRET_KEY=your_secret_key_here
-  DATABASE_URL=postgres://username:password@localhost:5432/database_name
+  DATABASE_URL=postgres://usuario:senha@localhost:5432/nome-do-banco
 
   EMAIL_HOST_USER=
   EMAIL_HOST_PASSWORD=
+
+  EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+  EMAIL_HOST=smtp.
+  EMAIL_PORT=
+  EMAIL_USE_TLS=
   SITE_URL=
+  
+  DB_NAME=
+  DB_USER=
+  DB_PASSWORD=
+  DB_HOST=
+  DB_PORT=
+
+  SESSION_COOKIE_AGE = 
+
+  SECURE_SSL_REDIRECT=True
+  CSRF_COOKIE_SECURE=True
+  SESSION_COOKIE_SECURE=True
+  SECURE_HSTS_SECONDS=3600
+  SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+  SECURE_HSTS_PRELOAD=True
+  SECURE_BROWSER_XSS_FILTER=True
+  SECURE_CONTENT_TYPE_NOSNIFF=True
   ```
 
 7. Apply database migrations:
@@ -321,7 +343,29 @@ O sistema permite a criação, edição e exclusão de usuários, perfis, módul
 
   EMAIL_HOST_USER=
   EMAIL_HOST_PASSWORD=
+
+  EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+  EMAIL_HOST=smtp.
+  EMAIL_PORT=
+  EMAIL_USE_TLS=
   SITE_URL=
+  
+  DB_NAME=
+  DB_USER=
+  DB_PASSWORD=
+  DB_HOST=
+  DB_PORT=
+
+  SESSION_COOKIE_AGE = 
+
+  SECURE_SSL_REDIRECT=True
+  CSRF_COOKIE_SECURE=True
+  SESSION_COOKIE_SECURE=True
+  SECURE_HSTS_SECONDS=3600
+  SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+  SECURE_HSTS_PRELOAD=True
+  SECURE_BROWSER_XSS_FILTER=True
+  SECURE_CONTENT_TYPE_NOSNIFF=True
   ```
 
 7. Aplique as migrações do banco de dados:
