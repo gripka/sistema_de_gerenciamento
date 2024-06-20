@@ -113,15 +113,17 @@ The system allows creation, editing, and deletion of users, profiles, modules, t
 ## Installation and Configuration
 
 1. Clone the repository:
-git clone https://github.com/gripka/sistema_de_gerenciamento.git
-
+  ```
+  git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
 2. Navigate into the project directory:
-cd repository-name
-
+  ```
+  cd repository-name
+  ```
 3. Create a virtual environment:
-python -m venv env
-
-Example: .venv\Scripts\activate  
+  ```
+  python -m venv env
+  ```
 
 4. Activate the virtual environment:
 - On Windows:
@@ -134,29 +136,57 @@ Example: .venv\Scripts\activate
   ```
 
 5. Install dependencies:
-pip install -r requirements.txt
+  ```
+  pip install -r requirements.txt
+  ```
 
-6. Set up environment variables:
+
+7. Set up environment variables:
 - Create a `.env` file in the root directory with the following contents:
   ```
   DEBUG=True
   SECRET_KEY=your_secret_key_here
-  DATABASE_URL=postgres://username:password@localhost:5432/database_name
+  DATABASE_URL=postgres://usuario:senha@localhost:5432/nome-do-banco
 
   EMAIL_HOST_USER=
   EMAIL_HOST_PASSWORD=
+
+  EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+  EMAIL_HOST=smtp.
+  EMAIL_PORT=
+  EMAIL_USE_TLS=
   SITE_URL=
+  
+  DB_NAME=
+  DB_USER=
+  DB_PASSWORD=
+  DB_HOST=
+  DB_PORT=
+
+  SESSION_COOKIE_AGE = 
+
+  SECURE_SSL_REDIRECT=True
+  CSRF_COOKIE_SECURE=True
+  SESSION_COOKIE_SECURE=True
+  SECURE_HSTS_SECONDS=3600
+  SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+  SECURE_HSTS_PRELOAD=True
+  SECURE_BROWSER_XSS_FILTER=True
+  SECURE_CONTENT_TYPE_NOSNIFF=True
   ```
 
 7. Apply database migrations:
-python manage.py migrate
-
+  ```
+  python manage.py migrate
+  ```
 8. Create a superuser (admin):
-python manage.py createsuperuser
-
+  ```
+  python manage.py createsuperuser
+  ```
 9. Run the development server:
-python manage.py runserver
-
+  ```
+  python manage.py runserver
+  ```
 
 ## Contribution
 - Vlw tmj
@@ -278,14 +308,18 @@ O sistema permite a criação, edição e exclusão de usuários, perfis, módul
 ## Instalação e Configuração
 
 1. Clone o repositório:
-git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
+  git clone https://github.com/gripka/sistema_de_gerenciamento.git
+  ```
 
 2. Navegue até o diretório do projeto:
-cd nome-do-repositorio
-
+  ```
+  cd nome-do-repositorio
+  ```
 3. Crie um ambiente virtual:
-python -m venv env
-
+  ```
+  python -m venv env
+  ```
 4. Ative o ambiente virtual:
 - No Windows:
   ```
@@ -297,8 +331,9 @@ python -m venv env
   ```
 
 5. Instale as dependências:
-pip install -r requirements.txt
-
+  ```
+  pip install -r requirements.txt
+  ```
 6. Configure as variáveis de ambiente:
 - Crie um arquivo `.env` no diretório raiz com o seguinte conteúdo:
   ```
@@ -308,17 +343,45 @@ pip install -r requirements.txt
 
   EMAIL_HOST_USER=
   EMAIL_HOST_PASSWORD=
+
+  EMAIL_BACKEND=django.core.mail.backends.smtp.EmailBackend
+  EMAIL_HOST=smtp.
+  EMAIL_PORT=
+  EMAIL_USE_TLS=
   SITE_URL=
+  
+  DB_NAME=
+  DB_USER=
+  DB_PASSWORD=
+  DB_HOST=
+  DB_PORT=
+
+  SESSION_COOKIE_AGE = 
+
+  SECURE_SSL_REDIRECT=True
+  CSRF_COOKIE_SECURE=True
+  SESSION_COOKIE_SECURE=True
+  SECURE_HSTS_SECONDS=3600
+  SECURE_HSTS_INCLUDE_SUBDOMAINS=True
+  SECURE_HSTS_PRELOAD=True
+  SECURE_BROWSER_XSS_FILTER=True
+  SECURE_CONTENT_TYPE_NOSNIFF=True
   ```
 
 7. Aplique as migrações do banco de dados:
-python manage.py migrate
+  ```
+  python manage.py migrate
+  ```
 
 8. Crie um superusuário (admin):
-python manage.py createsuperuser
+  ```
+  python manage.py createsuperuser
+  ```
 
 9. Execute o servidor de desenvolvimento:
-python manage.py runserver
+  ```
+  python manage.py runserver
+  ```
 
 
 ## Contribuição
