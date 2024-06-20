@@ -16,13 +16,10 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 50vh;
-    overflow-y: auto; /* Permite rolagem vertical */
-
-    width: 100%;  /* Ocupa toda a largura disponível */
-    max-width: 1600; /* Largura máxima (opcional) */
-    margin: 0 auto; /* Centraliza o container horizontalmente */
+    width: 100%;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 /* Estilos dos Botões do Topo */
@@ -130,9 +127,11 @@ h2 {
     color: black; /* Cor original do texto */
 }
 
-.botao-editar-usuario:hover {
-    color: black; /* Mantém a cor original do texto no hover */
-    text-decoration: none; /* Remove o sublinhado no hover */
+.botao-editar-usuario:hover,
+.botao-editar-usuario:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
 }
 
 .coluna.acoes {
@@ -151,10 +150,17 @@ h2 {
     color: white;
 }
 
+.botao-excluir-usuario:hover,
+.botao-excluir-usuario:focus {
+    background-color: #c82333; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+}
 
 /* Estilos do Container da Busca */
 .busca-container {
     min-height: 40px; /* Define uma altura mínima para o container da busca */
+    margin: 20px
 }
 
 .campo-pesquisa {
@@ -175,7 +181,12 @@ h2 {
 
 
 }
-
+.botao-buscar:hover,
+.botao-buscar:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
+}
 /* Estilos do Botão Salvar */
 .salvar-container {
     text-align: center;

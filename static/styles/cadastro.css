@@ -68,6 +68,12 @@ button[type="submit"] {
     text-align: center; /* Centraliza o texto horizontalmente */
 }
 
+.button[type="submit"]:hover,
+.button[type="submit"]:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
+}
 /* Estilos da Mensagem de Erro */
 .error-message {
     color: red;
@@ -113,6 +119,8 @@ button[type="submit"] {
     background-color: #097600;
     color: white;
 }
+
+
 
 .botao-editar {
     background-color: #D9D9D9;

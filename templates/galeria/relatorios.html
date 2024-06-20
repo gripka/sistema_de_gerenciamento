@@ -28,7 +28,9 @@
                 <th>Sobrenome</th>
                 <th>Email</th>
                 <th>Data de Cadastro</th>
-                <th>Perfis</th>
+                <th>Último Login</th>
+                <th>Ativo</th>
+                <th>Grupos</th>  
             </tr>
         </thead>
         <tbody>
@@ -39,11 +41,13 @@
                 <td>{{ usuario.last_name }}</td>
                 <td>{{ usuario.email }}</td>
                 <td>{{ usuario.date_joined }}</td>
+                <td>{{ usuario.last_login }}</td> 
+                <td>{{ usuario.is_active|yesno:"Sim,Não" }}</td> 
                 <td>
-                    {% for grupo in usuario.groups.all %}
-                        {{ grupo.name }}{% if not forloop.last %}, {% endif %}
+                    {% for group in usuario.groups.all %}
+                    {{ group.name }}{% if not forloop.last %}, {% endif %}
                     {% endfor %}
-                </td>
+                </td> 
             </tr>
             {% endfor %}
         </tbody>

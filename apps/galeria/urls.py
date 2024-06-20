@@ -21,12 +21,12 @@ urlpatterns = [
     path('modulos/criar/', views.criar_modulo, name='criar_modulo'),
     path('modulos/editar/<int:pk>/', views.editar_modulo, name='editar_modulo'),
     path('modulos/excluir/<int:pk>/', views.excluir_modulo, name='excluir_modulo'),
-    
+
     path('transacoes/', views.transacoes, name='transacoes'),
     path('criar-transacao/', views.criar_transacao, name='criar_transacao'),
     path('excluir-transacao/<int:pk>/', views.excluir_transacao, name='excluir_transacao'),
     path('editar-transacao/<int:transacao_id>/', views.editar_transacao, name='editar_transacao'),
-    
+
     path('funcoes/', views.listar_funcoes, name='listar_funcoes'),
     path('criar-funcao/', views.criar_funcao, name='criar_funcao'),
     path('editar-funcao/<int:pk>/', views.editar_funcao, name='editar_funcao'),

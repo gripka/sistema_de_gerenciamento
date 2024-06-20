@@ -232,7 +232,7 @@ class FuncaoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FuncaoForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = 'Nome'
-        self.fields['codename'].label = 'Codename'
+        self.fields['codename'].label = 'Descrição'
 
     def clean(self):
         cleaned_data = super().clean()

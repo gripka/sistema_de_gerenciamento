@@ -72,7 +72,7 @@ body {
     width: 100%;
 }
 
-.module-box {
+.transaction-box {
     flex: 0 0 auto; /* Remove a flex-basis fixa */
     width: 100%; /* Ocupa a largura total em telas menores */
     padding: 0.5rem;
@@ -113,14 +113,16 @@ body {
     text-decoration: none;     /* Remove sublinhado */
 }
 
-.btn-secondary:hover {
-    background-color: #097600; /* Cor de fundo ao passar o mouse */
-    color: white;              /* Cor do texto ao passar o mouse */
+.btn-secondary:hover,
+.btn-secondary:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
 }
 
 /* Estilo do botão excluir */
 .btn-danger  {
-    background-color: #C82333; /* Cor de fundo desejada */
+    background-color: #dc3545; /* Cor de fundo desejada */
     color: white;              /* Cor do texto */
     border: none;              /* Remove a borda */
     padding: 5px 10px;         /* Ajusta o padding */
@@ -129,7 +131,12 @@ body {
     text-decoration: none;     /* Remove sublinhado */
 }
 
-
+.btn-danger:hover,
+.btn-danger:focus {
+    background-color: #c82333; /* Cor de fundo ao passar o mouse e focar */
+    color: white; /* Cor do texto */
+    text-decoration: none; /* Remove sublinhado */
+}
 /* Adicione este estilo se quiser personalizar a aparência do campo de seleção de transações */
 .form-select {
     width: 100%;

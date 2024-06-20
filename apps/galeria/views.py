@@ -603,7 +603,9 @@ def exportar_relatorios(request):
 
     usuarios_sheet = wb.active
     usuarios_sheet.title = "Usuários Cadastrados"
-    usuarios_headers = ["Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Grupos"]
+    usuarios_headers = [
+    "Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Último Login", "Ativo", "Grupos"
+        ]
     usuarios_data = [
         [
             usuario.username,
@@ -611,6 +613,8 @@ def exportar_relatorios(request):
             usuario.last_name,
             usuario.email,
             usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+            usuario.last_login.strftime("%Y-%m-%d %H:%M:%S") if usuario.last_login else "",
+            "Sim" if usuario.is_active else "Não",
             ", ".join([grupo.name for grupo in usuario.groups.all()]),
         ]
         for usuario in usuarios
