@@ -18,7 +18,7 @@ class Transacao(models.Model):
     descricao = models.TextField(blank=True)
     modulos = models.ManyToManyField(Modulo, related_name='transacoes')
     permissoes = models.ManyToManyField(Permission, related_name='transacoes', blank=True)
-    grupos = models.ManyToManyField(Group, related_name='transacoes', blank=True)  # Novo campo
+    grupos = models.ManyToManyField(Group, related_name='transacoes', blank=True)
 
     class Meta:
         db_table = 'transacao'

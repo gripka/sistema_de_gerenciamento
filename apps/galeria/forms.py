@@ -226,7 +226,7 @@ class TransacaoForm(forms.ModelForm):
 class FuncaoForm(forms.ModelForm):
     class Meta:
         model = Permission
-        fields = ['name', 'codename', 'content_type']  
+        fields = ['name', 'codename']  
 
 
     def __init__(self, *args, **kwargs):
@@ -237,9 +237,9 @@ class FuncaoForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super().clean()
         name = cleaned_data.get('name')
-        content_type = cleaned_data.get('content_type')
 
-        if name and content_type:
+        if name:
+            content_type = ContentType.objects.get(app_label='auth', model='permission')
             existing_permission = Permission.objects.filter(
                 name=name,
                 content_type=content_type

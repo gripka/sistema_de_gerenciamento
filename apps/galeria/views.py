@@ -484,58 +484,41 @@ def criar_funcao(request):
     if request.method == "POST":
         form = FuncaoForm(request.POST)
         if form.is_valid():
-            funcao = form.save(commit=False) 
+            funcao = form.save(commit=False)
 
-            content_type_ids = request.POST.getlist("content_type")
-            for content_type_id in content_type_ids:
-                content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type 
-                funcao.save()  
+            # Definir content_type automaticamente para o modelo Permission
+            content_type = ContentType.objects.get(app_label='auth', model='permission')
+            funcao.content_type = content_type
+            funcao.save()
 
             messages.success(request, "Função criada com sucesso!")
             return redirect("galeria:listar_funcoes")
     else:
         form = FuncaoForm()
 
-    content_types = ContentType.objects.all()
-    return render(
-        request,
-        "galeria/criar_funcao.html",
-        {"form": form, "content_types": content_types},
-    )
+    return render(request, "galeria/criar_funcao.html", {"form": form})
 
 
 @login_required
-def editar_funcao(request, pk): 
+def editar_funcao(request, pk):
     funcao = get_object_or_404(Permission, pk=pk)
-    content_types = ContentType.objects.all()
 
     if request.method == "POST":
-        form = FuncaoForm(
-            request.POST, instance=funcao
-        )  
+        form = FuncaoForm(request.POST, instance=funcao)
         if form.is_valid():
-            funcao = form.save(commit=False) 
+            funcao = form.save(commit=False)
 
-            content_type_ids = request.POST.getlist("content_type")
-            for content_type_id in content_type_ids:
-                content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type  
-                funcao.save()  
+            # Manter content_type existente
+            content_type = ContentType.objects.get(app_label='auth', model='permission')
+            funcao.content_type = content_type
+            funcao.save()
 
             messages.success(request, "Função editada com sucesso!")
-            return redirect(
-                "galeria:listar_funcoes"
-            )  
+            return redirect("galeria:listar_funcoes")
     else:
-        form = FuncaoForm(
-            instance=funcao
-        )  
-    return render(
-        request,
-        "galeria/editar_funcao.html",
-        {"form": form, "content_types": content_types, "funcao": funcao},
-    )
+        form = FuncaoForm(instance=funcao)
+
+    return render(request, "galeria/editar_funcao.html", {"form": form, "funcao": funcao})
 
 
 @login_required
@@ -548,7 +531,7 @@ def excluir_funcao(request, pk):
 
 
 @login_required
-@permission_required("galeria.VSRS")
+@permission_required('auth.VSRS', raise_exception=True)
 def relatorios(request):
     usuarios = User.objects.all()
     perfis = Group.objects.all()
@@ -567,26 +550,7 @@ def relatorios(request):
 
 
 @login_required
-@permission_required("galeria.VSRS")
-def relatorios(request):
-    usuarios = User.objects.all()
-    perfis = Group.objects.all()
-    modulos = Modulo.objects.all()
-    transacoes = Transacao.objects.all()
-    permissoes = Permission.objects.all()
-
-    context = {
-        "usuarios": usuarios,
-        "perfis": perfis,
-        "modulos": modulos,
-        "transacoes": transacoes,
-        "permissoes": permissoes,
-    }
-    return render(request, "galeria/relatorios.html", context)
-
-
-@login_required
-@permission_required("galeria.vsrs", raise_exception=True)
+@permission_required('auth.VSRS', raise_exception=True)
 def exportar_relatorios(request):
     usuarios = User.objects.all()
     perfis = Group.objects.all()
