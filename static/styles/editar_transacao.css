@@ -134,3 +134,35 @@ button[type="submit"]:hover {
     max-height: 200px; /* Altura máxima para exibir 6 permissões (ajuste conforme necessário) */
     overflow-y: auto; /* Habilita a barra de rolagem vertical */
 }
+
+/* Estilos dos Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    transition: border-color 0.3s;
+}
+
+/* Estilo para a caixa de texto da descrição */
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+    height: 46px; /* Altura desejada */
+    resize: none; /* Impede o redimensionamento manual */
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    border-color: #097600;
+}

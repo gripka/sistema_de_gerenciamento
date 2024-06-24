@@ -6,7 +6,7 @@
 
 <div class="container-geral">
     <div class="cadastro-container">
-        <h2>{% if modulo %}Editar Módulo: {{ modulo.nome }}{% else %}Criar Novo Módulo{% endif %}</h2>
+        <h2>Editar Módulo: {{ modulo.nome }}</h2>
 
         <div class="formulario-container">
             <form method="post">
@@ -29,6 +29,21 @@
                                 <label>
                                     <input type="checkbox" name="transacoes" value="{{ transacao.id }}" {% if transacao.checked %} checked {% endif %}>
                                     {{ transacao.nome }} - {{ transacao.descricao }}
+                                </label>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="permissions">Selecione as funções:</label>
+                    <input type="text" id="permission-search" placeholder="Buscar funções">
+                    <div id="permissions-container">
+                        {% for permission in form.permissions.field.queryset %}
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="permissions" value="{{ permission.id }}" {% if permission in form.permissions.initial %} checked {% endif %}>
+                                    {{ permission.name }}
                                 </label>
                             </div>
                         {% endfor %}
@@ -60,5 +75,15 @@
             checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
         });
     });
+
+    document.getElementById('permission-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var checkboxes = document.querySelectorAll('#permissions-container .checkbox');
+        checkboxes.forEach(function(checkbox) {
+            var label = checkbox.querySelector('label').textContent.toLowerCase();
+            checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
 </script>
+
 {% endblock %}

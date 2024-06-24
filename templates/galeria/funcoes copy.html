@@ -29,11 +29,15 @@
         {% for funcao in funcoes %}
             <div class="col-md-4 col-lg-3 mb-4 permission-box">
                 <div class="card h-100">
+                    <div class="card-header">
+                        <h6><strong>{{ funcao.content_type }}</strong></h6> 
+                    </div>
                     <div class="card-body">
                         <h5 class="card-title"><strong>{{ funcao.name }}</strong></h5>
                         <div class="card-text-container">
                             <p class="card-text">{{ funcao.codename }}</p>
-                            <h6><strong>Perfis:</strong></h6>
+                            <h6><strong>Tipo de conteúdo:</strong> {{ funcao.content_type }}</h6>
+                            <h6>Perfis:</h6>
                             <ul>
                                 {% for perfil in funcao.group_set.all %}
                                     <li>{{ perfil.name }}</li>

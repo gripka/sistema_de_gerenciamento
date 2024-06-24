@@ -10,12 +10,14 @@
         <a href="{% url 'galeria:perfis_usuarios' %}" class="btn btn-primary">Perfis de Usuários</a>
         <a href="{% url 'galeria:lista_modulos' %}" class="btn btn-primary">Lista de Módulos</a>
         <a href="{% url 'galeria:lista_transacoes' %}" class="btn btn-primary">Lista de Transações</a>
-        <a href="{% url 'galeria:funcoes_cadastradas' %}" class="btn btn-primary mr-2">Funções Cadastradas</a>
+        <a href="{% url 'galeria:funcoes_cadastradas' %}" class="btn btn-primary mr-2">Lista de Funções</a>
         <form action="{% url 'galeria:exportar_relatorios' %}" method="get">
             <button type="submit" class="btn btn-export ml-2">Exportar Relatórios</button>
         </form>
     </div>
 </div>
+
+
 
 <div class="container text-center mt-5">
     <div class="relatorios-container">
@@ -28,7 +30,9 @@
                     <th>Sobrenome</th>
                     <th>Email</th>
                     <th>Data de Cadastro</th>
-                    <th>Perfis</th> 
+                    <th>Último Login</th>
+                    <th>Ativo</th>
+                    <th>Grupos</th>  
                 </tr>
             </thead>
             <tbody>
@@ -39,11 +43,13 @@
                     <td>{{ usuario.last_name }}</td>
                     <td>{{ usuario.email }}</td>
                     <td>{{ usuario.date_joined }}</td>
+                    <td>{{ usuario.last_login }}</td> 
+                    <td>{{ usuario.is_active|yesno:"Sim,Não" }}</td> 
                     <td>
-                        {% for grupo in usuario.groups.all %}
-                            {{ grupo.name }}{% if not forloop.last %}, {% endif %}
+                        {% for group in usuario.groups.all %}
+                        {{ group.name }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
-                    </td>
+                    </td> 
                 </tr>
                 {% endfor %}
             </tbody>

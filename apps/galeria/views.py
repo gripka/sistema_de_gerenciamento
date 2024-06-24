@@ -31,7 +31,7 @@ def index(request):
     if not request.user.is_authenticated:
         return redirect("usuarios:login")
 
-    return render(request, "galeria/index.html")
+    return render(request, "galeria/gerenciar_usuarios.html")
 
 
 def meu_perfil(request):
@@ -139,6 +139,7 @@ class UserCreateView(CreateView):
         ) 
     
 
+
 @login_required
 def editar_usuario(request, pk):
     usuario = get_object_or_404(User, pk=pk)
@@ -148,17 +149,11 @@ def editar_usuario(request, pk):
         form = EditarUsuarioForm(request.POST, instance=usuario)
         if form.is_valid():
             usuario = form.save(commit=False)
-            usuario.groups.clear()
-            for group_id in form.cleaned_data["groups"]:
-                group = Group.objects.get(
-                    pk=group_id.pk
-                ) 
-                usuario.groups.add(group)
+            usuario.groups.set(form.cleaned_data["groups"])
             usuario.save()
             messages.success(request, "Usuário editado com sucesso!")
         else:
             messages.error(request, "Erro ao editar usuário. Verifique os dados.")
-
     else:
         form = EditarUsuarioForm(instance=usuario)
 
@@ -311,7 +306,7 @@ def criar_grupo(request):
             modulos_ids = request.POST.getlist("modulos", [])
             if modulos_ids:
                 modulos = Modulo.objects.filter(id__in=modulos_ids)
-                grupo.modulo_set.set(modulos) 
+                grupo.modulos.set(modulos)  
 
             messages.success(request, "Grupo criado com sucesso!")
             return redirect("galeria:gestao_de_perfis")
@@ -336,7 +331,7 @@ def editar_grupo(request, grupo_id):
     grupo = get_object_or_404(Group, pk=grupo_id)
     modulos_disponiveis = Modulo.objects.all()
     transacoes_disponiveis = Transacao.objects.all()
-    
+
     if request.method == 'POST':
         form = GroupForm(request.POST, instance=grupo)
         if form.is_valid():
@@ -348,9 +343,24 @@ def editar_grupo(request, grupo_id):
 
             modulos_ids = request.POST.getlist("modulos", [])
             modulos = Modulo.objects.filter(id__in=modulos_ids)
-            grupo.modulo_set.set(modulos)
+            grupo.modulos.set(modulos)
 
-            form.save_m2m() 
+            permissoes_a_remover = []
+            for permissao in grupo.permissions.all():
+                if not permissao.modulos.filter(id__in=modulos_ids).exists() and not permissao.transacoes.filter(id__in=transacoes_ids).exists():
+                    permissoes_a_remover.append(permissao)
+
+            grupo.permissions.remove(*permissoes_a_remover)
+
+            novas_permissoes = set()
+            for modulo in modulos:
+                novas_permissoes.update(modulo.permissions.all())
+            for transacao in transacoes:
+                novas_permissoes.update(transacao.permissoes.all())
+
+            grupo.permissions.add(*novas_permissoes)
+
+            grupo.save()
 
             messages.success(request, 'Grupo editado com sucesso!')
             return redirect('galeria:gestao_de_perfis')
@@ -361,7 +371,7 @@ def editar_grupo(request, grupo_id):
     else:
         form = GroupForm(instance=grupo)
 
-    modulos_do_grupo = grupo.modulo_set.all()
+    modulos_do_grupo = grupo.modulos.all()
     transacoes_do_grupo = grupo.transacoes.all()
 
     context = {
@@ -371,7 +381,7 @@ def editar_grupo(request, grupo_id):
         'modulos_do_grupo': modulos_do_grupo,
         'transacoes_do_grupo': transacoes_do_grupo,
     }
-    return render(request, 'galeria/editar_grupo.html', context)
+    return render(request, 'galeria/editar_grupo.html', context)  
 
 
 @login_required
@@ -407,18 +417,20 @@ def criar_modulo(request):
         if form.is_valid():
             modulo = form.save()
             transacoes_ids = request.POST.getlist("transacoes")
+            permissoes_ids = request.POST.getlist("permissions")
+            
             for transacao_id in transacoes_ids:
                 transacao = Transacao.objects.get(id=transacao_id)
                 transacao.modulo = modulo
+                transacao.permissoes.set(permissoes_ids)  
                 transacao.save()
+            modulo.propagate_permissions() 
             messages.success(request, "Módulo criado com sucesso!")
-            return redirect("galeria:criar_modulo")
+            return redirect("galeria:listar_modulos")
         else:
             for field, errors in form.errors.items():
                 for error in errors:
-                    messages.error(
-                        request, error
-                    )  
+                    messages.error(request, error)
     else:
         form = ModuloForm()
 
@@ -438,17 +450,20 @@ def editar_modulo(request, pk):
         if form.is_valid():
             modulo = form.save()
             transacoes_ids = request.POST.getlist("transacoes")
-            modulo.transacoes.clear() 
+            permissions_ids = request.POST.getlist("permissions")
+
             for transacao_id in transacoes_ids:
                 transacao = Transacao.objects.get(id=transacao_id)
-                modulo.transacoes.add(transacao)  
+                transacao.modulo = modulo
+                transacao.permissions.set(permissions_ids)  
+                transacao.save()
+
+            modulo.permissions.set(permissions_ids)
             messages.success(request, "Módulo editado com sucesso!")
             return redirect("galeria:listar_modulos")
         else:
             if "nome" in form.errors:
-                messages.error(
-                    request, form.errors["nome"][0]
-                )  
+                messages.error(request, form.errors["nome"][0])
     else:
         form = ModuloForm(instance=modulo)
 
@@ -481,61 +496,45 @@ def listar_funcoes(request):
 
 @login_required
 def criar_funcao(request):
+    user = request.user
+    print(user.get_all_permissions())
+
     if request.method == "POST":
         form = FuncaoForm(request.POST)
         if form.is_valid():
-            funcao = form.save(commit=False) 
+            funcao = form.save(commit=False)
 
-            content_type_ids = request.POST.getlist("content_type")
-            for content_type_id in content_type_ids:
-                content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type 
-                funcao.save()  
+            content_type = ContentType.objects.get(app_label='auth', model='permission')
+            funcao.content_type = content_type
+            funcao.save()
 
             messages.success(request, "Função criada com sucesso!")
             return redirect("galeria:listar_funcoes")
     else:
         form = FuncaoForm()
 
-    content_types = ContentType.objects.all()
-    return render(
-        request,
-        "galeria/criar_funcao.html",
-        {"form": form, "content_types": content_types},
-    )
+    return render(request, "galeria/criar_funcao.html", {"form": form})
 
 
 @login_required
-def editar_funcao(request, pk): 
+def editar_funcao(request, pk):
     funcao = get_object_or_404(Permission, pk=pk)
-    content_types = ContentType.objects.all()
 
     if request.method == "POST":
-        form = FuncaoForm(
-            request.POST, instance=funcao
-        )  
+        form = FuncaoForm(request.POST, instance=funcao)
         if form.is_valid():
-            funcao = form.save(commit=False) 
+            funcao = form.save(commit=False)
 
-            content_type_ids = request.POST.getlist("content_type")
-            for content_type_id in content_type_ids:
-                content_type = ContentType.objects.get(id=content_type_id)
-                funcao.content_type = content_type  
-                funcao.save()  
+            content_type = ContentType.objects.get(app_label='auth', model='permission')
+            funcao.content_type = content_type
+            funcao.save()
 
             messages.success(request, "Função editada com sucesso!")
-            return redirect(
-                "galeria:listar_funcoes"
-            )  
+            return redirect("galeria:listar_funcoes")
     else:
-        form = FuncaoForm(
-            instance=funcao
-        )  
-    return render(
-        request,
-        "galeria/editar_funcao.html",
-        {"form": form, "content_types": content_types, "funcao": funcao},
-    )
+        form = FuncaoForm(instance=funcao)
+
+    return render(request, "galeria/editar_funcao.html", {"form": form, "funcao": funcao})
 
 
 @login_required
@@ -546,10 +545,15 @@ def excluir_funcao(request, pk):
         messages.success(request, "Função excluída com sucesso!")
         return redirect("galeria:listar_funcoes")
 
-
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User, Group, Permission
+from django.core.exceptions import PermissionDenied
 @login_required
-@permission_required("galeria.VSRS")
+
 def relatorios(request):
+    if not request.user.has_perm('auth.VSRS'):
+        raise PermissionDenied("Você não tem permissão para acessar esta página.")
     usuarios = User.objects.all()
     perfis = Group.objects.all()
     modulos = Modulo.objects.all()
@@ -567,27 +571,10 @@ def relatorios(request):
 
 
 @login_required
-@permission_required("galeria.VSRS")
-def relatorios(request):
-    usuarios = User.objects.all()
-    perfis = Group.objects.all()
-    modulos = Modulo.objects.all()
-    transacoes = Transacao.objects.all()
-    permissoes = Permission.objects.all()
-
-    context = {
-        "usuarios": usuarios,
-        "perfis": perfis,
-        "modulos": modulos,
-        "transacoes": transacoes,
-        "permissoes": permissoes,
-    }
-    return render(request, "galeria/relatorios.html", context)
-
-
-@login_required
-@permission_required("galeria.vsrs", raise_exception=True)
+@permission_required('auth.VSRS', raise_exception=True)
 def exportar_relatorios(request):
+    print(request.user.get_all_permissions()) 
+    print(request.user.groups.all())
     usuarios = User.objects.all()
     perfis = Group.objects.all()
     modulos = Modulo.objects.all()
@@ -603,7 +590,9 @@ def exportar_relatorios(request):
 
     usuarios_sheet = wb.active
     usuarios_sheet.title = "Usuários Cadastrados"
-    usuarios_headers = ["Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Grupos"]
+    usuarios_headers = [
+    "Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Último Login", "Ativo", "Grupos"
+        ]
     usuarios_data = [
         [
             usuario.username,
@@ -611,6 +600,8 @@ def exportar_relatorios(request):
             usuario.last_name,
             usuario.email,
             usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+            usuario.last_login.strftime("%Y-%m-%d %H:%M:%S") if usuario.last_login else "",
+            "Sim" if usuario.is_active else "Não",
             ", ".join([grupo.name for grupo in usuario.groups.all()]),
         ]
         for usuario in usuarios
@@ -623,7 +614,7 @@ def exportar_relatorios(request):
         [
             perfil.name,
             ", ".join([permissao.name for permissao in perfil.permissions.all()]),
-            ", ".join([modulo.nome for modulo in perfil.modulo_set.all()]),
+            ", ".join([modulo.nome for modulo in perfil.modulos.all()]),
             ", ".join([transacao.nome for transacao in perfil.transacoes.all()]),
         ]
         for perfil in perfis

@@ -35,12 +35,26 @@
             <div class="form-group">
                 <label for="transacoes">Selecione as transações:</label>
                 <input type="text" id="transacao-search" placeholder="Buscar transações">
-                <div id="transacoes-container">
+                <div id="transacoes-container" class="scrollable-container">
                     {% for transacao in transacoes %}
                         <div class="checkbox">
                             <label>
                                 <input type="checkbox" name="transacoes" value="{{ transacao.id }}">
                                 {{ transacao.nome }} - {{ transacao.descricao }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="permissions">Selecione as funções:</label>
+                <input type="text" id="permission-search" placeholder="Buscar funções">
+                <div id="permissions-container" class="scrollable-container">
+                    {% for permission in form.permissions.field.queryset %}
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="permissions" value="{{ permission.id }}">
+                                {{ permission.name }} - {{ permission.codename }}
                             </label>
                         </div>
                     {% endfor %}
@@ -60,6 +74,15 @@
             checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
         });
     });
-    </script>
-    
+
+    document.getElementById('permission-search').addEventListener('input', function() {
+        var searchTerm = this.value.toLowerCase();
+        var checkboxes = document.querySelectorAll('#permissions-container .checkbox');
+        checkboxes.forEach(function(checkbox) {
+            var label = checkbox.querySelector('label').textContent.toLowerCase();
+            checkbox.style.display = label.includes(searchTerm) ? 'block' : 'none';
+        });
+    });
+</script>
+
 {% endblock %}
