@@ -99,12 +99,21 @@ class EditarUsuarioForm(forms.ModelForm):
         queryset=Group.objects.all(),
         widget=forms.CheckboxSelectMultiple,
         label='Perfis',
-        required=False 
+        required=False
+    )
+    is_active = forms.BooleanField(
+        label='Ativo',
+        required=False,
+        widget=forms.CheckboxInput(
+            attrs={
+                "class": "form-check-input",
+            }
+        )
     )
 
     class Meta:
         model = User
-        fields = ('first_name', 'last_name', 'email', 'groups')
+        fields = ('first_name', 'last_name', 'email', 'groups', 'is_active')
 
 
 class GroupFilter(django_filters.FilterSet):
@@ -113,7 +122,6 @@ class GroupFilter(django_filters.FilterSet):
     class Meta:
         model = Group
         fields = ['name']
-
 
 class GroupForm(forms.ModelForm):
     permissions = forms.ModelMultipleChoiceField(
@@ -142,8 +150,11 @@ class GroupForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         if self.instance.pk:
-            self.fields['permissions'].initial = self.instance.permissions.all()
-            self.fields['modulos'].initial = self.instance.modulo_set.all()
+            self.fields['permissions'].choices = [
+                (perm.pk, f"{perm.name} - {perm.codename}") 
+                for perm in Permission.objects.all().order_by('content_type_id')
+            ]
+            self.fields['modulos'].initial = self.instance.modulos.all()
             self.fields['transacoes'].initial = self.instance.transacoes.all()
 
     def save(self, commit=True):
@@ -153,13 +164,28 @@ class GroupForm(forms.ModelForm):
             instance.save()
 
         instance.permissions.set(self.cleaned_data['permissions'])
-        instance.modulo_set.set(self.cleaned_data['modulos'])
+        instance.modulos.set(self.cleaned_data['modulos'])
         instance.transacoes.set(self.cleaned_data['transacoes'])
 
         if commit:
             instance.save()
+            self._propagate_module_permissions(instance)
 
         return instance
+
+    def _propagate_module_permissions(self, group):
+        """
+        Propaga as permissões dos módulos para o grupo.
+        """
+        group_permissions = set()
+        
+        for modulo in group.modulos.all():
+            group_permissions.update(modulo.permissions.all())
+
+        current_module_permissions = set(group.permissions.all())
+        for permission in current_module_permissions:
+            if permission not in group_permissions:
+                group.permissions.remove(permission)
 
 
 class ModuloForm(forms.ModelForm):
@@ -167,7 +193,7 @@ class ModuloForm(forms.ModelForm):
 
     class Meta:
         model = Modulo
-        fields = ['nome', 'descricao', 'transacoes']
+        fields = ['nome', 'descricao', 'transacoes', 'permissions']
     
     def clean_nome(self):
         nome = self.cleaned_data['nome']

@@ -6,7 +6,7 @@
 
 <div class="container-geral">
     <div class="cadastro-container">
-        <h2>Criar Novo Grupo</h2>
+        <h2>Criar Novo Perfil</h2>
 
         {% if messages %}
             <ul class="messages">
@@ -25,24 +25,11 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="nome">Nome do Grupo:</label>
+                <label for="nome">Nome do Perfil:</label>
                 <input type="text" id="nome" name="name">  
             </div>            
 
-            <div class="form-group">
-                <label for="funcoes">Funções:</label>
-                <input type="text" id="funcoes-search" placeholder="Buscar funções">
-                <div id="funcoes-container" class="transacoes-scrollable">
-                    {% for permission in form.permissions %}
-                        <div class="checkbox">
-                            <label>
-                                {{ permission.tag }} 
-                                {{ permission.choice_label }}
-                            </label>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
+
 
             <div class="form-group">
                 <label for="modulos">Módulos:</label>
@@ -74,7 +61,7 @@
                 </div>
             </div>
 
-            <button type="submit">Salvar</button>
+            <button type="submit">Criar novo Perfil</button>
         </form>
     </div>
 </div>

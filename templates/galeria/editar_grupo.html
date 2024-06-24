@@ -6,7 +6,7 @@
 
 <div class="container-geral">
     <div class="cadastro-container">
-        <h2>Editar Grupo</h2>
+        <h2>Editar Perfil</h2>
 
         {% if messages %}
             <ul class="messages">
@@ -25,7 +25,7 @@
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
-                <label for="nome">Nome do Grupo:</label>
+                <label for="nome">Nome do Perfil:</label>
                 {{ form.name }} 
             </div>            
 
@@ -36,7 +36,7 @@
                     {% for permission in form.permissions %}
                         <div class="checkbox" data-selected="{% if permission.data.value in form.initial.permissions %}true{% else %}false{% endif %}">
                             <label>
-                                {{ permission.tag }} 
+                                {{ permission.tag }}
                                 {{ permission.choice_label }}
                             </label>
                         </div>
@@ -52,7 +52,7 @@
                         <div class="checkbox" data-selected="{% if modulo in modulos_do_grupo %}true{% else %}false{% endif %}">
                             <label>
                                 <input type="checkbox" name="modulos" value="{{ modulo.id }}" {% if modulo in modulos_do_grupo %}checked{% endif %}> 
-                                {{ modulo.nome }}
+                                {{ modulo.nome }} - {{ modulo.descricao}}
                             </label>
                         </div>
                     {% endfor %}
@@ -67,7 +67,7 @@
                         <div class="checkbox" data-selected="{% if transacao in transacoes_do_grupo %}true{% else %}false{% endif %}">
                             <label>
                                 <input type="checkbox" name="transacoes" value="{{ transacao.id }}" {% if transacao in transacoes_do_grupo %}checked{% endif %}> 
-                                {{ transacao.nome }}
+                                {{ transacao.nome }} - {{ transacao.descricao }}
                             </label>
                         </div>
                     {% endfor %}
