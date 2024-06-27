@@ -110,8 +110,6 @@ button[type="submit"]:hover {
     margin-left: 10px; /* Adiciona um espaço entre a checkbox e o label */
 }
 
-
-/* Estilo para o campo de formulário */
 form {
     width: 400px;
     height: 300px;
@@ -119,5 +117,42 @@ form {
 
 #content-type-container {
     margin-bottom: 20px; /* Adiciona um espaçamento inferior de 20px */
+}
+
+/* Responsividade para dispositivos móveis */
+/* Responsividade para dispositivos móveis */
+@media (max-width: 1000px) {
+    .cadastro-container {
+        width: 1000px;  /* Ocupa toda a largura da tela */
+    }
+
+    h2 {
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
+    }
+
+    .form-group label {
+        font-size: 40px; /* Ajustar o tamanho da fonte dos labels */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"] {
+        font-size: 44px;  /* Ajustar o tamanho da fonte dos inputs */
+        padding: 20px;    /* Ajustar o padding dos inputs */
+        height: 102px;     /* Ajustar a altura dos inputs */
+    }
+
+    button[type="submit"] {
+        padding: 20px;    /* Aumentar o padding do botão */
+        font-size: 40px;  /* Ajustar o tamanho da fonte do botão */
+        border: none;     /* Remover a borda */
+        outline: none;    /* Remover o contorno ao focar */
+    }
+
+    /* Ajustes para os checkboxes */
+    #content-type-options .checkbox input[type="checkbox"] {
+        transform: scale(2); /* Aumenta o tamanho da checkbox */
+        margin-right: 10px; /* Espaçamento entre a checkbox e o label */
+    }
 }
 

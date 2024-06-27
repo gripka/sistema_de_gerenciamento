@@ -3,9 +3,6 @@ from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import Group as DjangoGroup
 
 
-from django.db import models
-from django.contrib.auth.models import Permission, Group
-
 class Modulo(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
@@ -45,8 +42,6 @@ class Modulo(models.Model):
                 if permissao not in self.permissions.all():
                     print(f"Removendo permissão {permissao.codename} do grupo {grupo.name}")
                     grupo.permissions.remove(permissao)
-
-
 
 
 class Transacao(models.Model):

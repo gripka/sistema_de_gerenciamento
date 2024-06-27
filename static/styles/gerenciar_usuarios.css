@@ -331,4 +331,14 @@ h2 {
         padding: 10px 15px;
         font-size: 22px; /* Aumenta o tamanho da fonte para 18 pixels */
     }
+    .botao-buscar {
+        font-size: 22px;
+    }
+    .pagination{
+        font-size: 22px;
+    }
+    #permissoes-container .checkbox input[type="checkbox"] {
+        transform: scale(2); /* Aumenta o tamanho da checkbox */
+        margin-right: 10px; /* Espaçamento entre a checkbox e o label */
+    }
 }

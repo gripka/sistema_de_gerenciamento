@@ -129,17 +129,20 @@ button[type="submit"]:hover {
 .formulario-container button[type="submit"] {
     display: block; /* Garante que o botão ocupe toda a largura disponível */
     margin: 0 auto; /* Centraliza horizontalmente com margens automáticas */
-    /* ... (outros estilos do botão) ... */
 }
 
-/* Estilos para telas menores que 768px */
-@media (max-width: 767px) {
+
+@media (max-width: 1000px) {
     body {
-        font-size: 25px; /* Tamanho de fonte maior em telas pequenas */
+        font-size: 44px; 
+    }
+
+    h2 {
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
     }
 
     .cadastro-container {
-        width: 90%; /* Ocupa mais espaço na tela */
+        width: 80%; /* Ocupa mais espaço na tela */
     }
 
     input[type="text"],
@@ -148,50 +151,28 @@ button[type="submit"]:hover {
     #group-search {
         padding: 15px;
         margin-bottom: 20px;
+        font-size: 44px;
+
     }
 
+    .form-group input[type="text"], 
+    .form-group input[type="email"], 
+    .form-group select {
+        width: auto;
+
     button[type="submit"] {
-        padding: 15px 30px;
+        padding: 15px 40px;
     }
 
     .group-results .checkbox {
         padding: 12px;
     }
-    .formulario-container button[type="submit"] { /* Aumenta o botão Salvar em telas pequenas */
-        padding: 15px 30px; /* Ajuste conforme necessário */
-        font-size: 18px;  /* Ajuste conforme necessário */
-        width: 100%; /* Ocupa toda a largura do container em telas pequenas */
-    }
-}
-
-/* Estilos para telas entre 768px e 992px */
-@media (min-width: 768px) and (max-width: 991px) {
-    body {
-        font-size: 25px; /* Tamanho de fonte maior em telas médias */
-    }
-
-    .cadastro-container {
-        width: 70%; /* Ocupa mais espaço na tela */
-    }
-
-    input[type="text"],
-    input[type="email"],
-    input[type="password"],
-    #group-search {
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-
-    button[type="submit"] {
-        padding: 15px 30px;
-    }
-
-    .group-results .checkbox {
-        padding: 12px;
+    .group-results{
+        max-height: 400px;
     }
     .formulario-container button[type="submit"] { /* Aumenta o botão Salvar em telas médias */
         padding: 15px 30px; /* Ajuste conforme necessário */
-        font-size: 18px;  /* Ajuste conforme necessário */
+        font-size: 40px;  /* Ajuste conforme necessário */
     }
 }
 
@@ -243,4 +224,19 @@ input:focus + .slider {
 
 input:checked + .slider:before {
     transform: translateX(26px);
+
+}
+
+.formulario-container button[type="submit"] {
+    font-size: 40px;
+}
+.group-results .checkbox input[type="checkbox"] {
+    transform: scale(3); /* Ajuste o valor conforme necessário para aumentar ou diminuir o tamanho */
+    margin-right: 10px; /* Espaçamento entre a checkbox e o label */
+}
+
+/* Ajustes adicionais conforme necessário */
+.group-results .checkbox {
+    padding: 12px; /* Ajuste o padding para espaçamento interno */
+}
 }

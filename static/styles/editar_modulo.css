@@ -172,3 +172,69 @@ textarea {
 textarea:focus {
     border-color: #097600;
 }
+
+@media (max-width: 1000px) {
+    .cadastro-container {
+        width: 100%; /* Ocupa toda a largura da tela */
+    }
+    h2 {
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
+    }
+    .form-group label {
+        font-size: 40px;  /* Ajustar o tamanho da fonte dos labels */
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 44px;  /* Ajustar o tamanho da fonte dos inputs */
+        padding: 50px;    /* Ajustar o padding dos inputs */
+        height: 60px;
+    }
+
+    .checkbox label {
+        font-size: 44px;  /* Ajustar o tamanho da fonte das checkboxes */
+    }
+
+    .transacoes-scrollable {
+        width: 100%;
+        max-height: 400px;
+        padding: 40px;    /* Ajustar o padding dos containers scrolláveis */
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 40px;    /* Aumentar o padding do botão */
+        font-size: 40px;  /* Ajustar o tamanho da fonte do botão */
+    }
+
+    .scrollable-container {
+        max-height: 400px; /* Altura máxima para exibir até 5 itens */
+        overflow-y: auto; /* Habilitar rolagem vertical */
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+        width: 100%; /* Define uma largura fixa */
+        box-sizing: border-box; /* Garante que o padding esteja incluído na largura total */
+        min-width: 0; /* Garante que não exceda a largura do contêiner pai */
+    }
+
+    #transacao-search, #permission-search {
+        font-size: 40px; 
+        height: 102px;
+    }
+
+    #transacoes-container,
+    #permissions-container {
+    max-height: 400px; /* Altura máxima para exibir até 5 itens */
+    overflow-y: auto; /* Habilitar rolagem vertical */
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 20px;
+    width: 100%; /* Define uma largura fixa */
+    box-sizing: border-box; /* Garante que o padding esteja incluído na largura total */
+    min-width: 0; /* Garante que não exceda a largura do contêiner pai */
+}
+}
