@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 
+
 app_name = 'galeria'
 
 urlpatterns = [
@@ -39,4 +40,7 @@ urlpatterns = [
     path('relatorios/lista_modulos/', views.lista_modulos, name='lista_modulos'),
     path('relatorios/lista_transacoes/', views.lista_transacoes, name='lista_transacoes'),
     path('relatorios/funcoes_cadastradas/', views.funcoes_cadastradas, name='funcoes_cadastradas'),
+
+    path('controle-de-acesso/', views.controle_de_acesso, name='controle_de_acesso'),
+    path('acesso-negado/', views.acesso_negado, name='acesso_negado'),
 ]

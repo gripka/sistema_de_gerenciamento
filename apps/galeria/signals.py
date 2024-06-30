@@ -4,13 +4,24 @@ logger = logging.getLogger(__name__)
 
 from django.db.models.signals import m2m_changed, post_save
 from django.dispatch import receiver
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User
 from .models import Modulo
+
+
+def update_user_permissions(user):
+    # Limpar permissões individuais do usuário
+    user.user_permissions.clear()
+    
+    # Adicionar permissões dos grupos do usuário
+    for group in user.groups.all():
+        user.user_permissions.add(*group.permissions.all())
+
 
 @receiver(post_save, sender=Modulo)
 def propagate_permissions(sender, instance, **kwargs):
     logger.info(f"Sinal recebido para post_save em Modulo: {instance.nome}")
     instance.propagate_permissions()
+
 
 @receiver(m2m_changed, sender=Modulo.grupos.through)
 def propagate_permissions_on_group_change(sender, instance, action, pk_set, **kwargs):
@@ -52,3 +63,17 @@ def propagate_permissions_on_group_change(sender, instance, action, pk_set, **kw
                     logger.info(f"Permissões removidas do grupo: {instance.name} a partir do módulo: {modulo.nome}")
                 except Modulo.DoesNotExist:
                     logger.error(f"Módulo com ID {modulo_id} não existe.")
+
+
+@receiver(m2m_changed, sender=User.groups.through)
+def sync_user_permissions(sender, instance, action, **kwargs):
+    if action in ['post_add', 'post_remove', 'post_clear']:
+        update_user_permissions(instance)
+        instance.save()
+
+
+@receiver(post_save, sender=Group)
+def sync_group_permissions(sender, instance, **kwargs):
+    for user in instance.user_set.all():
+        update_user_permissions(user)
+        user.save()

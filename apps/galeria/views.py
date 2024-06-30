@@ -23,8 +23,9 @@ from .forms import (
     GroupForm,
     ModuloForm,
     FuncaoForm,
+    ControleDeAcessoForm,
 )
-from .models import Transacao, Modulo
+from .models import Transacao, Modulo, UrlPermission
 
 
 def index(request):
@@ -551,9 +552,10 @@ from django.contrib.auth.models import User, Group, Permission
 from django.core.exceptions import PermissionDenied
 @login_required
 
+
 def relatorios(request):
-    if not request.user.has_perm('auth.VSRS'):
-        raise PermissionDenied("Você não tem permissão para acessar esta página.")
+#    if not request.user.has_perm('auth.VSRS'):
+#        raise PermissionDenied("Você não tem permissão para acessar esta página.")
     usuarios = User.objects.all()
     perfis = Group.objects.all()
     modulos = Modulo.objects.all()
@@ -571,7 +573,7 @@ def relatorios(request):
 
 
 @login_required
-@permission_required('auth.VSRS', raise_exception=True)
+#@permission_required('auth.VSRS', raise_exception=True)
 def exportar_relatorios(request):
     print(request.user.get_all_permissions()) 
     print(request.user.groups.all())
@@ -660,6 +662,7 @@ def exportar_relatorios(request):
 
     return response
 
+
 def usuarios_cadastrados(request):
     usuarios = User.objects.all()
     return render(request, "galeria/usuarios_cadastrados.html", {"usuarios": usuarios})
@@ -683,3 +686,26 @@ def lista_transacoes(request):
 def funcoes_cadastradas(request):
     funcoes = Permission.objects.all()
     return render(request, "galeria/funcoes_cadastradas.html", {"funcoes": funcoes})
+
+
+@permission_required('auth.CTRA')
+def controle_de_acesso(request):
+    if request.method == 'POST':
+        form = ControleDeAcessoForm(request.POST)
+        if form.is_valid():
+            form.save()  
+            messages.success(request, 'Permissões atualizadas com sucesso!')
+            return redirect('galeria:controle_de_acesso')  
+
+    url_permissions = UrlPermission.objects.all()
+
+    url_to_permission = {url_permission.url: url_permission.permissions.first().id if url_permission.permissions.exists() else None for url_permission in url_permissions}
+
+    form = ControleDeAcessoForm(initial=url_to_permission)
+
+    context = {'form': form}
+    return render(request, 'galeria/controle_de_acesso.html', context)
+
+
+def acesso_negado(request):
+    return render(request, 'galeria/acesso_negado.html')

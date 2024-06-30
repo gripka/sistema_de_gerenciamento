@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 
 from django_select2.forms import ModelSelect2MultipleWidget
 
-from .models import Modulo, Transacao
+from .models import Modulo, Transacao, UrlPermission
 
 
 class LoginForm(forms.Form):
@@ -258,7 +258,7 @@ class FuncaoForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(FuncaoForm, self).__init__(*args, **kwargs)
         self.fields['name'].label = 'Nome'
-        self.fields['codename'].label = 'Descrição'
+        self.fields['codename'].label = 'Código'
 
     def clean(self):
         cleaned_data = super().clean()
@@ -276,3 +276,55 @@ class FuncaoForm(forms.ModelForm):
                     'Já existe uma permissão com este nome para este tipo de conteúdo.'
                 )
         return cleaned_data
+
+
+class ControleDeAcessoForm(forms.Form):
+    cadastro = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Cadastrar Usuário'
+    )
+    gerenciar_usuarios = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Gerenciar Usuários'
+    )
+    gestao_de_perfis = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Gestão de Perfis'
+    )
+    listar_modulos = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Módulos'
+    )
+    transacoes = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Transações'
+    )
+    listar_funcoes = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Funções'
+    )
+    relatorios = forms.ModelChoiceField(
+        queryset=Permission.objects.exclude(codename='login'),
+        widget=forms.Select(attrs={'class': 'form-control'}),
+        required=False,
+        label='Relatórios'
+    )
+
+    def save(self):
+        for field_name, permission in self.cleaned_data.items():
+            if permission:
+                url_permission, created = UrlPermission.objects.get_or_create(url=field_name)
+                url_permission.permissions.set([permission])
+                url_permission.save()

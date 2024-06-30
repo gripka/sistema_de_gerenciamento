@@ -44,6 +44,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.galeria.middleware.permission_middleware.PermissionMiddleware',
 ]
 
 ROOT_URLCONF = 'setup.urls'
@@ -59,6 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'apps.galeria.context_processors.user_permissions',
             ],
         },
     },
@@ -158,13 +160,13 @@ if not DEBUG:
     # Redireciona todas as requisições HTTP para HTTPS se SECURE_SSL_REDIRECT estiver configurado como 'True'
     CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'True') == 'True'
 
-    # Garante que os cookies de sessão só são enviados em conexões HTTPS (SESSION_COOKIE_SECURE deve ser 'True')
+    # Garante que os cookies de sessão só são enviados em conexões HTTPS 
     SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'True') == 'True'
 
     # Configura o cabeçalho HTTP Strict Transport Security (HSTS) para instruir os navegadores a usar HTTPS pelo tempo especificado
     SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', 3600))
 
-    # Inclui todos os subdomínios na política HSTS (SECURE_HSTS_INCLUDE_SUBDOMAINS deve ser 'True')
+    # Inclui todos os subdomínios na política HSTS 
     SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True') == 'True'
 
     # Indica aos navegadores que o site deve ser incluído na lista de pré-carregamento HSTS
