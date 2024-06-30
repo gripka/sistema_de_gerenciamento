@@ -166,3 +166,59 @@ textarea {
 textarea:focus {
     border-color: #097600;
 }
+
+@media (max-width: 1000px) {
+    .cadastro-container {
+        width: 100%; /* Ocupa toda a largura da tela */
+    }
+    h2 {
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
+    }
+
+
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    textarea {
+        font-size: 44px;  /* Ajustar o tamanho da fonte dos inputs */
+        padding: 50px;    /* Ajustar o padding dos inputs */
+        height: 60px;
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 40px;    /* Aumentar o padding do botão */
+        font-size: 40px;  /* Ajustar o tamanho da fonte do botão */
+    }
+
+    .form-group label {
+        font-size: 40px; /* Ajustar o tamanho da fonte dos labels */
+    }
+
+
+    #permissoes-container {
+        width: 100%; /* Largura total */
+        max-height: 400px;
+    }
+
+    #permissoes-container .checkbox label {
+        font-size: 40px; /* Ajustar o tamanho da fonte das checkboxes */
+        max-height: 400px;
+    }
+
+    #permissao-search {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 15px;
+        border: 1px solid black;
+        border-radius: 5px;
+        box-sizing: border-box;
+        font-size: 36px;
+        height: 102px;
+    }
+    #permissoes-container .checkbox input[type="checkbox"] {
+        transform: scale(2); /* Aumenta o tamanho da checkbox */
+        margin-right: 10px; /* Espaçamento entre a checkbox e o label */
+    }
+}

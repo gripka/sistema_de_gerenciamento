@@ -131,3 +131,50 @@ button[type="submit"]:hover {
     margin-top: 20px;
     width: 357px;
 }
+
+/* Estilos para dispositivos móveis */
+@media (max-width: 1000px) {
+    .form-group label {
+        font-size: 40px;  /* Aumentar o tamanho da fonte dos labels */
+    }
+
+    h2 {
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
+    }
+    .cadastro-container{
+        width: auto;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    select,
+    textarea {
+        font-size: 44px;  /* Aumentar o tamanho da fonte dos inputs */
+        padding: 15px;    /* Aumentar o padding dos inputs */
+    }
+
+    .checkbox label {
+        font-size: 40px;  /* Aumentar o tamanho da fonte das checkboxes */
+    }
+
+    .transacoes-scrollable {
+        width: 100%;
+        max-height: 300px;
+        padding: 15px;    /* Aumentar o padding dos containers scrolláveis */
+    }
+
+    button[type="submit"] {
+        width: 100%;
+        padding: 15px;    /* Aumentar o padding do botão */
+        font-size: 40px;  /* Aumentar o tamanho da fonte do botão */
+    }
+    #transacoes-container.transacoes-scrollable,
+    #modulos-container.transacoes-scrollable {
+        max-height: 400px; 
+        overflow-y: auto;  
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-bottom: 20px;
+    }
+}

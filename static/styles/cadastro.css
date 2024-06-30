@@ -170,18 +170,18 @@ button[type="submit"] {
     }
 
     h2 {
-        font-size: 35px; /* Ajusta o tamanho da fonte do título */
+        font-size: 55px; /* Ajusta o tamanho da fonte do título */
     }
 
     input[type="text"],
     input[type="email"],
     input[type="password"] {
-        font-size: 24px; /* Aumenta o tamanho da fonte dos inputs */
+        font-size: 44px; /* Aumenta o tamanho da fonte dos inputs */
         padding: 20px; /* Aumenta o padding dos inputs */
     }
 
     button[type="submit"] {
-        font-size: 24px; /* Aumenta o tamanho da fonte do botão */
+        font-size: 44px; /* Aumenta o tamanho da fonte do botão */
         padding: 20px 40px; /* Aumenta o padding do botão */
     }
 
@@ -191,7 +191,7 @@ button[type="submit"] {
     .error input[type="text"]::placeholder,
     .error input[type="email"]::placeholder,
     .error input[type="password"]::placeholder {
-        font-size: 24px; /* Aumenta o tamanho da fonte dos textos de erro e placeholders */
+        font-size: 44px; /* Aumenta o tamanho da fonte dos textos de erro e placeholders */
     }
 
     /* Ajuste de tamanho de fonte para labels específicas */
@@ -201,6 +201,11 @@ button[type="submit"] {
     label[for="id_last_name"],
     label[for="id_password1"],
     label[for="id_password2"] {
-        font-size: 24px; /* Ajusta o tamanho da fonte das labels específicas */
+        font-size: 44px; /* Ajusta o tamanho da fonte das labels específicas */
+    }
+    .errorlist {
+        font-size: 35px;
     }
 }
+
+

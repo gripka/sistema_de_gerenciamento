@@ -152,11 +152,26 @@ SITE_URL = os.getenv('SITE_URL')
 SESSION_COOKIE_AGE = int(os.getenv('SESSION_COOKIE_AGE', 1209600))
 
 if not DEBUG:
+    # Redireciona todas as requisições HTTP para HTTPS se SECURE_SSL_REDIRECT estiver configurado como 'True'
     SECURE_SSL_REDIRECT = os.getenv('SECURE_SSL_REDIRECT', 'True') == 'True'
+
+    # Redireciona todas as requisições HTTP para HTTPS se SECURE_SSL_REDIRECT estiver configurado como 'True'
     CSRF_COOKIE_SECURE = os.getenv('CSRF_COOKIE_SECURE', 'True') == 'True'
+
+    # Garante que os cookies de sessão só são enviados em conexões HTTPS (SESSION_COOKIE_SECURE deve ser 'True')
     SESSION_COOKIE_SECURE = os.getenv('SESSION_COOKIE_SECURE', 'True') == 'True'
+
+    # Configura o cabeçalho HTTP Strict Transport Security (HSTS) para instruir os navegadores a usar HTTPS pelo tempo especificado
     SECURE_HSTS_SECONDS = int(os.getenv('SECURE_HSTS_SECONDS', 3600))
+
+    # Inclui todos os subdomínios na política HSTS (SECURE_HSTS_INCLUDE_SUBDOMAINS deve ser 'True')
     SECURE_HSTS_INCLUDE_SUBDOMAINS = os.getenv('SECURE_HSTS_INCLUDE_SUBDOMAINS', 'True') == 'True'
+
+    # Indica aos navegadores que o site deve ser incluído na lista de pré-carregamento HSTS
     SECURE_HSTS_PRELOAD = os.getenv('SECURE_HSTS_PRELOAD', 'True') == 'True'
+
+    # Ativa o filtro XSS do navegador para proteger contra ataques XSS baseados em conteúdo
     SECURE_BROWSER_XSS_FILTER = os.getenv('SECURE_BROWSER_XSS_FILTER', 'True') == 'True'
+
+    # Impede que os navegadores alterem o tipo de conteúdo da resposta HTTP automaticamente
     SECURE_CONTENT_TYPE_NOSNIFF = os.getenv('SECURE_CONTENT_TYPE_NOSNIFF', 'True') == 'True'
