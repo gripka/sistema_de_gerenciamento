@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" type="text/css" href="{% static 'styles/controle_de_acesso.css' %}">
+
+<div class="container-geral">
+    <div class="cadastro-container">
+        <h2>Controle de Acesso</h2>
+
+        <form method="post">
+            {% csrf_token %}
+            {% if messages %}
+            <ul class="messages">
+                {% for message in messages %}
+                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                {% endfor %}
+            </ul>
+            {% endif %}
+
+            {% if error_message %}
+                <div class="error-message">
+                    {{ error_message }}
+                </div>
+            {% endif %}
+
+            {% for field in form %}
+            <div class="form-group">
+                <label>{{ field.label }}</label>
+                <select name="{{ field.name }}" id="{{ field.name }}_permissions" class="RectangleEmail">
+                    <option value="">---------</option>
+                    {% for permission in field.field.queryset %}
+                        <option value="{{ permission.id }}" {% if permission.id == field.value %}selected{% endif %}>
+                            {{ permission.name }} - {{ permission.codename }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            {% endfor %}
+
+            <button type="submit" class="btn btn-primary">Salvar Permissões</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selects = document.querySelectorAll('select[id$="_permissions"]');
+
+        selects.forEach(select => {
+            select.addEventListener('change', function () {
+                const selectedValue = this.value;
+                if (selectedValue !== '') {
+                    selects.forEach(otherSelect => {
+                        if (otherSelect !== this && !otherSelect.value) {
+                            otherSelect.disabled = true;
+                        }
+                    });
+                } else {
+                    selects.forEach(otherSelect => {
+                        if (!otherSelect.value) {
+                            otherSelect.disabled = false;
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
+{% endblock %}

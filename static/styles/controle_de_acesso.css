@@ -1,0 +1,131 @@
+/* Estilos Gerais */
+body {
+    font-family: 'K2D', sans-serif;
+    background-color: #ffffff; /* Cor de fundo branca para o body */
+    margin: 0;
+}
+
+/* Estilos do Container Geral */
+.container-geral {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 90vh;
+    overflow-y: auto; 
+    margin-top: 20px; 
+}
+
+/* Estilos do Container do Formulário */
+.cadastro-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centraliza verticalmente */
+    width: 90%;
+    max-width: 600px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-sizing: border-box;
+    text-align: center; /* Centraliza horizontalmente */
+}
+
+/* Estilos do Título */
+h2 {
+    text-align: center;
+    font-size: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Estilos dos Inputs e Selects */
+.RectangleEmail,
+.select {
+    width: 100%; /* Ocupa toda a largura do container */
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid black;
+    border-radius: 5px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.RectangleEmail::placeholder,
+.select::placeholder {
+    color: rgba(0, 0, 0, 0.5);
+    text-align: center;
+}
+
+/* Estilos do Botão */
+.btn {
+    background-color: #097600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    text-align: center; /* Centraliza o texto horizontalmente */
+}
+
+.btn:hover,
+.btn:focus {
+    background-color: #45a049;
+    color: white;
+    text-decoration: none;
+}
+
+/* Estilos da Mensagem de Erro */
+.error-message {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+/* Estilos para cada grupo de input e label */
+.form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto 10px;
+    width: 100%;
+}
+
+/* Media Queries para Responsividade */
+@media (max-width: 1000px) {
+    .cadastro-container {
+        width: 100%; /* Ocupa toda a largura da tela */
+        margin: 0 10px; /* Adiciona margem lateral para espaçamento */
+    }
+
+    h2 {
+        font-size: 55px; /* Reduz o tamanho do título em telas menores */
+    }
+
+    .RectangleEmail,
+    .select {
+        font-size: 40px; /* Reduz o tamanho do texto nos inputs e selects */
+        padding: 8px; /* Reduz o padding dos inputs e selects */
+    }
+
+    .btn {
+        font-size: 40px; /* Reduz o tamanho do texto no botão */
+        padding: 8px 16px; /* Reduz o padding do botão */
+    }
+
+    /* Ajustes de tamanho de fonte para textos fora dos botões */
+    .error-message,
+    .RectangleEmail::placeholder,
+    .select::placeholder {
+        font-size: 44px; /* Aumenta o tamanho da fonte dos textos de erro e placeholders */
+    }
+    .form-group label {
+        font-size: 40px; /* Reduz o tamanho da fonte das labels em telas menores */
+    }
+
+    .select {
+        font-size: 14px; /* Reduz o tamanho da fonte no select */
+        padding: 6px; /* Reduz o padding interno do select */
+    }
+    
+}
