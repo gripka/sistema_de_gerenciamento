@@ -25,7 +25,7 @@
             <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
         {% endfor %}
     </ul>
-{% endif %}
+    {% endif %}
 
     <div class="row" id="modulesContainer">
         {% for modulo in modulos %}

@@ -4,7 +4,8 @@ from django.contrib.auth.models import User, Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.messages import success
 from django.core.paginator import Paginator
-from django.db.models import Q
+from django.core.exceptions import PermissionDenied
+from django.db.models import Q, Count
 from django.db.models.functions import Lower, Substr, Coalesce
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,6 +16,8 @@ from django.views.generic.edit import CreateView
 import csv
 
 from openpyxl import Workbook
+from openpyxl.styles import Font, PatternFill, Border, Side
+from datetime import datetime, timedelta
 from .filters import GroupFilter
 from .forms import (
     CadastroForm,
@@ -25,7 +28,14 @@ from .forms import (
     FuncaoForm,
     ControleDeAcessoForm,
 )
-from .models import Transacao, Modulo, UrlPermission
+from .models import (
+    Transacao, 
+    Modulo, 
+    UrlPermission, 
+    User, 
+    Group, 
+    Permission
+)
 
 
 def index(request):
@@ -135,10 +145,7 @@ class UserCreateView(CreateView):
         ) 
 
     def form_invalid(self, form):
-        return render(
-            self.request, self.template_name, {"form": form}
-        ) 
-    
+        return self.render_to_response(self.get_context_data(form=form))
 
 
 @login_required
@@ -259,7 +266,9 @@ def editar_transacao(request, transacao_id):
 
 def excluir_transacao(request, pk):
     transacao = Transacao.objects.get(pk=pk)
-    transacao.delete()
+    if request.method == "POST":
+        transacao.delete()
+        messages.success(request, "Transação excluída com sucesso!")
     return redirect("galeria:transacoes")
 
 
@@ -363,7 +372,7 @@ def editar_grupo(request, grupo_id):
 
             grupo.save()
 
-            messages.success(request, 'Grupo editado com sucesso!')
+            messages.success(request, 'Perfil editado com sucesso!')
             return redirect('galeria:gestao_de_perfis')
         else:
             for field, errors in form.errors.items():
@@ -456,7 +465,7 @@ def editar_modulo(request, pk):
             for transacao_id in transacoes_ids:
                 transacao = Transacao.objects.get(id=transacao_id)
                 transacao.modulo = modulo
-                transacao.permissions.set(permissions_ids)  
+                transacao.permissoes.set(permissions_ids)  
                 transacao.save()
 
             modulo.permissions.set(permissions_ids)
@@ -546,13 +555,8 @@ def excluir_funcao(request, pk):
         messages.success(request, "Função excluída com sucesso!")
         return redirect("galeria:listar_funcoes")
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User, Group, Permission
-from django.core.exceptions import PermissionDenied
+
 @login_required
-
-
 def relatorios(request):
 #    if not request.user.has_perm('auth.VSRS'):
 #        raise PermissionDenied("Você não tem permissão para acessar esta página.")
@@ -573,88 +577,138 @@ def relatorios(request):
 
 
 @login_required
-#@permission_required('auth.VSRS', raise_exception=True)
+@permission_required('auth.VSRS', raise_exception=True)
 def exportar_relatorios(request):
-    print(request.user.get_all_permissions()) 
-    print(request.user.groups.all())
     usuarios = User.objects.all()
     perfis = Group.objects.all()
     modulos = Modulo.objects.all()
     transacoes = Transacao.objects.all()
     permissoes = Permission.objects.all()
 
+    hoje = datetime.now().date()
+    data_30_dias_atras = hoje - timedelta(days=30)
+    data_7_dias_atras = hoje - timedelta(days=7)
+
+    usuarios_30_dias = usuarios.filter(date_joined__date__gte=data_30_dias_atras)
+    usuarios_7_dias = usuarios.filter(date_joined__date__gte=data_7_dias_atras)
+
     wb = Workbook()
 
-    def add_to_sheet(sheet, headers, data):
+    def add_to_sheet(sheet, headers, data, is_usuarios_sheet=False):
+        font_bold = Font(bold=True)
+        fill_grey = PatternFill(start_color="DDDDDD", end_color="DDDDDD", fill_type="solid")
+        border_thin = Border(left=Side(style="thin"), 
+                            right=Side(style="thin"), 
+                            top=Side(style="thin"), 
+                            bottom=Side(style="thin"))
+
+        if is_usuarios_sheet:
+            sheet.append(["", "", "", "", "", "", "", ""])
+            sheet.append(["Total de Usuários", "", len(usuarios), "", "", ""])
+            sheet.append(["Criados nos últimos 30 dias", "", len(usuarios_30_dias), "", "", ""])
+            sheet.append(["Criados nos últimos 7 dias", "", len(usuarios_7_dias), "", "", ""])
+            sheet.append(["", "", "", "", "", "", "", ""]) 
+
+            for row in sheet.iter_rows(min_row=sheet.min_row, max_row=sheet.min_row, min_col=1, max_col=len(headers)):
+                for cell in row:
+                    if cell.value in headers: 
+                        cell.font = font_bold
+                    cell.fill = fill_grey
+                    cell.border = border_thin
+
         sheet.append(headers)
+
+        if is_usuarios_sheet:
+            for row in sheet.iter_rows(min_row=sheet.max_row, max_row=sheet.max_row, min_col=1, max_col=len(headers)):
+                for cell in row:
+                    cell.font = font_bold
+
         for row in data:
             sheet.append(row)
 
-    usuarios_sheet = wb.active
-    usuarios_sheet.title = "Usuários Cadastrados"
-    usuarios_headers = [
-    "Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Último Login", "Ativo", "Grupos"
-        ]
-    usuarios_data = [
-        [
-            usuario.username,
-            usuario.first_name,
-            usuario.last_name,
-            usuario.email,
-            usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
-            usuario.last_login.strftime("%Y-%m-%d %H:%M:%S") if usuario.last_login else "",
-            "Sim" if usuario.is_active else "Não",
-            ", ".join([grupo.name for grupo in usuario.groups.all()]),
-        ]
-        for usuario in usuarios
-    ]
-    add_to_sheet(usuarios_sheet, usuarios_headers, usuarios_data)
+        for row in sheet.iter_rows(min_row=sheet.min_row + 1, max_row=sheet.max_row, min_col=1, max_col=len(headers)):
+            for cell in row:
+                cell.border = border_thin
 
-    perfis_sheet = wb.create_sheet(title="Perfis de Usuários")
-    perfis_headers = ["Nome do Perfil", "Funções", "Módulos", "Transações"]
-    perfis_data = [
-        [
-            perfil.name,
-            ", ".join([permissao.name for permissao in perfil.permissions.all()]),
-            ", ".join([modulo.nome for modulo in perfil.modulos.all()]),
-            ", ".join([transacao.nome for transacao in perfil.transacoes.all()]),
+    def formatar_usuarios():
+        usuarios_sheet = wb.active
+        usuarios_sheet.title = "Usuários Cadastrados"
+        usuarios_headers = [
+            "Usuário", "Nome", "Sobrenome", "Email", "Data de Cadastro", "Último Login", "Ativo", "Grupos"
         ]
-        for perfil in perfis
-    ]
-    add_to_sheet(perfis_sheet, perfis_headers, perfis_data)
-
-    modulos_sheet = wb.create_sheet(title="Lista de Módulos")
-    modulos_headers = ["Nome do Módulo", "Descrição", "Transações Associadas"]
-    modulos_data = [
-        [
-            modulo.nome,
-            modulo.descricao,
-            "\n".join([f"{transacao.nome} - {transacao.descricao}" for transacao in modulo.transacoes.all()])
+        usuarios_data = [
+            [
+                usuario.username,
+                usuario.first_name,
+                usuario.last_name,
+                usuario.email,
+                usuario.date_joined.strftime("%Y-%m-%d %H:%M:%S"),
+                usuario.last_login.strftime("%Y-%m-%d %H:%M:%S") if usuario.last_login else "",
+                "Sim" if usuario.is_active else "Não",
+                ", ".join([grupo.name for grupo in usuario.groups.all()]),
+            ]
+            for usuario in usuarios
         ]
-        for modulo in modulos
-    ]
-    add_to_sheet(modulos_sheet, modulos_headers, modulos_data)
 
-    transacoes_sheet = wb.create_sheet(title="Lista de Transações")
-    transacoes_headers = ["Nome da Transação", "Descrição", "Funções"]
-    transacoes_data = [
-        [
-            transacao.nome,
-            transacao.descricao,
-            ", ".join([permissao.name for permissao in transacao.permissoes.all()]),
+        add_to_sheet(usuarios_sheet, usuarios_headers, usuarios_data, is_usuarios_sheet=True)  
+
+        for cell in usuarios_sheet[6]:  
+            cell.font = Font(bold=True)
+
+    def formatar_perfis():
+        perfis_sheet = wb.create_sheet(title="Perfis de Usuários")
+        perfis_headers = ["Nome do Perfil", "Funções", "Módulos", "Transações"]
+        perfis_data = [
+            [
+                perfil.name,
+                ", ".join([permissao.name for permissao in perfil.permissions.all()]),
+                ", ".join([modulo.nome for modulo in perfil.modulos.all()]),
+                ", ".join([transacao.nome for transacao in perfil.transacoes.all()]),
+            ]
+            for perfil in perfis
         ]
-        for transacao in transacoes
-    ]
-    add_to_sheet(transacoes_sheet, transacoes_headers, transacoes_data)
+        add_to_sheet(perfis_sheet, perfis_headers, perfis_data)
 
+    def formatar_modulos():
+        modulos_sheet = wb.create_sheet(title="Lista de Módulos")
+        modulos_headers = ["Nome do Módulo", "Descrição", "Transações Associadas"]
+        modulos_data = [
+            [
+                modulo.nome,
+                modulo.descricao,
+                "\n".join([f"{transacao.nome} - {transacao.descricao}" for transacao in modulo.transacoes.all()])
+            ]
+            for modulo in modulos
+        ]
+        add_to_sheet(modulos_sheet, modulos_headers, modulos_data)
 
-    permissoes_sheet = wb.create_sheet(title="Funções Cadastradas")
-    permissoes_headers = ["Nome", "Código"]
-    permissoes_data = [
-        [permissao.name, permissao.codename]
-        for permissao in permissoes
-    ]
-    add_to_sheet(permissoes_sheet, permissoes_headers, permissoes_data)
+    def formatar_transacoes():
+        transacoes_sheet = wb.create_sheet(title="Lista de Transações")
+        transacoes_headers = ["Nome da Transação", "Descrição", "Funções"]
+        transacoes_data = [
+            [
+                transacao.nome,
+                transacao.descricao,
+                ", ".join([permissao.name for permissao in transacao.permissoes.all()]),
+            ]
+            for transacao in transacoes
+        ]
+        add_to_sheet(transacoes_sheet, transacoes_headers, transacoes_data)
+
+    def formatar_permissoes():
+        permissoes_sheet = wb.create_sheet(title="Funções Cadastradas")
+        permissoes_headers = ["Nome", "Código"]
+        permissoes_data = [
+            [permissao.name, permissao.codename]
+            for permissao in permissoes
+        ]
+        add_to_sheet(permissoes_sheet, permissoes_headers, permissoes_data)
+
+    formatar_usuarios()
+    formatar_perfis()
+    formatar_modulos()
+    formatar_transacoes()
+    formatar_permissoes()
 
     response = HttpResponse(content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
     response["Content-Disposition"] = 'attachment; filename="relatorios.xlsx"'
@@ -663,31 +717,60 @@ def exportar_relatorios(request):
     return response
 
 
+@login_required
 def usuarios_cadastrados(request):
+    search_query = request.GET.get('search', '')
+    group_filter = request.GET.get('group', '')
+
     usuarios = User.objects.all()
-    return render(request, "galeria/usuarios_cadastrados.html", {"usuarios": usuarios})
+    if search_query:
+        usuarios = usuarios.filter(
+            Q(username__icontains=search_query) |
+            Q(first_name__icontains=search_query) |
+            Q(last_name__icontains=search_query) |
+            Q(email__icontains=search_query)
+        )
+    if group_filter:
+        usuarios = usuarios.filter(groups__id=group_filter)
+
+    total_usuarios = usuarios.count()
+    usuarios_ultimos_30_dias = usuarios.filter(date_joined__gte=datetime.now()-timedelta(days=30)).count()
+
+    grupos = Group.objects.all()
+
+    return render(request, "galeria/usuarios_cadastrados.html", {
+        "usuarios": usuarios,
+        "total_usuarios": total_usuarios,
+        "usuarios_ultimos_30_dias": usuarios_ultimos_30_dias,
+        "grupos": grupos
+    })
 
 
+@login_required
 def perfis_usuarios(request):
     perfis = Group.objects.all()
     return render(request, "galeria/perfis_usuarios.html", {"perfis": perfis})
 
 
+@login_required
 def lista_modulos(request):
     modulos = Modulo.objects.all()
     return render(request, "galeria/lista_modulos.html", {"modulos": modulos})
 
 
+@login_required
 def lista_transacoes(request):
     transacoes = Transacao.objects.all()
     return render(request, "galeria/lista_transacoes.html", {"transacoes": transacoes})
 
 
+@login_required
 def funcoes_cadastradas(request):
     funcoes = Permission.objects.all()
     return render(request, "galeria/funcoes_cadastradas.html", {"funcoes": funcoes})
 
 
+@login_required
 @permission_required('auth.CTRA')
 def controle_de_acesso(request):
     if request.method == 'POST':

@@ -1,79 +1,80 @@
 import logging
 
-logger = logging.getLogger(__name__)
-
-from django.db.models.signals import m2m_changed, post_save
+from django.db.models.signals import m2m_changed, post_delete, post_save, pre_delete
 from django.dispatch import receiver
 from django.contrib.auth.models import Group, User
+
 from .models import Modulo
+
+logger = logging.getLogger(__name__)
 
 
 def update_user_permissions(user):
-    # Limpar permissões individuais do usuário
     user.user_permissions.clear()
-    
-    # Adicionar permissões dos grupos do usuário
     for group in user.groups.all():
         user.user_permissions.add(*group.permissions.all())
 
 
-@receiver(post_save, sender=Modulo)
-def propagate_permissions(sender, instance, **kwargs):
-    logger.info(f"Sinal recebido para post_save em Modulo: {instance.nome}")
-    instance.propagate_permissions()
+def update_group_permissions(group):
+    """Atualiza as permissões de um grupo com base nos módulos relacionados."""
+    group.permissions.clear()
+    for modulo in group.modulos.all():
+        group.permissions.add(*modulo.permissions.all())
 
 
 @receiver(m2m_changed, sender=Modulo.grupos.through)
 def propagate_permissions_on_group_change(sender, instance, action, pk_set, **kwargs):
-    if isinstance(instance, Modulo):
-        if action == "post_add" and instance.pk:  # Certifique-se que o módulo existe
-            logger.info(f"Sinal recebido para m2m_changed em Modulo: {instance.nome}, action: {action}")
-            for grupo_id in pk_set:
-                try:
-                    grupo = Group.objects.get(pk=grupo_id)
-                    grupo.permissions.add(*instance.permissions.all())
-                    logger.info(f"Permissões propagadas para o grupo: {grupo.name}")
-                except Group.DoesNotExist:
-                    logger.error(f"Grupo com ID {grupo_id} não existe.")
-        elif action in ["post_remove", "post_clear"] and instance.pk:  # Certifique-se que o módulo existe
-            logger.info(f"Sinal recebido para m2m_changed em Modulo: {instance.nome}, action: {action}")
-            for grupo_id in pk_set:
-                try:
-                    grupo = Group.objects.get(pk=grupo_id)
-                    grupo.permissions.remove(*instance.permissions.all())
-                    logger.info(f"Permissões removidas do grupo: {grupo.name}")
-                except Group.DoesNotExist:
-                    logger.error(f"Grupo com ID {grupo_id} não existe.")
-    elif isinstance(instance, Group):
-        if action == "post_add" and instance.pk:  # Certifique-se que o grupo existe
-            logger.info(f"Sinal recebido para m2m_changed em Grupo: {instance.name}, action: {action}")
-            for modulo_id in pk_set:
-                try:
-                    modulo = Modulo.objects.get(pk=modulo_id)
-                    instance.permissions.add(*modulo.permissions.all())
-                    logger.info(f"Permissões propagadas para o grupo: {instance.name} a partir do módulo: {modulo.nome}")
-                except Modulo.DoesNotExist:
-                    logger.error(f"Módulo com ID {modulo_id} não existe.")
-        elif action in ["post_remove", "post_clear"] and instance.pk:  # Certifique-se que o grupo existe
-            logger.info(f"Sinal recebido para m2m_changed em Grupo: {instance.name}, action: {action}")
-            for modulo_id in pk_set:
-                try:
-                    modulo = Modulo.objects.get(pk=modulo_id)
-                    instance.permissions.remove(*modulo.permissions.all())
-                    logger.info(f"Permissões removidas do grupo: {instance.name} a partir do módulo: {modulo.nome}")
-                except Modulo.DoesNotExist:
-                    logger.error(f"Módulo com ID {modulo_id} não existe.")
+    logger.info(f"Sinal recebido para m2m_changed em: {instance}, action: {action}")
+
+    if action in ["post_add", "post_remove", "post_clear"]:
+        if isinstance(instance, Modulo):
+            if pk_set is None:
+                grupos_alterados = []
+            elif action == "post_add":
+                grupos_alterados = Group.objects.filter(pk__in=pk_set)
+            else:  
+                grupos_alterados = instance.grupos.exclude(pk__in=pk_set)
+        elif isinstance(instance, Group):
+            grupos_alterados = [instance]
+        else:
+            logger.error(f"Tipo de instância inesperado: {type(instance)}")
+            return
+
+        if grupos_alterados: 
+            for grupo in grupos_alterados:
+                update_group_permissions(grupo)
+                logger.info(f"Permissões do grupo {grupo.name} atualizadas.")
+
+                # Atualizar permissões dos usuários do grupo
+                for user in grupo.user_set.all():
+                    update_user_permissions(user)
+                    user.save()
 
 
-@receiver(m2m_changed, sender=User.groups.through)
-def sync_user_permissions(sender, instance, action, **kwargs):
-    if action in ['post_add', 'post_remove', 'post_clear']:
-        update_user_permissions(instance)
-        instance.save()
+from .models import Modulo
+@receiver(pre_delete, sender=Modulo)
+def remove_permissions_on_module_delete(sender, instance, **kwargs):
+    logger.info(f"Sinal recebido para pre_delete em Modulo: {instance.nome}")
+
+    grupos_afetados = list(instance.grupos.all())  
+    instance.grupos.clear() 
+
+    for grupo in grupos_afetados:
+        update_group_permissions(grupo)
+        logger.info(f"Permissões do grupo {grupo.name} atualizadas após exclusão do módulo.")
 
 
-@receiver(post_save, sender=Group)
-def sync_group_permissions(sender, instance, **kwargs):
+@receiver(post_save, sender=Modulo)
+def update_permissions_on_module_save(sender, instance, **kwargs):
+    logger.info(f"Sinal recebido para post_save em Modulo: {instance.nome}")
+    for grupo in instance.grupos.all():
+        update_group_permissions(grupo)
+        logger.info(f"Permissões do grupo {grupo.name} atualizadas após salvar o módulo.")
+
+@receiver(post_delete, sender=Group)
+def update_permissions_on_group_delete(sender, instance, **kwargs):
+    """Atualiza as permissões dos usuários quando um grupo é excluído."""
+    logger.info(f"Sinal recebido para post_delete em Group: {instance.name}")
     for user in instance.user_set.all():
         update_user_permissions(user)
-        user.save()
+        logger.info(f"Permissões do usuário {user.username} atualizadas após exclusão do grupo.")

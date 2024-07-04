@@ -3,6 +3,10 @@ from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.models import Group as DjangoGroup
 from django.contrib.auth.models import User
 
+
+from django.db import models
+from django.contrib.auth.models import Group, Permission, User
+
 class Modulo(models.Model):
     nome = models.CharField(max_length=100)
     descricao = models.TextField(blank=True)
@@ -20,41 +24,33 @@ class Modulo(models.Model):
         self.propagate_permissions()
 
     def propagate_permissions(self):
+        from .signals import update_user_permissions
         print(f"Propagando permissões para o módulo: {self.nome}")
 
-        # Atribuir permissões aos grupos associados ao módulo
+        # Obter todas as permissões do módulo
+        modulo_permissions = set(self.permissions.all())
+
+        # Iterar sobre os grupos associados ao módulo
         for grupo in self.grupos.all():
-            for permissao in self.permissions.all():
-                grupo.permissions.add(permissao)
+            # Obter as permissões atuais do grupo
+            group_permissions = set(grupo.permissions.all())
+
+            # Permissões a serem adicionadas ao grupo
+            permissions_to_add = modulo_permissions - group_permissions
+            grupo.permissions.add(*permissions_to_add)
+            for permissao in permissions_to_add:
                 print(f"Adicionando permissão {permissao.codename} ao grupo {grupo.name}")
 
-            # Atribuir permissões aos usuários do grupo
-            for user in grupo.user_set.all():
-                user.user_permissions.add(*self.permissions.all())
-                print(f"Adicionando permissões {self.permissions.all()} ao usuário {user.username}")
-
-        # Remover permissões dos grupos que não estão mais associados ao módulo
-        for grupo in Group.objects.exclude(modulos=self):
-            for permissao in grupo.permissions.all():
-                grupo.permissions.remove(permissao)
+            # Permissões a serem removidas do grupo
+            permissions_to_remove = group_permissions - modulo_permissions
+            grupo.permissions.remove(*permissions_to_remove)
+            for permissao in permissions_to_remove:
                 print(f"Removendo permissão {permissao.codename} do grupo {grupo.name}")
 
-        # Remover permissões dos grupos que não devem mais possuir devido à remoção do módulo
-        for grupo in Group.objects.filter(modulos=self):
-            for permissao in grupo.permissions.all():
-                if permissao not in self.permissions.all():
-                    grupo.permissions.remove(permissao)
-                    print(f"Removendo permissão {permissao.codename} do grupo {grupo.name}")
-
-        # Atualizar as permissões diretas dos usuários
-        for user in User.objects.all():
-            user_permissions = set(user.user_permissions.values_list('id', flat=True))
-            group_permissions = set()
-            for group in user.groups.all():
-                group_permissions.update(group.permissions.values_list('id', flat=True))
-            if user_permissions != group_permissions:
-                user.user_permissions.set(group_permissions)
-                print(f"Atualizando permissões do usuário {user.username} para {group_permissions}")
+            # Atualizar as permissões dos usuários do grupo
+            for user in grupo.user_set.all():
+                update_user_permissions(user)
+                print(f"Atualizando permissões do usuário {user.username}")
 
 
 class Transacao(models.Model):

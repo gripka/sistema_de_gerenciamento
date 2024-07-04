@@ -42,27 +42,27 @@ def recuperar_senha(request):
     if request.method == "POST":
         email = request.POST.get("email")
 
-        if User.objects.filter(email=email).exists():
-            user = User.objects.get(email=email)
+        if email:
+            if User.objects.filter(email=email).exists():
+                user = User.objects.get(email=email)
 
-            uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
-            token = default_token_generator.make_token(user)
+                uidb64 = urlsafe_base64_encode(force_bytes(user.pk))
+                token = default_token_generator.make_token(user)
 
-            reset_url = (
-                f"{settings.SITE_URL}/usuarios/redefinir-senha/{uidb64}/{token}/"
-            )
+                reset_url = f"{settings.SITE_URL}/usuarios/redefinir-senha/{uidb64}/{token}/"
 
-            subject = "Recuperação de senha"
-            message = f"Clique no link para redefinir sua senha: {reset_url}"
-            from_email = settings.EMAIL_HOST_USER
-            recipient_list = [email]
-            send_mail(subject, message, from_email, recipient_list)
+                subject = "Recuperação de senha"
+                message = f"Clique no link para redefinir sua senha: {reset_url}"
+                from_email = settings.EMAIL_HOST_USER
+                recipient_list = [email]
+                send_mail(subject, message, from_email, recipient_list)
 
-            messages.success(request, "Email de recuperação enviado com sucesso!")
-            return redirect("usuarios:login") 
-
+                messages.success(request, "Email de recuperação enviado com sucesso!")
+                return redirect("usuarios:login")
+            else:
+                messages.error(request, "Email não cadastrado.")
         else:
-            messages.error(request, "Email não cadastrado.")
+            messages.error(request, "")
 
     return render(request, "usuarios/recuperar_senha.html")
 

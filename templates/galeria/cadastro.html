@@ -10,11 +10,18 @@
             {% csrf_token %}
             <h2>Cadastrar novo usuário</h2>
 
+
             {% for field in form %}
             <div class="form-group {% if field.errors %}error{% endif %}">
                 {{ field.label_tag }}
-                <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" class="RectangleEmail" placeholder="{{ field.label }}">
-                
+
+                {% if field.is_hidden %}
+                    {{ field }}
+                {% else %}
+                    <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                        class="RectangleEmail" placeholder="{{ field.label }}" value="{{ field.value|default_if_none:'' }}"> 
+                {% endif %}
+
                 {% if field.errors %}
                     <ul class="errorlist">
                         {% for error in field.errors %}
@@ -24,6 +31,7 @@
                 {% endif %}
             </div>
             {% endfor %}
+
 
             <button type="submit">Cadastrar</button>
             {% block messages %}
