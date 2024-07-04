@@ -17,6 +17,14 @@
         </div>
     </div>
 
+    {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
     <div class="row" id="transactionsContainer">
         {% for transacao in transacoes %}
             <div class="col-md-4 col-lg-3 mb-4 transaction-box">

@@ -89,6 +89,16 @@ button[type="submit"] {
     width: 100%;
 }
 
+.form-control {
+    color: black; /* Define a cor do texto para preto */
+}
+.form-control:focus {
+    outline: none;       /* Remove o contorno azul padrão */
+    border-color: black; /* Define a cor do contorno para preto */
+    color: black;        /* Mantém a cor do texto preta ao focar */
+    box-shadow: black;
+}
+
 /* Estilos do Container dos Botões */
 .botoes-container {
     display: flex;

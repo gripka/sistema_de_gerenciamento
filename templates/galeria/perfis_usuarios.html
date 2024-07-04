@@ -24,7 +24,7 @@
             <thead class="thead-dark">
                 <tr>
                     <th>Nome do Perfil</th>
-                    <th>Funções (Permissions)</th>
+                    <th>Funções</th>
                     <th>Módulos</th>
                     <th>Transações</th>
                 </tr>
@@ -39,7 +39,7 @@
                         {% endfor %}
                     </td>
                     <td>
-                        {% for modulo in perfil.modulo_set.all %}
+                        {% for modulo in perfil.modulos.all %}
                             {{ modulo.nome }}{% if not forloop.last %}, {% endif %}
                         {% endfor %}
                     </td>
@@ -53,5 +53,6 @@
             </tbody>
         </table>
     </div>
+</div>
 
 {% endblock %}

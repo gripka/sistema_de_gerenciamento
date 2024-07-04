@@ -17,11 +17,49 @@
     </div>
 </div>
 
-
-
 <div class="container text-center mt-5">
     <div class="relatorios-container">
         <h2>Usuários Cadastrados</h2>
+
+        <div class="row mb-4 d-flex align-items-stretch">
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Total de Usuários</h5>
+                        <p class="card-text">{{ total_usuarios }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6 mb-3 mb-sm-0">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Usuários Cadastrados nos Últimos 30 Dias</h5>
+                        <p class="card-text">{{ usuarios_ultimos_30_dias }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <form method="GET" action="{% url 'galeria:usuarios_cadastrados' %}" class="mb-4">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="text" name="search" class="form-control" placeholder="Nome ou email">
+                </div>
+                <div class="col-md-4">
+                    <select name="group" class="form-control">
+                        <option value="">Todos os perfis</option>
+                        {% for group in grupos %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="botao-buscar ">Buscar</button>
+                </div>
+            </div>
+        </form>
+
+        {% if usuarios %}
         <table class="table table-bordered table-striped">
             <thead class="thead-dark">
                 <tr>
@@ -32,7 +70,7 @@
                     <th>Data de Cadastro</th>
                     <th>Último Login</th>
                     <th>Ativo</th>
-                    <th>Grupos</th>  
+                    <th>Perfis Associados</th>  
                 </tr>
             </thead>
             <tbody>
@@ -54,6 +92,14 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% else %}
+        <div class="alert alert-warning" role="alert">
+            Nenhum usuário encontrado com o Perfil selecionado.
+        </div>
+        {% endif %}
     </div>
+</div>
+
+
 
 {% endblock %}

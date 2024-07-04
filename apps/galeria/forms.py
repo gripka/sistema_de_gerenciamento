@@ -44,7 +44,7 @@ class CadastroForm(UserCreationForm):
         widget=forms.EmailInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Ex: luiz@luiz.com",
+
             }
         )
     )
@@ -55,7 +55,7 @@ class CadastroForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Seu nome",
+
             }
         )
     )
@@ -66,11 +66,20 @@ class CadastroForm(UserCreationForm):
         widget=forms.TextInput(
             attrs={
                 "class": "form-control",
-                "placeholder": "Seu sobrenome",
+
             }
         )
     )
-
+    username = forms.CharField(
+        label="Usuário ou Matrícula", 
+        max_length=150,
+        widget=forms.TextInput(
+            attrs={
+                "class": "form-control",
+                "placeholder": "Campo inalterável",
+            }
+        ),
+    )
 
     class Meta:
         model = User
@@ -114,7 +123,10 @@ class EditarUsuarioForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('first_name', 'last_name', 'email', 'groups', 'is_active')
-
+        labels = {
+            'first_name': 'Nome',
+            'last_name': 'Sobrenome',
+        }
 
 class GroupFilter(django_filters.FilterSet):
     name = django_filters.CharFilter(lookup_expr='icontains', label='Buscar por nome')

@@ -1,12 +1,10 @@
 /* styles.css */
 .relatorios-container {
-    /* Adicione suas regras de estilo específicas aqui */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    margin-top: 10px;
+    width: 100%;
 }
 
 
@@ -92,3 +90,41 @@
     background-color: #075800; /* Cor de fundo mais escura ao passar o mouse */
 }
 
+.card {
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+.card-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+}
+
+.card-text {
+    font-size: 1rem;
+    margin-bottom: 0;
+}
+
+.alert {
+    background-color: #f8d7da; /* Cor de fundo vermelha */
+    border-color: #f5c6cb; /* Cor da borda */
+    color: #721c24; /* Cor do texto */
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.botao-buscar {
+    background-color: #097600;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
